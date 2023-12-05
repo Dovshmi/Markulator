@@ -1,3 +1,7 @@
+
+import decimal
+
+
 def inches_to_mm(inches_value):
     # 1 inch is approximately equal to 25.4 millimeters
     mm_value = inches_value * 25.4
@@ -8,22 +12,49 @@ def main():
     inches_input = float(input("Enter inches value: "))
 
     # Get user input for tolerance range
-    min_tolerance = float(input("Enter minimum tolerance: "))
-    max_tolerance = float(input("Enter maximum tolerance: "))
+    min_tolerance = float(input("Enter minimum tolerance (inches): "))
+    max_tolerance = float(input("Enter maximum tolerance (inches): "))
 
     # Calculate millimeters with tolerance
     rounded_mm = round(inches_to_mm(inches_input), 2)
     non_rounded_mm = inches_to_mm(inches_input)
-
-    # Check for deviation and adjust non-rounded value if necessary
-    deviation = abs(rounded_mm - non_rounded_mm)
-    if deviation > 0.005:  # Adjust if deviation is more than 0.005 millimeters
-        non_rounded_mm = rounded_mm
+    min_tolerance_mm = inches_to_mm(min_tolerance)
+    rounded_min_tolerance_mm = round(inches_to_mm(min_tolerance), 2)
+    max_tolerance_mm = inches_to_mm(max_tolerance)
+    rounded_max_tolerance_mm = round(inches_to_mm(max_tolerance), 2)
+    
+    #Veriables for the Min values + nominal
+    dev_check_min = non_rounded_mm - min_tolerance_mm
+    dev_rounded_check_min = round(rounded_mm- rounded_min_tolerance_mm ,2)
+    
+    #Veriables for the Max values + nominal
+    dev_check_max = max_tolerance_mm + non_rounded_mm
+    dev_rounded_check_max = round(rounded_max_tolerance_mm + rounded_mm,2)
+    
+    def deviation(rounded_number,non_rounded_number):
+        print(rounded_number)
+        print(non_rounded_number)
+        if rounded_number > non_rounded_number:
+            return True
+        if rounded_number < non_rounded_number:
+            return False
+        else:
+            return "same"
+            
+    max_check = deviation(dev_rounded_check_max,dev_check_max)
+    min_check = deviation(dev_rounded_check_min,dev_check_min)
+    print("before max: "+str(rounded_max_tolerance_mm))
+    print("before min: "+str(rounded_min_tolerance_mm))
+    if max_check == True:
+        rounded_max_tolerance_mm = round(rounded_max_tolerance_mm -0.01,2)
+    if min_check == False:
+        rounded_min_tolerance_mm = round(rounded_min_tolerance_mm +0.01,2)
+    
+    print("max_check: "+str(rounded_max_tolerance_mm))
+    print("min_check: "+str(rounded_min_tolerance_mm))
 
     # Display the results
-    print(f"{inches_input} inches is approximately:")
-    print(f"Rounded: {rounded_mm} millimeters")
-    print(f"Non-rounded: {non_rounded_mm} millimeters")
+  
 
 if __name__ == "__main__":
     main()
