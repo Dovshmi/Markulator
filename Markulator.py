@@ -1,5 +1,4 @@
 
-import decimal
 
 
 def inches_to_mm(inches_value):
@@ -10,7 +9,7 @@ def inches_to_mm(inches_value):
 def main():
     # Get user input for inches value
     inches_input = float(input("Enter inches value: "))
-
+    
     # Get user input for tolerance range
     min_tolerance = float(input("Enter minimum tolerance (inches): "))
     max_tolerance = float(input("Enter maximum tolerance (inches): "))
@@ -18,19 +17,22 @@ def main():
     # Calculate millimeters with tolerance
     rounded_mm = round(inches_to_mm(inches_input), 2)
     non_rounded_mm = inches_to_mm(inches_input)
+    # Calculate Min
     min_tolerance_mm = inches_to_mm(min_tolerance)
     rounded_min_tolerance_mm = round(inches_to_mm(min_tolerance), 2)
+    # Calculate Max
     max_tolerance_mm = inches_to_mm(max_tolerance)
     rounded_max_tolerance_mm = round(inches_to_mm(max_tolerance), 2)
     
-    #Veriables for the Min values + nominal
+    # Veriables for the Min values + nominal
     dev_check_min = non_rounded_mm - min_tolerance_mm
     dev_rounded_check_min = round(rounded_mm- rounded_min_tolerance_mm ,2)
     
-    #Veriables for the Max values + nominal
+    # Veriables for the Max values + nominal
     dev_check_max = max_tolerance_mm + non_rounded_mm
     dev_rounded_check_max = round(rounded_max_tolerance_mm + rounded_mm,2)
     
+    #deviation function to check the deviation from inch  to melimeter
     def deviation(rounded_number,non_rounded_number):
         print(rounded_number)
         print(non_rounded_number)
@@ -49,11 +51,11 @@ def main():
         rounded_max_tolerance_mm = round(rounded_max_tolerance_mm -0.01,2)
     if min_check == False:
         rounded_min_tolerance_mm = round(rounded_min_tolerance_mm +0.01,2)
-    
-    print("max_check: "+str(rounded_max_tolerance_mm))
-    print("min_check: "+str(rounded_min_tolerance_mm))
-
-    # Display the results
+        
+    #print output
+    print("\nAnswer in milameter: "+str(rounded_mm))
+    print("Maximum: "+str(rounded_max_tolerance_mm))
+    print("Minimum: "+str(rounded_min_tolerance_mm))
   
 
 if __name__ == "__main__":
