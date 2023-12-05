@@ -6,6 +6,17 @@ def inches_to_mm(inches_value):
     mm_value = inches_value * 25.4
     return mm_value
 
+    #deviation function to check the deviation from inch  to melimeter
+def deviation(rounded_number,non_rounded_number):
+    print(rounded_number)
+    print(non_rounded_number)
+    if rounded_number > non_rounded_number:
+        return True
+    if rounded_number < non_rounded_number:
+        return False
+    else:
+        return "same"
+            
 def main():
     # Get user input for inches value
     inches_input = float(input("Enter inches value: "))
@@ -32,17 +43,7 @@ def main():
     dev_check_max = max_tolerance_mm + non_rounded_mm
     dev_rounded_check_max = round(rounded_max_tolerance_mm + rounded_mm,2)
     
-    #deviation function to check the deviation from inch  to melimeter
-    def deviation(rounded_number,non_rounded_number):
-        print(rounded_number)
-        print(non_rounded_number)
-        if rounded_number > non_rounded_number:
-            return True
-        if rounded_number < non_rounded_number:
-            return False
-        else:
-            return "same"
-            
+
     max_check = deviation(dev_rounded_check_max,dev_check_max)
     min_check = deviation(dev_rounded_check_min,dev_check_min)
     print("before max: "+str(rounded_max_tolerance_mm))
