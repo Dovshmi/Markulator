@@ -61,9 +61,9 @@ def calculator():
             rounded_min_tolerance_mm = round(rounded_min_tolerance_mm - 0.01, 2)
 
     # Update output labels
-    nominal_mm_label.configure(text="Nominal in Milameter: " + str(rounded_mm))
-    max_tolerance_label.configure(text="Maximum Tolerence: " + str(rounded_max_tolerance_mm))
-    min_tolerance_label.configure(text="Minimum Tolerence: " + str(rounded_min_tolerance_mm))
+    nominal_mm_label.configure(text="Nominal in Milameter\n" + str(rounded_mm))
+    max_tolerance_label.configure(text="Maximum Tolerence\n" + str(rounded_max_tolerance_mm))
+    min_tolerance_label.configure(text="Minimum Tolerence\n" + str(rounded_min_tolerance_mm))
 
 
 def switch_to_frame1():
@@ -79,7 +79,7 @@ def switch_to_frame2():
 # Create the main window
 root = ctk.CTk()
 root.title("Inches to Millimeters Converter with Tolerance")
-root.geometry("400x600")
+root.geometry("400x350")
 
 # Create the switch button frame
 frame_switch = ctk.CTkFrame(root)
@@ -93,42 +93,42 @@ switch_button2.pack(side="left", padx=20)
 
 # Create the first frame for user input
 frame_1 = ctk.CTkFrame(root)
-frame_1.pack(fill="both", expand=True)
+frame_1.pack(side="left",fill="both", expand=True)
 
 inches_label = ctk.CTkLabel(frame_1, text="Inches Value:")
-inches_label.pack(side="top", pady=10)
+inches_label.pack(side="top",ipadx=40,ipady=20)
 
 inches_entry = ctk.CTkEntry(frame_1)
-inches_entry.pack(side="top", pady=10)
+inches_entry.place(relx=0.1,rely=0.36,relheight=0.15,relwidth=0.4)
 
-max_tolerance_label = ctk.CTkLabel(frame_1, text="Maximum Tolerance (inches):")
-max_tolerance_label.pack(side="top", pady=10)
+#max_tolerance_label = ctk.CTkLabel(frame_1, text="Maximum Tolerance (inches):")
+#max_tolerance_label.pack(side="top", pady=10)
 
 max_tolerance_entry = ctk.CTkEntry(frame_1)
-max_tolerance_entry.pack(side="top", pady=10)
+max_tolerance_entry.place(relx=0.35,rely=0.25,relheight=0.08,relwidth=0.15)
 
-min_tolerance_label = ctk.CTkLabel(frame_1, text="Minimum Tolerance (inches):")
-min_tolerance_label.pack(side="top", pady=10)
+#min_tolerance_label = ctk.CTkLabel(frame_1, text="Minimum Tolerance (inches):")
+#min_tolerance_label.pack(side="top", pady=10)
 
 min_tolerance_entry = ctk.CTkEntry(frame_1)
-min_tolerance_entry.pack(side="top", pady=10)
+min_tolerance_entry.place(relx=0.35,rely=0.54,relheight=0.08,relwidth=0.15)
 
 
 
 calculate_button = ctk.CTkButton(frame_1, text="Calculate", command=calculator)
-calculate_button.pack(side="top", pady=10)
+calculate_button.pack(side="bottom", pady=10)
 
 # Create a frame for the output
 frame_output = ctk.CTkFrame(frame_1)
-frame_output.pack(fill="both", padx=20, pady=20)
-
-nominal_mm_label = ctk.CTkLabel(frame_output, text="Nominal in Milameter: ")
-nominal_mm_label.pack(side="top", pady=10)
-
-max_tolerance_label = ctk.CTkLabel(frame_output, text="Maximum Tolerence: ")
+#frame_output.pack(side="right", padx=20, pady=5)
+frame_output.place(relx=0.57,rely=0.19,relheight=0.5,relwidth=0.4)
+max_tolerance_label = ctk.CTkLabel(frame_output, text="Maximum Tolerence")
 max_tolerance_label.pack(side="top", pady=10)
 
-min_tolerance_label = ctk.CTkLabel(frame_output, text="Minimum Tolerence: ")
+nominal_mm_label = ctk.CTkLabel(frame_output, text="Nominal Milameter")
+nominal_mm_label.pack(side="top", pady=10)
+
+min_tolerance_label = ctk.CTkLabel(frame_output, text="Minimum Tolerence:")
 min_tolerance_label.pack(side="top", pady=10)
 
 # Create the second frame (you can add your code here)
