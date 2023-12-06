@@ -78,7 +78,7 @@ def switch_to_frame2():
 
 # Create the main window
 root = ctk.CTk()
-root.title("Inches to Millimeters Converter with Tolerance")
+root.title("Markulator")
 root.geometry("400x350")
 
 # Create the switch button frame
