@@ -1,6 +1,5 @@
 
-
-
+import math
 def inches_to_mm(inches_value):
     # 1 inch is approximately equal to 25.4 millimeters
     mm_value = inches_value * 25.4
@@ -8,8 +7,6 @@ def inches_to_mm(inches_value):
 
     #deviation function to check the deviation from inch  to melimeter
 def deviation(rounded_number,non_rounded_number):
-    print(rounded_number)
-    print(non_rounded_number)
     if rounded_number > non_rounded_number:
         return True
     if rounded_number < non_rounded_number:
@@ -46,17 +43,23 @@ def main():
 
     max_check = deviation(dev_rounded_check_max,dev_check_max)
     min_check = deviation(dev_rounded_check_min,dev_check_min)
-    print("before max: "+str(rounded_max_tolerance_mm))
-    print("before min: "+str(rounded_min_tolerance_mm))
     if max_check == True:
-        rounded_max_tolerance_mm = round(rounded_max_tolerance_mm -0.01,2)
+        if max_tolerance_mm==0:
+            rounded_mm= (math.floor(non_rounded_mm*10**2))/100
+        else:
+            rounded_max_tolerance_mm = round(rounded_max_tolerance_mm -0.01,2)
     if min_check == False:
-        rounded_min_tolerance_mm = round(rounded_min_tolerance_mm +0.01,2)
+        if min_tolerance_mm==0:
+            rounded_mm= (math.ceil(non_rounded_mm*10**2))/100
+            rounded_min_tolerance_mm=rounded_min_tolerance_mm
+            
+        else:
+            rounded_min_tolerance_mm = round(rounded_min_tolerance_mm -0.01,2)
         
     #print output
-    print("\nAnswer in milameter: "+str(rounded_mm))
-    print("Maximum: "+str(rounded_max_tolerance_mm))
-    print("Minimum: "+str(rounded_min_tolerance_mm))
+    print("\nNominal in Milameter: "+str(rounded_mm))
+    print("Maximum Tolerence: "+str(rounded_max_tolerance_mm))
+    print("Minimum Tolerence: "+str(rounded_min_tolerance_mm))
   
 
 if __name__ == "__main__":
