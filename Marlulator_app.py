@@ -61,11 +61,15 @@ def calculator():
             rounded_min_tolerance_mm = round(rounded_min_tolerance_mm - 0.01, 2)
 
     # Update output labels
-    nominal_mm_label.configure(text="Nominal Milameter\n" + str(rounded_mm))
-    max_tolerance_label.configure(text="Maximum Tolerence\n" + str(rounded_max_tolerance_mm))
-    min_tolerance_label.configure(text="Minimum Tolerence\n" + str(rounded_min_tolerance_mm))
-
-
+    #nominal_mm_label.configure(placeholder_text=str(rounded_mm))
+    #max_tolerance_label.configure(placeholder_text=str(rounded_max_tolerance_mm))
+    #min_tolerance_label.configure(placeholder_text=str(rounded_min_tolerance_mm))
+    nominal_mm_label.delete(0, 10)
+    max_tolerance_label.delete(0, 10)
+    min_tolerance_label.delete(0, 10)
+    nominal_mm_label.insert(0,str(rounded_mm))
+    max_tolerance_label.insert(0,str(rounded_max_tolerance_mm))
+    min_tolerance_label.insert(0,str(rounded_min_tolerance_mm))
 def switch_to_frame1():
     frame_2.pack_forget()
     frame_1.pack(fill="both", expand=True)
@@ -98,38 +102,30 @@ frame_1.pack(side="left",fill="both", expand=True)
 inches_label = ctk.CTkLabel(frame_1, text="Tolerence Calculator",font=("suns_serif",25))
 inches_label.pack(side="top",ipadx=40,ipady=20)
 
-inches_entry = ctk.CTkEntry(frame_1,placeholder_text="Nominal",font=("suns_serif",20),)
-inches_entry.place(relx=0.08,rely=0.4,relheight=0.15,relwidth=0.4)
+inches_entry = ctk.CTkEntry(frame_1,placeholder_text="Nominal",font=("suns_serif",20))
+inches_entry.place(relx=0.1,rely=0.4,relheight=0.15,relwidth=0.3)
 
-#max_tolerance_label = ctk.CTkLabel(frame_1, text="Maximum Tolerance (inches):")
-#max_tolerance_label.pack(side="top", pady=10)
 
 max_tolerance_entry = ctk.CTkEntry(frame_1,placeholder_text="Max",font=("suns_serif",15))
-max_tolerance_entry.place(relx=0.33,rely=0.25,relheight=0.09,relwidth=0.15)
-
-#min_tolerance_label = ctk.CTkLabel(frame_1, text="Minimum Tolerance (inches):")
-#min_tolerance_label.pack(side="top", pady=10)
+max_tolerance_entry.place(relx=0.28,rely=0.24,relheight=0.1,relwidth=0.12)
+print(max_tolerance_entry.cget("corner_radius"))
 
 min_tolerance_entry = ctk.CTkEntry(frame_1,placeholder_text="Min",font=("suns_serif",15))
-min_tolerance_entry.place(relx=0.33,rely=0.618,relheight=0.09,relwidth=0.15)
+min_tolerance_entry.place(relx=0.28,rely=0.618,relheight=0.1,relwidth=0.12)
 
 
 
 calculate_button = ctk.CTkButton(frame_1, text="Calculate", command=calculator, width=200,height=48,font=("suns_serif",20))
 calculate_button.pack(side="bottom", pady=10)
 
-# Create a frame for the output
-frame_output = ctk.CTkFrame(frame_1)
-#frame_output.pack(side="right", padx=20, pady=5)
-frame_output.place(relx=0.55,rely=0.2,relheight=0.54,relwidth=0.4)
-max_tolerance_label = ctk.CTkLabel(frame_output, text="Maximum Tolerence\n",font=("suns_serif",15))
-max_tolerance_label.pack(side="top", pady=10)
+# Create a entrys for output for the output
+max_tolerance_label = ctk.CTkEntry(frame_1, placeholder_text="Maximum",font=("suns_serif",15))
+max_tolerance_label.place(relx=0.68,rely=0.24,relheight=0.1,relwidth=0.12)
+nominal_mm_label = ctk.CTkEntry(frame_1, placeholder_text="Nominal",font=("suns_serif",20))
+nominal_mm_label.place(relx=0.5,rely=0.4,relheight=0.15,relwidth=0.3)
 
-nominal_mm_label = ctk.CTkLabel(frame_output, text="Nominal Milameter\n",font=("suns_serif",15))
-nominal_mm_label.pack(side="top", pady=10)
-
-min_tolerance_label = ctk.CTkLabel(frame_output, text="Minimum Tolerence\n",font=("suns_serif",15))
-min_tolerance_label.pack(side="top", pady=10)
+min_tolerance_label = ctk.CTkEntry(frame_1, placeholder_text="Minimum",font=("suns_serif",15))
+min_tolerance_label.place(relx=0.68,rely=0.618,relheight=0.1,relwidth=0.12)
 
 # Create the second frame (you can add your code here)
 frame_2 = ctk.CTkFrame(root)
