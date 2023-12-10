@@ -61,8 +61,12 @@ def calculator():
             rounded_min_tolerance_mm = rounded_min_tolerance_mm
         else:
             rounded_min_tolerance_mm = round(rounded_min_tolerance_mm - 0.01, 2)
-    memory_list.append([inches_input,max_tolerance,min_tolerance ,rounded_mm ,rounded_max_tolerance_mm,rounded_min_tolerance_mm ])
-    print(memory_list)
+    check_list=[inches_input,max_tolerance,min_tolerance,rounded_mm,rounded_max_tolerance_mm,rounded_min_tolerance_mm]
+    if check_list in memory_list:
+        print("same")
+    else:
+        memory_list.append([inches_input,max_tolerance,min_tolerance ,rounded_mm ,rounded_max_tolerance_mm,rounded_min_tolerance_mm ])
+        print(memory_list)
     global back_count
     back_count=0
     # Update output labels
@@ -123,7 +127,15 @@ def forward():
         nominal_mm_label.insert(0,str(memory_list[pointer][3]))
         max_tolerance_label.insert(0,str(memory_list[pointer][4]))
         min_tolerance_label.insert(0,str(memory_list[pointer][5]))
-
+def clear():
+    inches_entry.delete(0, 10)
+    min_tolerance_entry.delete(0, 10)
+    max_tolerance_entry.delete(0, 10)
+    nominal_mm_label.delete(0, 10)
+    max_tolerance_label.delete(0, 10)
+    min_tolerance_label.delete(0, 10)
+    global back_count
+    back_count=0
 # Create the main window
 root = ctk.CTk()
 root.title("Markulator")
@@ -158,44 +170,43 @@ mm_label.place(relx=0.6,rely=0.2,relheight=0.18,relwidth=0.15)
 
 #importing images for the buttons 
 image_equal_CTk=ctk.CTkImage(light_image=Image.open('pictures/exchange.png'),dark_image=Image.open('pictures/exchange_white.png'),size=(56,56))
-equal_button=ctk.CTkButton(frame_1,image=image_equal_CTk,state="disabled",text="",fg_color="transparent")
+equal_button=ctk.CTkButton(frame_1,image=image_equal_CTk,text="",fg_color="transparent",hover=False,command=calculator)
 equal_button.place(relx=0.415,rely=0.385,relheight=0.18,relwidth=0.15)
 
-image_back_CTk=ctk.CTkImage(light_image=Image.open('pictures/back-arrow.png'),dark_image=Image.open('pictures/back-arrow.png'),size=(40,40))
+image_back_CTk=ctk.CTkImage(light_image=Image.open('pictures/back-arrow.png'),dark_image=Image.open('pictures/back-arrow_white.png'),size=(40,40))
 back_button=ctk.CTkButton(frame_1,image=image_back_CTk,text="",command=goback)
-back_button.place(relx=0.1,rely=0.78,relheight=0.2,relwidth=0.2)
+back_button.place(relx=0.1,rely=0.78,relheight=0.2,relwidth=0.18)
 
-image_forward_CTk=ctk.CTkImage(light_image=Image.open('pictures/forward-arrow.png'),dark_image=Image.open('pictures/forward-arrow.png'),size=(40,40))
+image_forward_CTk=ctk.CTkImage(light_image=Image.open('pictures/forward-arrow.png'),dark_image=Image.open('pictures/forward-arrow_white.png'),size=(40,40))
 forward_button=ctk.CTkButton(frame_1,image=image_forward_CTk,text="",command=forward)
-forward_button.place(relx=0.7,rely=0.78,relheight=0.2,relwidth=0.2)
+forward_button.place(relx=0.7,rely=0.78,relheight=0.2,relwidth=0.18)
 
-image_clear_CTk=ctk.CTkImage(light_image=Image.open('pictures/edit_clear.png'),dark_image=Image.open('pictures/edit_clear.png'),size=(40,40))
-clear_button=ctk.CTkButton(frame_1,image=image_clear_CTk,text="")
-
+image_clear_CTk=ctk.CTkImage(light_image=Image.open('pictures/edit_clear.png'),dark_image=Image.open('pictures/edit_clear_white.png'),size=(40,40))
+clear_button=ctk.CTkButton(frame_1,image=image_clear_CTk,text="",command=clear)
+clear_button.place(relx=0.5,rely=0.78,relheight=0.2,relwidth=0.18)
 
 inches_entry = ctk.CTkEntry(frame_1,placeholder_text="Nominal",font=("suns_serif",20))
 inches_entry.place(relx=0.1,rely=0.4,relheight=0.15,relwidth=0.3)
 
 
 max_tolerance_entry = ctk.CTkEntry(frame_1,placeholder_text="Max",font=("suns_serif",15))
-max_tolerance_entry.place(relx=0.28,rely=0.24,relheight=0.1,relwidth=0.12)
+max_tolerance_entry.place(relx=0.28,rely=0.24,relheight=0.1,relwidth=0.18)
 print(max_tolerance_entry.cget("corner_radius"))
 
 min_tolerance_entry = ctk.CTkEntry(frame_1,placeholder_text="Min",font=("suns_serif",15))
-min_tolerance_entry.place(relx=0.28,rely=0.618,relheight=0.1,relwidth=0.12)
+min_tolerance_entry.place(relx=0.28,rely=0.618,relheight=0.1,relwidth=0.18)
 
-
-calculate_button = ctk.CTkButton(frame_1, text="Calculate", command=calculator, width=150,height=48,font=("suns_serif",20))
-calculate_button.pack(side="bottom", pady=10)
+calculate_button=ctk.CTkButton(frame_1,text="CAL",font=("impact",24),text_color=('black','white'),command=calculator)
+calculate_button.place(relx=0.3,rely=0.78,relheight=0.2,relwidth=0.18)
 
 # Create a entrys for output for the output
 max_tolerance_label = ctk.CTkEntry(frame_1, placeholder_text="Max",font=("suns_serif",15))
-max_tolerance_label.place(relx=0.76,rely=0.24,relheight=0.1,relwidth=0.12)
+max_tolerance_label.place(relx=0.76,rely=0.24,relheight=0.1,relwidth=0.18)
 nominal_mm_label = ctk.CTkEntry(frame_1, placeholder_text="Nominal",font=("suns_serif",20))
 nominal_mm_label.place(relx=0.58,rely=0.4,relheight=0.15,relwidth=0.3)
 
 min_tolerance_label = ctk.CTkEntry(frame_1, placeholder_text="Min",font=("suns_serif",15))
-min_tolerance_label.place(relx=0.76,rely=0.618,relheight=0.1,relwidth=0.12)
+min_tolerance_label.place(relx=0.76,rely=0.618,relheight=0.1,relwidth=0.18)
 
 # Create the second frame (you can add your code here)
 frame_2 = ctk.CTkFrame(root)
