@@ -1,7 +1,9 @@
 import math
 import customtkinter as ctk
 from PIL import Image,ImageTk
-
+memory_list=[]
+global back_count
+back_count=0
 def inches_to_mm(inches_value):
     mm_value = inches_value * 25.4
     return mm_value
@@ -59,7 +61,10 @@ def calculator():
             rounded_min_tolerance_mm = rounded_min_tolerance_mm
         else:
             rounded_min_tolerance_mm = round(rounded_min_tolerance_mm - 0.01, 2)
-
+    memory_list.append([inches_input,max_tolerance,min_tolerance ,rounded_mm ,rounded_max_tolerance_mm,rounded_min_tolerance_mm ])
+    print(memory_list)
+    global back_count
+    back_count=0
     # Update output labels
     #nominal_mm_label.configure(placeholder_text=str(rounded_mm))
     #max_tolerance_label.configure(placeholder_text=str(rounded_max_tolerance_mm))
@@ -78,13 +83,55 @@ def switch_to_frame1():
 def switch_to_frame2():
     frame_1.pack_forget()
     frame_2.pack(fill="both", expand=True)
-
+def goback():
+    global back_count
+    len_list=len(memory_list)
+    if back_count < len_list:
+        back_count=back_count+1
+        pointer=len_list-back_count
+        print(memory_list[pointer])
+    #print all the data from the ram
+        inches_entry.delete(0, 10)
+        min_tolerance_entry.delete(0, 10)
+        max_tolerance_entry.delete(0, 10)
+        nominal_mm_label.delete(0, 10)
+        max_tolerance_label.delete(0, 10)
+        min_tolerance_label.delete(0, 10)
+        inches_entry.insert(0,str(memory_list[pointer][0]))
+        max_tolerance_entry.insert(0,str(memory_list[pointer][1]))
+        min_tolerance_entry.insert(0,str(memory_list[pointer][2]))
+        nominal_mm_label.insert(0,str(memory_list[pointer][3]))
+        max_tolerance_label.insert(0,str(memory_list[pointer][4]))
+        min_tolerance_label.insert(0,str(memory_list[pointer][5]))
+def forward():
+    global back_count
+    if back_count!=0:
+        len_list=len(memory_list)
+        back_count=back_count-1
+        pointer=len_list-back_count
+        print(memory_list[pointer])
+        #print all the data from the ram
+        inches_entry.delete(0, 10)
+        min_tolerance_entry.delete(0, 10)
+        max_tolerance_entry.delete(0, 10)
+        nominal_mm_label.delete(0, 10)
+        max_tolerance_label.delete(0, 10)
+        min_tolerance_label.delete(0, 10)
+        inches_entry.insert(0,str(memory_list[pointer][0]))
+        max_tolerance_entry.insert(0,str(memory_list[pointer][1]))
+        min_tolerance_entry.insert(0,str(memory_list[pointer][2]))
+        nominal_mm_label.insert(0,str(memory_list[pointer][3]))
+        max_tolerance_label.insert(0,str(memory_list[pointer][4]))
+        min_tolerance_label.insert(0,str(memory_list[pointer][5]))
 
 # Create the main window
 root = ctk.CTk()
 root.title("Markulator")
 root.geometry("400x350")
 ctk.set_appearance_mode("dark")
+
+# create a memory list
+
 # Create the switch button frame
 frame_switch = ctk.CTkFrame(root)
 frame_switch.pack(fill="x", padx=20, pady=10)
@@ -100,8 +147,14 @@ frame_1 = ctk.CTkFrame(root)
 frame_1.pack(side="left",fill="both", expand=True)
 
 # Big ass title
-inches_label = ctk.CTkLabel(frame_1, text="Tolerence Calculator",font=("suns_serif",25))
-inches_label.pack(side="top",ipadx=40,ipady=20)
+main_label = ctk.CTkLabel(frame_1, text="Tolerence Calculator",font=("suns_serif",25))
+main_label.pack(side="top",ipadx=40,ipady=20)
+
+Inch_label=ctk.CTkLabel(frame_1,text="Inch",font=("Impact",24))
+Inch_label.place(relx=0.1,rely=0.2,relheight=0.18,relwidth=0.15)
+
+mm_label=ctk.CTkLabel(frame_1,text="Mm",font=("Impact",24))
+mm_label.place(relx=0.6,rely=0.2,relheight=0.18,relwidth=0.15)
 
 #importing images for the buttons 
 image_equal_CTk=ctk.CTkImage(light_image=Image.open('pictures/exchange.png'),dark_image=Image.open('pictures/exchange_white.png'),size=(56,56))
@@ -109,16 +162,15 @@ equal_button=ctk.CTkButton(frame_1,image=image_equal_CTk,state="disabled",text="
 equal_button.place(relx=0.415,rely=0.385,relheight=0.18,relwidth=0.15)
 
 image_back_CTk=ctk.CTkImage(light_image=Image.open('pictures/back-arrow.png'),dark_image=Image.open('pictures/back-arrow.png'),size=(40,40))
-back_button=ctk.CTkButton(frame_1,image=image_back_CTk,text="")
+back_button=ctk.CTkButton(frame_1,image=image_back_CTk,text="",command=goback)
 back_button.place(relx=0.1,rely=0.78,relheight=0.2,relwidth=0.2)
 
 image_forward_CTk=ctk.CTkImage(light_image=Image.open('pictures/forward-arrow.png'),dark_image=Image.open('pictures/forward-arrow.png'),size=(40,40))
-forward_button=ctk.CTkButton(frame_1,image=image_forward_CTk,text="")
+forward_button=ctk.CTkButton(frame_1,image=image_forward_CTk,text="",command=forward)
 forward_button.place(relx=0.7,rely=0.78,relheight=0.2,relwidth=0.2)
 
 image_clear_CTk=ctk.CTkImage(light_image=Image.open('pictures/edit_clear.png'),dark_image=Image.open('pictures/edit_clear.png'),size=(40,40))
 clear_button=ctk.CTkButton(frame_1,image=image_clear_CTk,text="")
-#clear_button.pack(pady=10,padx=10)
 
 
 inches_entry = ctk.CTkEntry(frame_1,placeholder_text="Nominal",font=("suns_serif",20))
@@ -133,17 +185,16 @@ min_tolerance_entry = ctk.CTkEntry(frame_1,placeholder_text="Min",font=("suns_se
 min_tolerance_entry.place(relx=0.28,rely=0.618,relheight=0.1,relwidth=0.12)
 
 
-
 calculate_button = ctk.CTkButton(frame_1, text="Calculate", command=calculator, width=150,height=48,font=("suns_serif",20))
 calculate_button.pack(side="bottom", pady=10)
 
 # Create a entrys for output for the output
-max_tolerance_label = ctk.CTkEntry(frame_1, placeholder_text="Maximum",font=("suns_serif",15))
+max_tolerance_label = ctk.CTkEntry(frame_1, placeholder_text="Max",font=("suns_serif",15))
 max_tolerance_label.place(relx=0.76,rely=0.24,relheight=0.1,relwidth=0.12)
 nominal_mm_label = ctk.CTkEntry(frame_1, placeholder_text="Nominal",font=("suns_serif",20))
 nominal_mm_label.place(relx=0.58,rely=0.4,relheight=0.15,relwidth=0.3)
 
-min_tolerance_label = ctk.CTkEntry(frame_1, placeholder_text="Minimum",font=("suns_serif",15))
+min_tolerance_label = ctk.CTkEntry(frame_1, placeholder_text="Min",font=("suns_serif",15))
 min_tolerance_label.place(relx=0.76,rely=0.618,relheight=0.1,relwidth=0.12)
 
 # Create the second frame (you can add your code here)
