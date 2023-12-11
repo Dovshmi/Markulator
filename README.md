@@ -19,7 +19,8 @@ clear - clears all the input and output ares
 back - goes back from the last calculation to the first.
 forward - goes from the current calculation to the last
 Cal - calculate
----
+
+
 # Update Frame_Two_V1
 added user input in inches for the maximum and minimum input
 added all the buttons for the functions (cal,back,forward,clear)
@@ -29,4 +30,9 @@ added middle button for calculations.
 added functionality for the second calculator (MAX/MIN)
 added a new check to let the user use only one calculator at one time
 added the clear functionality 
+
+# Update Frame_Two_V3
+added back and forward functions for the buttons
+frame_Two is fully working now
+added button for light/dark mode
 
