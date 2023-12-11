@@ -75,11 +75,51 @@ def calculator():
     nominal_mm_label.insert(0,str(rounded_mm))
     max_tolerance_label.insert(0,str(rounded_max_tolerance_mm))
     min_tolerance_label.insert(0,str(rounded_min_tolerance_mm))
+
+def calculator2():
+    if str(max2_tolerance_entry.get())=="":
+        selected_max=0
+    else:
+        selected_max=float(max2_tolerance_entry.get())
+    
+    if str(min2_tolerance_entry.get())=="":
+        selected_min=0
+    else:
+        selected_min=float(min2_tolerance_entry.get())
+    
+    rounded_max = round(inches_to_mm(selected_max), 2)
+    non_rounded_max = inches_to_mm(selected_max)
+    
+    rounded_min = round(inches_to_mm(selected_min), 2)
+    non_rounded_min = inches_to_mm(selected_min)
+    
+    rounded_max_check=deviation(rounded_max,non_rounded_max)
+    rounded_min_check=deviation(rounded_min,non_rounded_min)
+    
+    if rounded_max_check == True:
+        rounded_max=round(rounded_max - 0.01, 2)
+    if rounded_min_check == False:
+        rounded_min=round(rounded_min + 0.01,2)
+    
+    #print("Max: "+str(rounded_max))
+    #print("Min: "+str(rounded_min))
+    max2_tolerance_entry.delete(0, 10)
+    min2_tolerance_entry.delete(0, 10)
+    max2_tolerance_entry.insert(0,str(selected_max))
+    min2_tolerance_entry.insert(0,str(selected_min))
+
+    
+    max3_tolerance_entry.delete(0, 10)
+    min3_tolerance_entry.delete(0, 10)
+    
+    max3_tolerance_entry.insert(0,str(rounded_max))
+    min3_tolerance_entry.insert(0,str(rounded_min))
+
+
+
 def switch_to_frame1():
     frame_2.pack_forget()
     frame_1.pack(fill="both", expand=True)
-
-
 def switch_to_frame2():
     frame_1.pack_forget()
     frame_2.pack(fill="both", expand=True)
@@ -133,6 +173,11 @@ def clear():
     min_tolerance_label.delete(0, 10)
     global back_count
     back_count=0
+def clear2():
+    max2_tolerance_entry.delete(0,10)
+    min2_tolerance_entry.delete(0,10)
+    max3_tolerance_entry.delete(0,10)
+    min3_tolerance_entry.delete(0,10)
 # Create the main window
 root = ctk.CTk()
 root.title("Markulator")
@@ -221,7 +266,7 @@ frame_2 = ctk.CTkFrame(root)
 main_label2 = ctk.CTkLabel(frame_2, text="Max/Min Calculator",font=("suns_serif",24))
 main_label2.pack(side="top",ipadx=40,ipady=20)
 
-equal_button2=ctk.CTkButton(frame_2,image=image_equal_CTk,text="",fg_color="transparent",hover=False,command=calculator)
+equal_button2=ctk.CTkButton(frame_2,image=image_equal_CTk,text="",fg_color="transparent",hover=False,command=calculator2)
 equal_button2.place(relx=0.41,rely=0.385,relheight=0.18,relwidth=0.15)
 
 back_button2=ctk.CTkButton(frame_2,image=image_back_CTk,text="",command=goback)
@@ -230,10 +275,10 @@ back_button2.place(relx=0.1,rely=0.78,relheight=0.2,relwidth=0.18)
 forward_button2=ctk.CTkButton(frame_2,image=image_forward_CTk,text="",command=forward)
 forward_button2.place(relx=0.7,rely=0.78,relheight=0.2,relwidth=0.18)
 
-calculate_button2=ctk.CTkButton(frame_2,text="CAL",font=("impact",24),text_color=('black','white'),command=calculator)
+calculate_button2=ctk.CTkButton(frame_2,text="CAL",font=("impact",24),text_color=('black','white'),command=calculator2)
 calculate_button2.place(relx=0.3,rely=0.78,relheight=0.2,relwidth=0.18)
 
-clear_button2=ctk.CTkButton(frame_2,image=image_clear_CTk,text="",command=clear)
+clear_button2=ctk.CTkButton(frame_2,image=image_clear_CTk,text="",command=clear2)
 clear_button2.place(relx=0.5,rely=0.78,relheight=0.2,relwidth=0.18)
 
 max2_tolerance_entry = ctk.CTkEntry(frame_2, placeholder_text="Max",font=("suns_serif",20))
