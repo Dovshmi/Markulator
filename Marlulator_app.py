@@ -236,10 +236,10 @@ root.geometry("400x350")
 frame_switch = ctk.CTkFrame(root)
 frame_switch.pack(fill="x", padx=20, pady=10)
 
-switch_button1 = ctk.CTkButton(frame_switch, text="Tol +/-", command=switch_to_frame1,font=("suns_serif",15))
+switch_button1 = ctk.CTkButton(frame_switch, text="Tol +/-", command=switch_to_frame1,text_color=('black','white'),font=("suns_serif",15))
 switch_button1.pack(side="left", padx=20)
 
-switch_button2 = ctk.CTkButton(frame_switch, text="Tol max/min", command=switch_to_frame2,font=("suns_serif",15))
+switch_button2 = ctk.CTkButton(frame_switch, text="Tol max/min", command=switch_to_frame2,text_color=('black','white'),font=("suns_serif",15))
 switch_button2.pack(side="left", padx=20)
 
 # Create the first frame for user input
