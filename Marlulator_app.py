@@ -247,7 +247,7 @@ frame_1 = ctk.CTkFrame(root)
 frame_1.pack(side="left",fill="both", expand=True)
 
 # Big ass title
-main_label = ctk.CTkLabel(frame_1, text="Tolerence Calculator",font=("suns_serif",24))
+main_label = ctk.CTkLabel(frame_1, text="Tolerance Calculator",font=("suns_serif",24))
 main_label.pack(side="top",ipadx=40,ipady=20)
 
 image_theme_CTk=ctk.CTkImage(light_image=Image.open('pictures/dark.png'),dark_image=Image.open('pictures/light.png'),size=(30,30))
