@@ -40,7 +40,7 @@ Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{
 
 [Files]
 Source: "D:\Code_Scripts\Markulator\{#MyAppExeName}"; DestDir: "{app}"; Flags: ignoreversion
-Source: "C:\Users\dovsh\OneDrive\Desktop\pictures\*"; DestDir: "{app}\pictures"; Flags: ignoreversion recursesubdirs createallsubdirs
+Source: "D:\Code_Scripts\Father_Calculator\Markulator\pictures\*"; DestDir: "{app}\pictures"; Flags: ignoreversion recursesubdirs createallsubdirs
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
 
 [Registry]
