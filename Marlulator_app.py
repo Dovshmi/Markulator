@@ -227,6 +227,13 @@ def theme_switch():
     else:
         ctk.set_appearance_mode("dark")
         theme="dark"
+        
+def call_cal(event):
+    calculator()
+
+def call_cal2(event):
+    calculator2()
+
 # Create the main window
 root = ctk.CTk()
 root.title("Markulator")
@@ -289,12 +296,15 @@ clear_button.place(relx=0.5,rely=0.78,relheight=0.2,relwidth=0.18)
 
 inches_entry = ctk.CTkEntry(frame_1,placeholder_text="Nominal",font=("suns_serif",20))
 inches_entry.place(relx=0.08,rely=0.4,relheight=0.15,relwidth=0.24)
+inches_entry.bind(sequence="<Return>",command=call_cal)
 
 max_tolerance_entry = ctk.CTkEntry(frame_1,placeholder_text="Max",font=("suns_serif",15))
 max_tolerance_entry.place(relx=0.26,rely=0.24,relheight=0.1,relwidth=0.18)
+max_tolerance_entry.bind(sequence="<Return>",command=call_cal)
 
 min_tolerance_entry = ctk.CTkEntry(frame_1,placeholder_text="Min",font=("suns_serif",15))
 min_tolerance_entry.place(relx=0.26,rely=0.618,relheight=0.1,relwidth=0.18)
+min_tolerance_entry.bind(sequence="<Return>",command=call_cal)
 
 calculate_button=ctk.CTkButton(frame_1,text="CAL",font=("impact",24),text_color=('black','white'),command=calculator)
 calculate_button.place(relx=0.3,rely=0.78,relheight=0.2,relwidth=0.18)
@@ -304,7 +314,6 @@ max_tolerance_label = ctk.CTkEntry(frame_1, placeholder_text="Max",font=("suns_s
 max_tolerance_label.place(relx=0.78,rely=0.24,relheight=0.1,relwidth=0.18)
 nominal_mm_label = ctk.CTkEntry(frame_1, placeholder_text="Nominal",font=("suns_serif",20))
 nominal_mm_label.place(relx=0.6,rely=0.4,relheight=0.15,relwidth=0.24)
-
 min_tolerance_label = ctk.CTkEntry(frame_1, placeholder_text="Min",font=("suns_serif",15))
 min_tolerance_label.place(relx=0.78,rely=0.618,relheight=0.1,relwidth=0.18)
 
@@ -334,9 +343,11 @@ clear_button2.place(relx=0.5,rely=0.78,relheight=0.2,relwidth=0.18)
 
 max2_tolerance_entry = ctk.CTkEntry(frame_2, placeholder_text="Max",font=("suns_serif",20))
 max2_tolerance_entry.place(relx=0.14,rely=0.3,relheight=0.15,relwidth=0.24)
+max2_tolerance_entry.bind(sequence="<Return>",command=call_cal2)
 
 min2_tolerance_entry = ctk.CTkEntry(frame_2, placeholder_text="Min",font=("suns_serif",20))
 min2_tolerance_entry.place(relx=0.14,rely=0.5,relheight=0.15,relwidth=0.24)
+min2_tolerance_entry.bind(sequence="<Return>",command=call_cal2)
 
 max3_tolerance_entry = ctk.CTkEntry(frame_2, placeholder_text="Max",font=("suns_serif",20))
 max3_tolerance_entry.place(relx=0.6,rely=0.3,relheight=0.15,relwidth=0.24)
