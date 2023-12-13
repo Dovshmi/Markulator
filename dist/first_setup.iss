@@ -39,7 +39,7 @@ Name: "russian"; MessagesFile: "compiler:Languages\Russian.isl"
 Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{cm:AdditionalIcons}"; Flags: unchecked
 
 [Files]
-Source: "D:\Code_Scripts\Markulator\{#MyAppExeName}"; DestDir: "{app}"; Flags: ignoreversion
+Source: "D:\Code_Scripts\Father_Calculator\Markulator\{#MyAppExeName}"; DestDir: "{app}"; Flags: ignoreversion
 Source: "D:\Code_Scripts\Father_Calculator\Markulator\pictures\*"; DestDir: "{app}\pictures"; Flags: ignoreversion recursesubdirs createallsubdirs
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
 
