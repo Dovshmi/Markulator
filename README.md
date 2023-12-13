@@ -49,7 +49,6 @@ This will create an executable file named `markulator.exe` in the `dist` folder.
 
 ![This is an image](Screenshots/before_enter_frame1.png) ![This is an image](Screenshots/after_enter_frame1_cal.png) 
 
-![This is an image](Screenshots/after_enter_frame2.png)
 
 ### Additional Notes:
 
