@@ -2,6 +2,8 @@
 
 **Markulator** is a Python application that helps you calculate the nominal and tolerance values for both inches and millimeters. It features a user-friendly interface and powerful functionality, making it ideal for engineers, machinists, and anyone who works with precise measurements.
 
+![This is an image](Screenshots/full_frame1.png)    ![This is an image](Screenshots/full_frame2.png)
+
 ### Features:
 
 * **Dual-mode calculation:** Choose between calculating tolerance values based on a nominal inch and tolerance range, or directly setting the desired maximum and minimum tolerances in millimeters.
@@ -45,12 +47,19 @@ This will create an executable file named `markulator.exe` in the `dist` folder.
 4. The nominal millimeter value, upper and lower tolerance limits in both millimeters and inches, will be displayed.
 5. Use the navigation buttons to review past calculations or clear the current entry.
 
+![This is an image](Screenshots/before_enter_frame1.png) ![This is an image](Screenshots/after_enter_frame1_cal.png) 
+
+![This is an image](Screenshots/after_enter_frame2.png)
+
 ### Additional Notes:
 
 * The application automatically detects the system theme and adjusts accordingly. 
 * You can switch between themes manually using the theme button.
 * The application uses darkdetect to automatically adjust the theme on startup based on your system's dark mode settings.
 * The `dist` folder also contains the Python source code and other project files, if you prefer to explore or modify the code yourself.
+  
+![This is an image](Screenshots/full_frame1_theme.png) ![This is an image](Screenshots/white_mode.png)
+
 
 **Feel free to contact the developer for any feedback or suggestions.**
 
