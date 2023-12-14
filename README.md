@@ -12,6 +12,15 @@
 * **Clear and concise output:** View the nominal millimeter value, as well as the upper and lower tolerance limits in both millimeters and inches.
 * **Intuitive interface:** Customtkinter widgets provide a visually appealing and easy-to-use experience.
 
+### Precision:
+The Markulator application is designed to maintain precision in calculations. All floating-point calculations are performed with a precision of two decimal places. This means that the results displayed, including nominal values and tolerance limits, will show two numbers after the decimal point. This level of precision ensures accurate and reliable calculations for your engineering and measurement needs.
+
+For example:
+- If the nominal value is calculated as 10.567, Markulator will display it as 10.57.
+- Tolerance limits, upper and lower, will also be presented with two decimal places for enhanced clarity and accuracy.
+
+This commitment to precision is intended to provide users with confidence in the accuracy of the calculated values.
+
 ### Getting Started
 
 **Option 1: Set Up with PyInstaller (recommended for advanced users)**
