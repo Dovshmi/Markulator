@@ -11,6 +11,7 @@ if darkdetect.isDark():
     theme="dark"
 else:
     theme="light"
+
 #create memory lists
 memory_list=[]
 memory_list2=[]
