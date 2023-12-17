@@ -55,5 +55,6 @@ This will create an executable file named `markulator.exe` in the `dist` folder.
 **Feel free to contact the developer for any feedback or suggestions.**
 
 ### Thank you for using Markulator! We hope it simplifies your tolerance calculations and makes your work more efficient.
-
+Link to download
+https://mega.nz/file/5oNEBQbK#tPcCsA0L6zhU9FBHl6eqQuFeekVl44ljmfM6bwtS_3I
 ### By Rony Shmidov

@@ -59,10 +59,11 @@ def calculator():
 
     max_check = deviation(dev_rounded_check_max, dev_check_max)
     min_check = deviation(dev_rounded_check_min, dev_check_min)
-
+# when max/or min the other round down
     if max_check == True:
         if max_tolerance_mm == 0:
             rounded_mm = (math.floor(non_rounded_mm * 10 ** 2)) / 100
+            rounded_min_tolerance_mm = round(rounded_min_tolerance_mm - 0.01, 2)
         else:
             rounded_max_tolerance_mm = round(rounded_max_tolerance_mm - 0.01, 2)
 
@@ -70,6 +71,7 @@ def calculator():
         if min_tolerance_mm == 0:
             rounded_mm = (math.ceil(non_rounded_mm * 10 ** 2)) / 100
             rounded_min_tolerance_mm = rounded_min_tolerance_mm
+            rounded_max_tolerance_mm = round(rounded_max_tolerance_mm - 0.01, 2)
         else:
             rounded_min_tolerance_mm = round(rounded_min_tolerance_mm - 0.01, 2)
     check_list=[inches_input,max_tolerance,min_tolerance,rounded_mm,rounded_max_tolerance_mm,rounded_min_tolerance_mm]
