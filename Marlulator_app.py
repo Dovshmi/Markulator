@@ -59,7 +59,8 @@ def calculator():
 
     max_check = deviation(dev_rounded_check_max, dev_check_max)
     min_check = deviation(dev_rounded_check_min, dev_check_min)
-# when max/or min the other round down
+    
+    # Check if A round Up/Down is needed
     if max_check == True:
         if max_tolerance_mm == 0:
             rounded_mm = (math.floor(non_rounded_mm * 10 ** 2)) / 100
