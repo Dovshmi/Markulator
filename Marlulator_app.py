@@ -2,26 +2,38 @@ import math
 import customtkinter as ctk
 from PIL import Image,ImageTk
 import darkdetect
-global theme
-global back_count 
-global back_count2
 
-#CHECK IF THE THEME IS DARK
+''' 
+App Version 1.2
+Markulator - Tolerance Calculator From Inch to Millimeters
+Created By Rony.Shmidov 
+Documentation -> https://github.com/Dovshmi/Markulator
+Download and Install -> 
+'''
+
+# Check what OS theme is used
+global theme
 if darkdetect.isDark():
     theme="dark"
 else:
     theme="light"
 
-#create memory lists
+# Create memory lists for Ram Usage 
 memory_list=[]
 memory_list2=[]
-#count steps
+
+# Count User Step & Set global for functional usage 
+global back_count 
+global back_count2
 back_count=0
 back_count2=0
+
+# Inches -> Millimeters calculation
 def inches_to_mm(inches_value):
     mm_value = inches_value * 25.4
     return mm_value
 
+# Deviation Check for Precise calculation
 def deviation(rounded_number, non_rounded_number):
     if rounded_number > non_rounded_number:
         return True
@@ -30,6 +42,7 @@ def deviation(rounded_number, non_rounded_number):
     else:
         return "same"
 
+# Calculation Function 
 def calculator():
     # Get user input for inches value
     inches_input = float(inches_entry.get())
@@ -242,6 +255,7 @@ def call_cal2(event):
 root = ctk.CTk()
 root.title("Markulator")
 root.geometry("400x350")
+root.iconbitmap("pictures/calc.ico")
 # create a memory list
 # Create the switch button frame
 frame_switch = ctk.CTkFrame(root)
