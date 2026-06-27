@@ -2,6 +2,14 @@
 
 גרסת React/Vite עברית וימין־לשמאל של Markulator.
 
+## סדר במצב סבולת ±
+
+הסדר בטופס ובתוצאה הוא:
+
+1. סבולת חיובית / Tol+
+2. מידה נומינלית / Nominal
+3. סבולת שלילית / Tol-
+
 ## הרצה מקומית
 
 ```bash
@@ -21,5 +29,3 @@ npm run build
 - Root Directory: `web`
 - Build Command: `npm run build`
 - Output Directory: `dist`
-
-גרסת הדסקטופ של Markulator נשארת בתיקיית השורש של הפרויקט, והגרסה הזו חיה בנפרד בתיקיית `web`.
