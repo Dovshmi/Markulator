@@ -1,10 +1,11 @@
 import { useMemo, useState } from 'react';
 import { calculateMaxMinTolerance, calculatePlusMinusTolerance } from './markulator.js';
+import logoSymbol from './assets/logo-symbol.jpg';
 
 const emptyTol = { positive: '', nominal: '', negative: '' };
 const emptyLimits = { max: '', min: '' };
-const n = (v) => (v === '' ? 0 : Number(v));
-const f = (v) => (v == null || Number.isNaN(v) ? '—' : v.toFixed(2));
+const toNum = (v) => (v === '' || v == null ? 0 : Number(v));
+const fmt = (v) => (v == null || Number.isNaN(v) ? '—' : v.toFixed(2));
 
 export default function App() {
   const [mode, setMode] = useState('plus-minus');
@@ -14,10 +15,10 @@ export default function App() {
   const result = useMemo(() => {
     if (mode === 'plus-minus') {
       if (!tol.positive && !tol.nominal && !tol.negative) return null;
-      return calculatePlusMinusTolerance(n(tol.nominal), n(tol.positive), n(tol.negative));
+      return calculatePlusMinusTolerance(toNum(tol.nominal), toNum(tol.positive), toNum(tol.negative));
     }
     if (!limits.max && !limits.min) return null;
-    return calculateMaxMinTolerance(n(limits.max), n(limits.min));
+    return calculateMaxMinTolerance(toNum(limits.max), toNum(limits.min));
   }, [mode, tol, limits]);
 
   const clear = () => {
@@ -29,13 +30,17 @@ export default function App() {
     <main className="app-shell">
       <section className="hero-card">
         <div className="brand-row">
-          <div className="logo-mark">MS</div>
+          <div className="logo-image-wrap" aria-label="Markulator symbol">
+            <img src={logoSymbol} alt="Markulator symbol" className="logo-image" />
+          </div>
           <div>
             <p className="eyebrow">המרת אינץ׳ למ״מ</p>
             <h1>Markulator</h1>
           </div>
         </div>
+
         <p className="hero-copy">מחשבון סבולות להמרת מידות מאינצ׳ים למילימטרים.</p>
+
         <div className="quick-guide">
           <article><span>01</span><strong>סבולת חיובית</strong><p>הערך העליון של הטולרנס.</p></article>
           <article><span>02</span><strong>מידה נומינלית</strong><p>המידה המרכזית של החלק.</p></article>
@@ -80,11 +85,20 @@ export default function App() {
 }
 
 function Field({ label, helper, suffix, value, placeholder, onChange }) {
-  return <label className="input-field"><span className="input-label">{label}</span><small>{helper}</small><div className="input-frame"><input type="number" inputMode="decimal" step="0.0001" value={value} placeholder={placeholder} onChange={(e) => onChange(e.target.value)} /><em>{suffix}</em></div></label>;
+  return (
+    <label className="input-field">
+      <span className="input-label">{label}</span>
+      <small>{helper}</small>
+      <div className="input-frame">
+        <input type="number" inputMode="decimal" step="0.0001" value={value} placeholder={placeholder} onChange={(e) => onChange(e.target.value)} />
+        <em>{suffix}</em>
+      </div>
+    </label>
+  );
 }
 
 function Box({ title, value, note, main }) {
-  return <article className={main ? 'result-box main' : 'result-box'}><span>{title}</span><div className="result-number"><strong>{f(value)}</strong><em>מ״מ</em></div><p>{note}</p></article>;
+  return <article className={main ? 'result-box main' : 'result-box'}><span>{title}</span><div className="result-number"><strong>{fmt(value)}</strong><em>מ״מ</em></div><p>{note}</p></article>;
 }
 
 function Results({ mode, result }) {

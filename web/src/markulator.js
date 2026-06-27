@@ -1,5 +1,3 @@
-// Calculation logic for the Markulator web app.
-
 export function inchesToMm(inches) {
   return inches * 25.4;
 }
@@ -36,6 +34,7 @@ export function calculatePlusMinusTolerance(nominalIn, posTolIn, negTolIn) {
       nominalMm = round2(nominalMm - 0.01);
     }
   }
+
   if (deviation(devRoundedMinus, devNonRoundedMinus) === false) {
     if (negTolMm > 0) {
       negTolMm = round2(negTolMm - 0.01);
@@ -66,6 +65,7 @@ export function calculateMaxMinTolerance(maxTotalIn, minTotalIn) {
   if (deviation(minMm, minMmExact) === false) {
     minMm = round2(minMm + 0.01);
   }
+
   return {
     maxMm,
     minMm,
