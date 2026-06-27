@@ -1,5 +1,6 @@
 import { useMemo, useState } from 'react';
 import { calculateMaxMinTolerance, calculatePlusMinusTolerance } from './markulator.js';
+import logoSymbol from './logoSymbol.js';
 
 const emptyTol = { positive: '', nominal: '', negative: '' };
 const emptyLimits = { max: '', min: '' };
@@ -29,7 +30,9 @@ export default function App() {
     <main className="app-shell">
       <section className="hero-card">
         <div className="brand-row">
-          <div className="logo-mark">MS</div>
+          <div className="logo-image-wrap" aria-label="Markulator symbol">
+            <img src={logoSymbol} alt="Markulator symbol" className="logo-image" />
+          </div>
           <div>
             <p className="eyebrow">המרת אינץ׳ למ״מ</p>
             <h1>Markulator</h1>
