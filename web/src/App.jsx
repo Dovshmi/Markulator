@@ -1,312 +1,94 @@
 import { useMemo, useState } from 'react';
-import {
-  calculateMaxMinTolerance,
-  calculatePlusMinusTolerance,
-} from './markulator.js';
+import { calculateMaxMinTolerance, calculatePlusMinusTolerance } from './markulator.js';
 
-const initialPlusMinus = {
-  nominal: '',
-  positive: '',
-  negative: '',
-};
-
-const initialMaxMin = {
-  max: '',
-  min: '',
-};
-
-function parseNumber(value) {
-  if (value === '' || value === null || value === undefined) return 0;
-  const parsed = Number(value);
-  return Number.isFinite(parsed) ? parsed : 0;
-}
-
-function formatNumber(value) {
-  if (value === null || value === undefined || Number.isNaN(value)) return '—';
-  return value.toFixed(2);
-}
+const emptyTol = { positive: '', nominal: '', negative: '' };
+const emptyLimits = { max: '', min: '' };
+const n = (v) => (v === '' ? 0 : Number(v));
+const f = (v) => (v == null || Number.isNaN(v) ? '—' : v.toFixed(2));
 
 export default function App() {
   const [mode, setMode] = useState('plus-minus');
-  const [plusMinus, setPlusMinus] = useState(initialPlusMinus);
-  const [maxMin, setMaxMin] = useState(initialMaxMin);
+  const [tol, setTol] = useState(emptyTol);
+  const [limits, setLimits] = useState(emptyLimits);
 
-  const plusMinusResult = useMemo(() => {
-    if (!plusMinus.nominal && !plusMinus.positive && !plusMinus.negative) {
-      return null;
-    }
-    return calculatePlusMinusTolerance(
-      parseNumber(plusMinus.nominal),
-      parseNumber(plusMinus.positive),
-      parseNumber(plusMinus.negative)
-    );
-  }, [plusMinus]);
-
-  const maxMinResult = useMemo(() => {
-    if (!maxMin.max && !maxMin.min) {
-      return null;
-    }
-    return calculateMaxMinTolerance(
-      parseNumber(maxMin.max),
-      parseNumber(maxMin.min)
-    );
-  }, [maxMin]);
-
-  const activeResult = mode === 'plus-minus' ? plusMinusResult : maxMinResult;
-
-  function clearCurrent() {
+  const result = useMemo(() => {
     if (mode === 'plus-minus') {
-      setPlusMinus(initialPlusMinus);
-    } else {
-      setMaxMin(initialMaxMin);
+      if (!tol.positive && !tol.nominal && !tol.negative) return null;
+      return calculatePlusMinusTolerance(n(tol.nominal), n(tol.positive), n(tol.negative));
     }
-  }
+    if (!limits.max && !limits.min) return null;
+    return calculateMaxMinTolerance(n(limits.max), n(limits.min));
+  }, [mode, tol, limits]);
+
+  const clear = () => {
+    if (mode === 'plus-minus') setTol(emptyTol);
+    else setLimits(emptyLimits);
+  };
 
   return (
     <main className="app-shell">
       <section className="hero-card">
         <div className="brand-row">
-          <div className="logo-mark">M</div>
+          <div className="logo-mark">MS</div>
           <div>
             <p className="eyebrow">המרת אינץ׳ למ״מ</p>
             <h1>Markulator</h1>
           </div>
         </div>
-
-        <p className="hero-copy">
-          מחשבון סבולות נקי ומהיר להמרת מידות מאינצ׳ים למילימטרים, עם תוצאה ברורה
-          לעבודה טכנית, ייצור, בדיקה ומדידה.
-        </p>
-
+        <p className="hero-copy">מחשבון סבולות להמרת מידות מאינצ׳ים למילימטרים.</p>
         <div className="quick-guide">
-          <article>
-            <span>01</span>
-            <strong>בחרו סוג חישוב</strong>
-            <p>סבולת ± או ערכי מקסימום/מינימום ישירים.</p>
-          </article>
-          <article>
-            <span>02</span>
-            <strong>הזינו ערכים באינץ׳</strong>
-            <p>המערכת מחשבת ומציגה תוצאה מידית.</p>
-          </article>
-          <article>
-            <span>03</span>
-            <strong>קראו תוצאה במ״מ</strong>
-            <p>נומינלי, גבול עליון, גבול תחתון או טווח.</p>
-          </article>
+          <article><span>01</span><strong>סבולת חיובית</strong><p>הערך העליון של הטולרנס.</p></article>
+          <article><span>02</span><strong>מידה נומינלית</strong><p>המידה המרכזית של החלק.</p></article>
+          <article><span>03</span><strong>סבולת שלילית</strong><p>הערך התחתון של הטולרנס.</p></article>
         </div>
       </section>
 
       <section className="calculator-card">
         <header className="card-header">
-          <div>
-            <p className="section-label">שלב ראשון</p>
-            <h2>בחרו את סוג החישוב</h2>
-          </div>
+          <div><p className="section-label">שלב ראשון</p><h2>בחרו את סוג החישוב</h2></div>
           <span className="conversion-pill">1 אינץ׳ = 25.4 מ״מ</span>
         </header>
 
-        <div className="mode-switch" role="tablist" aria-label="סוג חישוב">
-          <button
-            className={mode === 'plus-minus' ? 'active' : ''}
-            onClick={() => setMode('plus-minus')}
-            type="button"
-          >
-            <strong>סבולת ±</strong>
-            <span>מידה נומינלית + סטייה חיובית ושלילית</span>
-          </button>
-          <button
-            className={mode === 'max-min' ? 'active' : ''}
-            onClick={() => setMode('max-min')}
-            type="button"
-          >
-            <strong>מקסימום / מינימום</strong>
-            <span>כאשר יש כבר גבול עליון וגבול תחתון</span>
-          </button>
+        <div className="mode-switch">
+          <button className={mode === 'plus-minus' ? 'active' : ''} onClick={() => setMode('plus-minus')} type="button"><strong>סבולת ±</strong><span>Tol+ → Nominal → Tol-</span></button>
+          <button className={mode === 'max-min' ? 'active' : ''} onClick={() => setMode('max-min')} type="button"><strong>מקסימום / מינימום</strong><span>גבול עליון וגבול תחתון</span></button>
         </div>
 
         <section className="form-section">
-          <div className="section-title-row">
-            <div>
-              <p className="section-label">שלב שני</p>
-              <h2>הזינו ערכים באינץ׳</h2>
-            </div>
-            <button className="clear-button" type="button" onClick={clearCurrent}>
-              ניקוי
-            </button>
-          </div>
-
+          <div className="section-title-row"><div><p className="section-label">שלב שני</p><h2>הזינו ערכים באינץ׳</h2></div><button className="clear-button" onClick={clear} type="button">ניקוי</button></div>
           {mode === 'plus-minus' ? (
             <div className="input-grid">
-              <InputField
-                label="מידה נומינלית"
-                helper="המידה הבסיסית לפני הוספת הסבולת."
-                suffix="in"
-                value={plusMinus.nominal}
-                placeholder="לדוגמה: 1.2500"
-                onChange={(value) =>
-                  setPlusMinus((current) => ({ ...current, nominal: value }))
-                }
-              />
-              <InputField
-                label="סבולת חיובית"
-                helper="כמה המידה יכולה לגדול."
-                suffix="+ in"
-                value={plusMinus.positive}
-                placeholder="לדוגמה: 0.005"
-                onChange={(value) =>
-                  setPlusMinus((current) => ({ ...current, positive: value }))
-                }
-              />
-              <InputField
-                label="סבולת שלילית"
-                helper="כמה המידה יכולה לקטון."
-                suffix="- in"
-                value={plusMinus.negative}
-                placeholder="לדוגמה: 0.002"
-                onChange={(value) =>
-                  setPlusMinus((current) => ({ ...current, negative: value }))
-                }
-              />
+              <Field label="סבולת חיובית" helper="כמה המידה יכולה לגדול." suffix="+ in" value={tol.positive} placeholder="לדוגמה: 0.005" onChange={(positive) => setTol((x) => ({ ...x, positive }))} />
+              <Field label="מידה נומינלית" helper="המידה הבסיסית לפני הוספת הסבולת." suffix="in" value={tol.nominal} placeholder="לדוגמה: 1.2500" onChange={(nominal) => setTol((x) => ({ ...x, nominal }))} />
+              <Field label="סבולת שלילית" helper="כמה המידה יכולה לקטון." suffix="- in" value={tol.negative} placeholder="לדוגמה: 0.002" onChange={(negative) => setTol((x) => ({ ...x, negative }))} />
             </div>
           ) : (
             <div className="input-grid two">
-              <InputField
-                label="ערך מקסימלי"
-                helper="המידה הגבוהה ביותר המותרת באינץ׳."
-                suffix="in"
-                value={maxMin.max}
-                placeholder="לדוגמה: 1.255"
-                onChange={(value) =>
-                  setMaxMin((current) => ({ ...current, max: value }))
-                }
-              />
-              <InputField
-                label="ערך מינימלי"
-                helper="המידה הנמוכה ביותר המותרת באינץ׳."
-                suffix="in"
-                value={maxMin.min}
-                placeholder="לדוגמה: 1.248"
-                onChange={(value) =>
-                  setMaxMin((current) => ({ ...current, min: value }))
-                }
-              />
+              <Field label="ערך מקסימלי" helper="המידה הגבוהה ביותר המותרת." suffix="in" value={limits.max} placeholder="לדוגמה: 1.255" onChange={(max) => setLimits((x) => ({ ...x, max }))} />
+              <Field label="ערך מינימלי" helper="המידה הנמוכה ביותר המותרת." suffix="in" value={limits.min} placeholder="לדוגמה: 1.248" onChange={(min) => setLimits((x) => ({ ...x, min }))} />
             </div>
           )}
         </section>
 
         <section className="result-section">
-          <div className="section-title-row">
-            <div>
-              <p className="section-label">שלב שלישי</p>
-              <h2>תוצאה במילימטרים</h2>
-            </div>
-          </div>
-          <ResultPanel mode={mode} result={activeResult} />
+          <div className="section-title-row"><div><p className="section-label">שלב שלישי</p><h2>תוצאה במילימטרים</h2></div></div>
+          <Results mode={mode} result={result} />
         </section>
       </section>
     </main>
   );
 }
 
-function InputField({ label, helper, suffix, value, placeholder, onChange }) {
-  return (
-    <label className="input-field">
-      <span className="input-label">{label}</span>
-      <small>{helper}</small>
-      <div className="input-frame">
-        <input
-          type="number"
-          inputMode="decimal"
-          step="0.0001"
-          value={value}
-          placeholder={placeholder}
-          onChange={(event) => onChange(event.target.value)}
-        />
-        <em>{suffix}</em>
-      </div>
-    </label>
-  );
+function Field({ label, helper, suffix, value, placeholder, onChange }) {
+  return <label className="input-field"><span className="input-label">{label}</span><small>{helper}</small><div className="input-frame"><input type="number" inputMode="decimal" step="0.0001" value={value} placeholder={placeholder} onChange={(e) => onChange(e.target.value)} /><em>{suffix}</em></div></label>;
 }
 
-function ResultPanel({ mode, result }) {
-  if (!result) {
-    return (
-      <div className="empty-result">
-        הזינו ערכים בשדות למעלה, והתוצאה במילימטרים תופיע כאן מיד.
-      </div>
-    );
-  }
-  if (mode === 'plus-minus') {
-    return (
-      <div className="result-layout">
-        <ResultBox
-          tone="main"
-          title="מידה נומינלית"
-          value={result.nominalMm}
-          description="המידה הבסיסית לאחר המרה למילימטרים."
-        />
-        <div className="limit-grid">
-          <ResultBox
-            title="גבול עליון"
-            value={result.maxLimitMm}
-            description="נומינלי + סבולת חיובית."
-          />
-          <ResultBox
-            title="גבול תחתון"
-            value={result.minLimitMm}
-            description="נומינלי - סבולת שלילית."
-          />
-        </div>
-        <div className="tolerance-strip">
-          <MiniResult label="סבולת חיובית" value={result.posTolMm} />
-          <MiniResult label="סבולת שלילית" value={result.negTolMm} />
-        </div>
-      </div>
-    );
-  }
-  return (
-    <div className="result-layout">
-      <div className="limit-grid">
-        <ResultBox
-          title="ערך מקסימלי"
-          value={result.maxMm}
-          description="הערך המקסימלי לאחר המרה למילימטרים."
-        />
-        <ResultBox
-          title="ערך מינימלי"
-          value={result.minMm}
-          description="הערך המינימלי לאחר המרה למילימטרים."
-        />
-      </div>
-      <ResultBox
-        tone="main"
-        title="טווח כולל"
-        value={result.rangeMm}
-        description="ההפרש בין הערך המקסימלי לערך המינימלי."
-      />
-    </div>
-  );
+function Box({ title, value, note, main }) {
+  return <article className={main ? 'result-box main' : 'result-box'}><span>{title}</span><div className="result-number"><strong>{f(value)}</strong><em>מ״מ</em></div><p>{note}</p></article>;
 }
 
-function ResultBox({ title, value, description, tone = 'normal' }) {
-  return (
-    <article className={tone === 'main' ? 'result-box main' : 'result-box'}>
-      <span>{title}</span>
-      <div className="result-number">
-        <strong>{formatNumber(value)}</strong>
-        <em>מ״מ</em>
-      </div>
-      <p>{description}</p>
-    </article>
-  );
-}
-
-function MiniResult({ label, value }) {
-  return (
-    <div className="mini-result">
-      <span>{label}</span>
-      <strong>{formatNumber(value)} מ״מ</strong>
-    </div>
-  );
+function Results({ mode, result }) {
+  if (!result) return <div className="empty-result">הזינו ערכים בשדות למעלה, והתוצאה תופיע כאן מיד.</div>;
+  if (mode === 'plus-minus') return <div className="result-layout"><Box title="סבולת חיובית" value={result.posTolMm} note="Tol+" /><Box main title="מידה נומינלית" value={result.nominalMm} note="Nominal" /><Box title="סבולת שלילית" value={result.negTolMm} note="Tol-" /><div className="limit-grid"><Box title="גבול עליון" value={result.maxLimitMm} note="נומינלי + סבולת חיובית" /><Box title="גבול תחתון" value={result.minLimitMm} note="נומינלי - סבולת שלילית" /></div></div>;
+  return <div className="result-layout"><div className="limit-grid"><Box title="ערך מקסימלי" value={result.maxMm} note="Max" /><Box title="ערך מינימלי" value={result.minMm} note="Min" /></div><Box main title="טווח כולל" value={result.rangeMm} note="Range" /></div>;
 }
