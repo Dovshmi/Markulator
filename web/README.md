@@ -1,14 +1,9 @@
 # Markulator Web
 
-גרסת React/Vite עברית וימין־לשמאל של Markulator.
-
-## סדר במצב סבולת ±
-
-הסדר בטופס ובתוצאה הוא:
-
-1. סבולת חיובית / Tol+
-2. מידה נומינלית / Nominal
-3. סבולת שלילית / Tol-
+גרסה מעודכנת של Markulator עם:
+- סמל מעודכן לפי התמונה שסופקה
+- ממשק עברי RTL
+- סדר שדות ותוצאות במצב סבולת ±: סבולת חיובית, מידה נומינלית, סבולת שלילית
 
 ## הרצה מקומית
 
@@ -17,15 +12,3 @@ cd web
 npm install
 npm run dev
 ```
-
-## בנייה לפרודקשן
-
-```bash
-npm run build
-```
-
-## פריסה ב־Vercel
-
-- Root Directory: `web`
-- Build Command: `npm run build`
-- Output Directory: `dist`
