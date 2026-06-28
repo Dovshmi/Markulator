@@ -8,7 +8,6 @@ import './mobile-performance.css';
 import './sticky-result-bar.css';
 import './history-scroll.css';
 import './conversion-pill-toggle.css';
-import './sticky-result-bar.js';
 import './calculate-button-label.js';
 import './conversion-pill-toggle.js';
 
