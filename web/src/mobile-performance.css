@@ -7,6 +7,23 @@
   display: none;
 }
 
+.form-clear-row {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 16px;
+}
+
+.form-clear-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.form-clear-button span {
+  line-height: 1;
+}
+
 @media (max-width: 640px) {
   body {
     background:
@@ -204,6 +221,23 @@
 
   .input-clear:active {
     transform: scale(0.94);
+  }
+
+  .form-clear-row {
+    justify-content: stretch;
+    margin-top: 18px;
+  }
+
+  .form-clear-button {
+    width: 100%;
+    min-height: 58px;
+    border-radius: 20px;
+    font-size: 1.03rem;
+    background: rgba(15, 23, 42, 0.74);
+  }
+
+  .form-clear-button span {
+    font-size: 1.15rem;
   }
 
   .result-section .result-actions {
