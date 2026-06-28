@@ -1,0 +1,20 @@
+{
+  "name": "Markulator",
+  "short_name": "Markulator",
+  "description": "Tolerance calculator for inch to millimeter conversion.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#07111f",
+  "theme_color": "#07111f",
+  "dir": "rtl",
+  "lang": "he",
+  "icons": [
+    {
+      "src": "/markulator-icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
