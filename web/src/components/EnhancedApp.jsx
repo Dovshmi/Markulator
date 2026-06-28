@@ -83,6 +83,8 @@ const TEXT = {
     historyTitle: 'היסטוריית חישובים',
     clearHistory: 'נקה היסטוריה',
     emptyHistory: 'עדיין אין חישובים שמורים. אחרי חישוב, לחצו על שמירה.',
+    openHistory: 'פתח היסטוריה',
+    closeHistory: 'סגור היסטוריה',
     editValues: 'ערוך ערכים',
     copy: 'העתק',
     mobileNominal: 'נומינלי',
@@ -163,6 +165,8 @@ const TEXT = {
     historyTitle: 'Calculation history',
     clearHistory: 'Clear history',
     emptyHistory: 'No saved calculations yet. After calculating, tap Save.',
+    openHistory: 'Open history',
+    closeHistory: 'Close history',
     editValues: 'Edit values',
     copy: 'Copy',
     mobileNominal: 'Nominal',
@@ -227,6 +231,7 @@ export default function EnhancedApp() {
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [resultSectionVisible, setResultSectionVisible] = useState(false);
   const [resultOpen, setResultOpen] = useState(false);
+  const [historyOpen, setHistoryOpen] = useState(false);
   const [themeMode, setThemeMode] = useState(getSavedThemeMode);
   const [systemTheme, setSystemTheme] = useState(getSystemTheme);
   const [themeAnimating, setThemeAnimating] = useState(false);
@@ -427,7 +432,7 @@ export default function EnhancedApp() {
         </section>
 
         <button
-          className={`result-drawer-handle ${resultOpen ? 'open' : ''}`}
+          className={`drawer-icon-handle result-drawer-handle ${resultOpen ? 'open' : ''}`}
           type="button"
           aria-controls="result-drawer"
           aria-expanded={resultOpen}
@@ -447,7 +452,24 @@ export default function EnhancedApp() {
           )}
         </section>
 
-        <section className="history-section"><div className="section-title-row history-title"><div><p className="section-label">v0.9.5</p><h2>{text.historyTitle}</h2></div>{history.length > 0 && <button className="clear-button" type="button" onClick={clearHistory}>{text.clearHistory}</button>}</div>{history.length === 0 ? <p className="history-empty">{text.emptyHistory}</p> : <div className="history-list">{history.map((item) => <button key={item.id} type="button" onClick={() => copyText(item.fullText, text.historyCopied)}><span>{item.unitMode === UNIT_MODES.IN_TO_MM ? 'inch → mm' : 'mm → inch'}</span><strong>{item.text}</strong></button>)}</div>}</section>
+        <button
+          className={`drawer-icon-handle history-drawer-handle ${historyOpen ? 'open' : ''}`}
+          type="button"
+          aria-controls="history-drawer"
+          aria-expanded={historyOpen}
+          aria-label={historyOpen ? text.closeHistory : text.openHistory}
+          onClick={() => setHistoryOpen((open) => !open)}
+        >
+          <span aria-hidden="true">⌄</span>
+        </button>
+
+        <section id="history-drawer" className={`history-section history-drawer ${historyOpen ? 'open' : ''}`} aria-hidden={!historyOpen}>
+          {historyOpen && (
+            <div className="history-drawer-inner">
+              <div className="section-title-row history-title"><div><p className="section-label">v0.9.5</p><h2>{text.historyTitle}</h2></div>{history.length > 0 && <button className="clear-button" type="button" onClick={clearHistory}>{text.clearHistory}</button>}</div>{history.length === 0 ? <p className="history-empty">{text.emptyHistory}</p> : <div className="history-list">{history.map((item) => <button key={item.id} type="button" onClick={() => copyText(item.fullText, text.historyCopied)}><span>{item.unitMode === UNIT_MODES.IN_TO_MM ? 'inch → mm' : 'mm → inch'}</span><strong>{item.text}</strong></button>)}</div>}
+            </div>
+          )}
+        </section>
       </section>
 
       {result && resultOpen && <aside className={`mobile-result-bar ${resultSectionVisible ? 'input-mode' : ''}`} aria-live="polite">{resultSectionVisible ? <div className="mobile-input-actions"><button type="button" onClick={saveHistory} disabled={!result}>{text.save}</button><button type="button" onClick={clear}>{text.clear}</button><button type="button" onClick={scrollToInputs}>{text.editValues}</button></div> : <><div className="mobile-result-items">{mobileResult.map(([label, value]) => <span key={label}><small>{label}</small><strong>{formatNumber(value, digits)} {targetLabel}</strong></span>)}</div><button type="button" onClick={() => copyText(shortText, text.copied)}>{text.copy}</button></>}</aside>}
