@@ -43,14 +43,6 @@ const TEXT = {
     digits2: '2 ספרות',
     digits3: '3 ספרות',
     digits4: '4 ספרות',
-    howItWorks: 'איך זה עובד?',
-    guideText: 'פתחו את תפריט הצד, הגדירו כיוון המרה ודיוק, הזינו ערכים וקבלו תוצאה.',
-    quick1Title: 'פתחו תפריט',
-    quick1Text: 'גלגל השיניים פותח את הגדרות האפליקציה.',
-    quick2Title: 'הזינו סבולות',
-    quick2Text: 'המידה המרכזית והסטייה המותרת.',
-    quick3Title: 'שמרו ושתפו',
-    quick3Text: 'העתקה, שיתוף והיסטוריית חישובים.',
     step1: 'שלב ראשון',
     chooseCalcType: 'בחרו את סוג החישוב',
     plusMinus: 'סבולת ±',
@@ -129,14 +121,6 @@ const TEXT = {
     digits2: '2 decimals',
     digits3: '3 decimals',
     digits4: '4 decimals',
-    howItWorks: 'How it works',
-    guideText: 'Open the side menu, set conversion direction and precision, enter values, and get the result.',
-    quick1Title: 'Open settings',
-    quick1Text: 'The gear icon opens the app settings.',
-    quick2Title: 'Enter tolerances',
-    quick2Text: 'Add the base measurement and allowed deviation.',
-    quick3Title: 'Save and share',
-    quick3Text: 'Copy, share, and keep calculation history.',
     step1: 'Step one',
     chooseCalcType: 'Choose calculation type',
     plusMinus: 'Tolerance ±',
@@ -412,11 +396,8 @@ export default function EnhancedApp() {
         <div className="drawer-section drawer-status"><span>{WEB_VERSION}</span><span>{themeMode === 'auto' ? `${text.autoTheme} · ${resolvedTheme}` : themeMode}</span></div>
       </aside>
 
-      <section className="hero-card">
+      <section className="hero-card compact-hero">
         <div className="brand-row brand-row-fixed"><div className="brand-title-block"><p className="eyebrow">{WEB_VERSION}</p><h1>Markulator</h1></div><div className="logo-image-wrap" aria-label="Markulator symbol"><img src={logoSymbol} alt="Markulator symbol" className="logo-image" /></div></div>
-        <p className="hero-copy">{text.appDescription}</p>
-        <details className="mobile-guide"><summary>{text.howItWorks}</summary><p>{text.guideText}</p></details>
-        <div className="quick-guide"><article><span>01</span><strong>{text.quick1Title}</strong><p>{text.quick1Text}</p></article><article><span>02</span><strong>{text.quick2Title}</strong><p>{text.quick2Text}</p></article><article><span>03</span><strong>{text.quick3Title}</strong><p>{text.quick3Text}</p></article></div>
       </section>
 
       <section className="calculator-card">
@@ -442,7 +423,7 @@ export default function EnhancedApp() {
           {result && <div className="result-explanation">{mode === 'plus-minus' ? text.explanationPlus : text.explanationLimits}</div>}
         </section>
 
-        <section className="history-section"><div className="section-title-row history-title"><div><p className="section-label">v0.9.3</p><h2>{text.historyTitle}</h2></div>{history.length > 0 && <button className="clear-button" type="button" onClick={clearHistory}>{text.clearHistory}</button>}</div>{history.length === 0 ? <p className="history-empty">{text.emptyHistory}</p> : <div className="history-list">{history.map((item) => <button key={item.id} type="button" onClick={() => copyText(item.fullText, text.historyCopied)}><span>{item.unitMode === UNIT_MODES.IN_TO_MM ? 'inch → mm' : 'mm → inch'}</span><strong>{item.text}</strong></button>)}</div>}</section>
+        <section className="history-section"><div className="section-title-row history-title"><div><p className="section-label">v0.9.4</p><h2>{text.historyTitle}</h2></div>{history.length > 0 && <button className="clear-button" type="button" onClick={clearHistory}>{text.clearHistory}</button>}</div>{history.length === 0 ? <p className="history-empty">{text.emptyHistory}</p> : <div className="history-list">{history.map((item) => <button key={item.id} type="button" onClick={() => copyText(item.fullText, text.historyCopied)}><span>{item.unitMode === UNIT_MODES.IN_TO_MM ? 'inch → mm' : 'mm → inch'}</span><strong>{item.text}</strong></button>)}</div>}</section>
       </section>
 
       {result && <aside className={`mobile-result-bar ${resultSectionVisible ? 'input-mode' : ''}`} aria-live="polite">{resultSectionVisible ? <div className="mobile-input-actions"><button type="button" onClick={saveHistory} disabled={!result}>{text.save}</button><button type="button" onClick={clear}>{text.clear}</button><button type="button" onClick={scrollToInputs}>{text.editValues}</button></div> : <><div className="mobile-result-items">{mobileResult.map(([label, value]) => <span key={label}><small>{label}</small><strong>{formatNumber(value, digits)} {targetLabel}</strong></span>)}</div><button type="button" onClick={() => copyText(shortText, text.copied)}>{text.copy}</button></>}</aside>}
