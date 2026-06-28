@@ -36,7 +36,8 @@ body::before,
 .empty-result,
 .result-box,
 .result-drawer,
-.result-drawer-handle,
+.history-drawer,
+.drawer-icon-handle,
 .result-explanation,
 .history-empty,
 .history-list button,
@@ -115,7 +116,6 @@ body::before,
 
 .theme-light .mode-switch button,
 .theme-light .clear-button,
-.theme-light .result-drawer-handle,
 .theme-light .mobile-result-bar,
 .theme-light .mobile-input-actions button {
   border-color: rgba(15, 23, 42, 0.16);
@@ -158,27 +158,20 @@ body::before,
     linear-gradient(145deg, rgba(241, 245, 249, 0.86), rgba(203, 213, 225, 0.68));
 }
 
-.theme-light .result-drawer.open {
+.theme-light .result-drawer.open,
+.theme-light .history-section.history-drawer.open {
   border-top-color: rgba(15, 23, 42, 0.14);
 }
 
-.theme-light .result-drawer-handle {
+.theme-light .drawer-icon-handle {
   color: #0369a1;
-  border-color: rgba(14, 116, 144, 0.22);
-  background:
-    radial-gradient(circle at 50% 0%, rgba(14, 116, 144, 0.12), transparent 72%),
-    rgba(241, 245, 249, 0.68);
-  box-shadow:
-    0 10px 24px rgba(15, 23, 42, 0.10),
-    inset 0 1px 0 rgba(255, 255, 255, 0.44);
+  background: transparent;
+  box-shadow: none;
 }
 
-.theme-light .result-drawer-handle:hover {
+.theme-light .drawer-icon-handle:hover {
   color: #0f172a;
-  border-color: rgba(14, 116, 144, 0.42);
-  background:
-    radial-gradient(circle at 50% 0%, rgba(14, 116, 144, 0.16), transparent 72%),
-    rgba(226, 232, 240, 0.84);
+  background: transparent;
 }
 
 .theme-light .result-explanation,
