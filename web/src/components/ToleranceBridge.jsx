@@ -3,21 +3,21 @@ import { UNIT_MODES, formatNumber } from './calcTools.js';
 const FIELDS = {
   positive: {
     labelKey: 'positiveTolerance',
-    helperKey: 'positiveHelper',
+    compactLabelKey: 'mobileUpper',
     className: 'upper',
     sign: '+',
     resultKey: 'posTolMm',
   },
   nominal: {
     labelKey: 'nominal',
-    helperKey: 'nominalHelper',
+    compactLabelKey: 'mobileNominal',
     className: 'nominal',
     sign: '',
     resultKey: 'nominalMm',
   },
   negative: {
     labelKey: 'negativeTolerance',
-    helperKey: 'negativeHelper',
+    compactLabelKey: 'mobileLower',
     className: 'lower',
     sign: '-',
     resultKey: 'negTolMm',
@@ -47,13 +47,14 @@ export default function ToleranceBridge({ unitMode, tol, setTol, result, digits,
 
   const renderCell = (side, field, sideName) => {
     const config = FIELDS[field];
-    const label = text[config.labelKey];
+    const label = text[config.compactLabelKey] || text[config.labelKey];
+    const fullLabel = text[config.labelKey];
     const helper = text[config.helperKey];
     const cellClass = `tolerance-cell tolerance-cell-${config.className} tolerance-cell-${sideName} tolerance-cell-${side.kind}`;
 
     if (side.kind === 'source') {
       return (
-        <label className={cellClass}>
+        <label className={cellClass} aria-label={`${fullLabel} ${side.unit}`}>
           <span className="tolerance-cell-label">{label}</span>
           <small>{helper}</small>
           <div className="tolerance-value-frame tolerance-input-frame">
@@ -73,7 +74,7 @@ export default function ToleranceBridge({ unitMode, tol, setTol, result, digits,
     }
 
     return (
-      <div className={cellClass} aria-label={`${label} ${side.unit}`}>
+      <div className={cellClass} aria-label={`${fullLabel} ${side.unit}`}>
         <span className="tolerance-cell-label">{label}</span>
         <small>{helper}</small>
         <div className="tolerance-value-frame tolerance-output-frame">
@@ -99,7 +100,7 @@ export default function ToleranceBridge({ unitMode, tol, setTol, result, digits,
       {renderCell(rightSide, 'positive', 'right')}
 
       {renderCell(leftSide, 'nominal', 'left')}
-      <div className="tolerance-nominal-connector" aria-hidden="true"><span>↔</span></div>
+      <div className="tolerance-nominal-connector" aria-hidden="true"><span></span></div>
       {renderCell(rightSide, 'nominal', 'right')}
 
       {renderCell(leftSide, 'negative', 'left')}
