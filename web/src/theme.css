@@ -7,18 +7,19 @@ body.theme-dark {
 }
 
 body.theme-light {
-  color: #0f172a;
+  color: #142033;
   background:
-    radial-gradient(circle at 12% 10%, rgba(14, 165, 233, 0.20), transparent 26rem),
-    radial-gradient(circle at 84% 8%, rgba(20, 184, 166, 0.16), transparent 28rem),
-    radial-gradient(circle at 50% 100%, rgba(124, 58, 237, 0.10), transparent 34rem),
-    linear-gradient(135deg, #f8fafc 0%, #e0f2fe 46%, #ecfeff 100%);
+    radial-gradient(circle at 12% 10%, rgba(14, 165, 233, 0.14), transparent 25rem),
+    radial-gradient(circle at 84% 8%, rgba(20, 184, 166, 0.11), transparent 27rem),
+    radial-gradient(circle at 50% 100%, rgba(99, 102, 241, 0.10), transparent 32rem),
+    linear-gradient(135deg, #dbeafe 0%, #cbd5e1 46%, #d9e2ec 100%);
 }
 
 body.theme-light::before {
   background-image:
-    linear-gradient(rgba(15, 23, 42, 0.045) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(15, 23, 42, 0.045) 1px, transparent 1px);
+    linear-gradient(rgba(15, 23, 42, 0.055) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(15, 23, 42, 0.055) 1px, transparent 1px);
+  opacity: 0.82;
 }
 
 body,
@@ -78,25 +79,25 @@ body::before,
 
 .theme-light .hero-card,
 .theme-light .calculator-card {
-  border-color: rgba(15, 23, 42, 0.12);
+  border-color: rgba(15, 23, 42, 0.16);
   background:
-    linear-gradient(145deg, rgba(255, 255, 255, 0.94), rgba(240, 249, 255, 0.76)),
-    rgba(255, 255, 255, 0.72);
+    linear-gradient(145deg, rgba(241, 245, 249, 0.88), rgba(226, 232, 240, 0.76)),
+    rgba(226, 232, 240, 0.68);
   box-shadow:
-    0 24px 70px rgba(15, 23, 42, 0.14),
-    inset 0 1px 0 rgba(255, 255, 255, 0.86);
+    0 24px 70px rgba(15, 23, 42, 0.18),
+    inset 0 1px 0 rgba(255, 255, 255, 0.54);
 }
 
 .theme-light .settings-drawer {
-  border-left-color: rgba(14, 165, 233, 0.22);
+  border-left-color: rgba(15, 23, 42, 0.14);
   background:
-    radial-gradient(circle at 80% 0%, rgba(14, 165, 233, 0.16), transparent 16rem),
-    linear-gradient(180deg, rgba(255, 255, 255, 0.98), rgba(240, 249, 255, 0.98));
-  box-shadow: -22px 0 55px rgba(15, 23, 42, 0.16);
+    radial-gradient(circle at 80% 0%, rgba(14, 165, 233, 0.12), transparent 16rem),
+    linear-gradient(180deg, rgba(226, 232, 240, 0.98), rgba(203, 213, 225, 0.96));
+  box-shadow: -22px 0 55px rgba(15, 23, 42, 0.18);
 }
 
 .theme-light .drawer-backdrop {
-  background: rgba(15, 23, 42, 0.28);
+  background: rgba(15, 23, 42, 0.32);
 }
 
 .theme-light .drawer-section,
@@ -106,59 +107,59 @@ body::before,
 .theme-light .empty-result,
 .theme-light .history-empty,
 .theme-light .history-list button {
-  border-color: rgba(15, 23, 42, 0.12);
-  background: rgba(255, 255, 255, 0.62);
+  border-color: rgba(15, 23, 42, 0.15);
+  background: rgba(241, 245, 249, 0.58);
 }
 
 .theme-light .mode-switch button,
 .theme-light .clear-button,
 .theme-light .mobile-result-bar,
 .theme-light .mobile-input-actions button {
-  border-color: rgba(15, 23, 42, 0.13);
+  border-color: rgba(15, 23, 42, 0.16);
   color: #334155;
-  background: rgba(255, 255, 255, 0.70);
+  background: rgba(226, 232, 240, 0.64);
 }
 
 .theme-light .mode-switch button:hover,
 .theme-light .clear-button:hover {
   color: #0f172a;
-  border-color: rgba(14, 165, 233, 0.42);
+  border-color: rgba(14, 116, 144, 0.42);
 }
 
 .theme-light .mode-switch button.active,
 .theme-light .unit-switch button.active,
 .theme-light .mobile-input-actions button:first-child {
   color: #ffffff;
-  border-color: rgba(14, 165, 233, 0.46);
-  background: linear-gradient(135deg, rgba(14, 165, 233, 0.90), rgba(20, 184, 166, 0.74));
-  box-shadow: 0 16px 34px rgba(14, 165, 233, 0.20);
+  border-color: rgba(14, 116, 144, 0.48);
+  background: linear-gradient(135deg, rgba(2, 132, 199, 0.86), rgba(13, 148, 136, 0.76));
+  box-shadow: 0 16px 34px rgba(15, 23, 42, 0.16);
 }
 
 .theme-light .input-frame:focus-within {
-  border-color: rgba(14, 165, 233, 0.72);
-  background: rgba(255, 255, 255, 0.92);
-  box-shadow: 0 0 0 4px rgba(14, 165, 233, 0.12);
+  border-color: rgba(2, 132, 199, 0.70);
+  background: rgba(241, 245, 249, 0.82);
+  box-shadow: 0 0 0 4px rgba(2, 132, 199, 0.12);
 }
 
 .theme-light .result-box {
-  border-color: rgba(15, 23, 42, 0.12);
+  border-color: rgba(15, 23, 42, 0.15);
   background:
-    radial-gradient(circle at top left, rgba(14, 165, 233, 0.14), transparent 12rem),
-    rgba(255, 255, 255, 0.68);
+    radial-gradient(circle at top left, rgba(14, 116, 144, 0.11), transparent 12rem),
+    rgba(226, 232, 240, 0.62);
 }
 
 .theme-light .result-box.main {
-  border-color: rgba(14, 165, 233, 0.36);
+  border-color: rgba(14, 116, 144, 0.34);
   background:
-    radial-gradient(circle at top left, rgba(14, 165, 233, 0.16), transparent 14rem),
-    linear-gradient(145deg, rgba(255, 255, 255, 0.94), rgba(224, 242, 254, 0.74));
+    radial-gradient(circle at top left, rgba(14, 116, 144, 0.13), transparent 14rem),
+    linear-gradient(145deg, rgba(241, 245, 249, 0.86), rgba(203, 213, 225, 0.68));
 }
 
 .theme-light .result-explanation,
 .theme-light .form-status {
-  border-color: rgba(14, 165, 233, 0.18);
+  border-color: rgba(14, 116, 144, 0.18);
   color: #0f766e;
-  background: rgba(240, 253, 250, 0.74);
+  background: rgba(204, 251, 241, 0.42);
 }
 
 .theme-light .drawer-section strong,
@@ -188,7 +189,7 @@ body::before,
 .theme-light .input-frame em,
 .theme-light .result-box em,
 .theme-light .history-list span {
-  color: #0284c7;
+  color: #0369a1;
 }
 
 .theme-light .input-frame input {
@@ -196,13 +197,13 @@ body::before,
 }
 
 .theme-light .input-frame input::placeholder {
-  color: #94a3b8;
+  color: #64748b;
 }
 
 .theme-light .conversion-pill {
   color: #0f766e;
-  border-color: rgba(20, 184, 166, 0.24);
-  background: rgba(204, 251, 241, 0.60);
+  border-color: rgba(13, 148, 136, 0.24);
+  background: rgba(153, 246, 228, 0.34);
 }
 
 .theme-light .drawer-close {
@@ -211,11 +212,11 @@ body::before,
 }
 
 .theme-light .logo-image-wrap {
-  background: rgba(255, 255, 255, 0.70);
-  border-color: rgba(14, 165, 233, 0.22);
+  background: rgba(226, 232, 240, 0.66);
+  border-color: rgba(14, 116, 144, 0.22);
   box-shadow:
-    0 18px 42px rgba(14, 165, 233, 0.18),
-    inset 0 1px 0 rgba(255, 255, 255, 0.86);
+    0 18px 42px rgba(15, 23, 42, 0.14),
+    inset 0 1px 0 rgba(255, 255, 255, 0.52);
 }
 
 .theme-switch {
