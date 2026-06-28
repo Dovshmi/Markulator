@@ -2,7 +2,6 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import { calculateMaxMinTolerance, calculatePlusMinusTolerance } from '../markulator.js';
 import logoSymbol from '../assets/logo-symbol.jpg';
 import InputField from './InputField.jsx';
-import ResultPanel from './ResultPanel.jsx';
 import ToleranceBridge from './ToleranceBridge.jsx';
 import {
   UNIT_MODES,
@@ -10,7 +9,6 @@ import {
   buildCopyText,
   buildShortCopyText,
   convertValue,
-  formatNumber,
   getUnits,
   toNumber,
   validateInputs,
@@ -64,8 +62,8 @@ const TEXT = {
     minHelper: 'המידה הנמוכה ביותר המותרת.',
     save: 'שמירה',
     clear: 'ניקוי',
-    openResults: 'פתח תוצאה והיסטוריה',
-    closeResults: 'סגור תוצאה והיסטוריה',
+    openResults: 'פתח היסטוריה',
+    closeResults: 'סגור היסטוריה',
     shortCopy: 'העתקה קצרה',
     fullCopy: 'העתקה מלאה',
     share: 'שיתוף',
@@ -142,8 +140,8 @@ const TEXT = {
     minHelper: 'The lowest allowed measurement.',
     save: 'Save',
     clear: 'Clear',
-    openResults: 'Open result and history',
-    closeResults: 'Close result and history',
+    openResults: 'Open history',
+    closeResults: 'Close history',
     shortCopy: 'Short copy',
     fullCopy: 'Full copy',
     share: 'Share',
@@ -222,7 +220,6 @@ export default function EnhancedApp() {
   const [copyStatus, setCopyStatus] = useState('');
   const [history, setHistory] = useState([]);
   const [drawerOpen, setDrawerOpen] = useState(false);
-  const [resultSectionVisible, setResultSectionVisible] = useState(false);
   const [resultOpen, setResultOpen] = useState(false);
   const [themeMode, setThemeMode] = useState(getSavedThemeMode);
   const [systemTheme, setSystemTheme] = useState(getSystemTheme);
@@ -231,7 +228,6 @@ export default function EnhancedApp() {
     try { return localStorage.getItem(LANGUAGE_KEY) === 'en' ? 'en' : 'he'; } catch { return 'he'; }
   });
   const inputSectionRef = useRef(null);
-  const resultSectionRef = useRef(null);
   const themeTimerRef = useRef(null);
   const text = TEXT[language];
   const dir = language === 'he' ? 'rtl' : 'ltr';
@@ -239,6 +235,13 @@ export default function EnhancedApp() {
 
   const units = useMemo(() => getUnits(unitMode), [unitMode]);
   const validation = useMemo(() => validateInputs(mode, tol, limits, language), [mode, tol, limits, language]);
+  const result = useMemo(() => {
+    if (!validation.ready || validation.errors.length) return null;
+    return buildConvertedResult(mode, tol, limits, unitMode);
+  }, [mode, tol, limits, validation, unitMode]);
+
+  const currentText = useMemo(() => buildCopyText(mode, result, digits, units.outputLabel, language), [mode, result, digits, units.outputLabel, language]);
+  const shortText = useMemo(() => buildShortCopyText(mode, result, digits, units.outputLabel, language), [mode, result, digits, units.outputLabel, language]);
 
   useEffect(() => {
     document.documentElement.lang = language === 'he' ? 'he' : 'en';
@@ -283,34 +286,9 @@ export default function EnhancedApp() {
   }, [drawerOpen]);
 
   useEffect(() => {
-    if (!resultOpen) {
-      setResultSectionVisible(false);
-      return;
-    }
-
-    const target = resultSectionRef.current;
-    if (!target || typeof IntersectionObserver === 'undefined') return;
-    const observer = new IntersectionObserver(
-      ([entry]) => setResultSectionVisible(entry.isIntersecting && entry.intersectionRatio >= 0.35),
-      { threshold: [0, 0.35, 0.6] }
-    );
-    observer.observe(target);
-    return () => observer.disconnect();
-  }, [resultOpen]);
-
-  const result = useMemo(() => {
-    if (!validation.ready || validation.errors.length) return null;
-    return buildConvertedResult(mode, tol, limits, unitMode);
-  }, [mode, tol, limits, validation, unitMode]);
-
-  const mobileResult = useMemo(() => {
-    if (!result) return [];
-    if (mode === 'plus-minus') return [[text.mobileNominal, result.nominalMm], [text.mobileUpper, result.maxLimitMm], [text.mobileLower, result.minLimitMm]];
-    return [[text.mobileMax, result.maxMm], [text.mobileMin, result.minMm], [text.mobileRange, result.rangeMm]];
-  }, [mode, result, text]);
-
-  const currentText = useMemo(() => buildCopyText(mode, result, digits, units.outputLabel, language), [mode, result, digits, units.outputLabel, language]);
-  const shortText = useMemo(() => buildShortCopyText(mode, result, digits, units.outputLabel, language), [mode, result, digits, units.outputLabel, language]);
+    document.body.classList.toggle('sticky-result-bar-active', Boolean(result));
+    return () => document.body.classList.remove('sticky-result-bar-active');
+  }, [result]);
 
   const switchMode = (nextMode) => {
     if (nextMode === mode) return;
@@ -323,8 +301,6 @@ export default function EnhancedApp() {
     else setLimits(emptyLimits);
     setCopyStatus('');
   };
-
-  const scrollToInputs = () => inputSectionRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
 
   const copyText = async (copyValue, successMessage) => {
     if (!copyValue) return;
@@ -356,17 +332,13 @@ export default function EnhancedApp() {
   const clearHistory = () => setHistory([]);
 
   const inputSuffix = units.input;
-  const targetLabel = units.outputLabel;
-  const plusPlaceholder = unitMode === UNIT_MODES.IN_TO_MM ? text.positivePlaceholderIn : text.positivePlaceholderMm;
-  const nominalPlaceholder = unitMode === UNIT_MODES.IN_TO_MM ? text.nominalPlaceholderIn : text.nominalPlaceholderMm;
-  const minusPlaceholder = unitMode === UNIT_MODES.IN_TO_MM ? text.negativePlaceholderIn : text.negativePlaceholderMm;
   const maxPlaceholder = unitMode === UNIT_MODES.IN_TO_MM ? text.maxPlaceholderIn : text.maxPlaceholderMm;
   const minPlaceholder = unitMode === UNIT_MODES.IN_TO_MM ? text.minPlaceholderIn : text.minPlaceholderMm;
   const tolerancePlaceholders = useMemo(() => ({
-    positive: plusPlaceholder,
-    nominal: nominalPlaceholder,
-    negative: minusPlaceholder,
-  }), [plusPlaceholder, nominalPlaceholder, minusPlaceholder]);
+    positive: unitMode === UNIT_MODES.IN_TO_MM ? text.positivePlaceholderIn : text.positivePlaceholderMm,
+    nominal: unitMode === UNIT_MODES.IN_TO_MM ? text.nominalPlaceholderIn : text.nominalPlaceholderMm,
+    negative: unitMode === UNIT_MODES.IN_TO_MM ? text.negativePlaceholderIn : text.negativePlaceholderMm,
+  }), [unitMode, text]);
 
   return (
     <main className={`app-shell lang-${language} theme-${resolvedTheme} theme-mode-${themeMode} ${themeAnimating ? 'theme-animating' : ''}`} dir={dir} lang={language}>
@@ -423,7 +395,6 @@ export default function EnhancedApp() {
           ) : (
             <div key={`max-min-form-${unitMode}`} className="input-grid two mode-content"><InputField label={text.maxValue} helper={text.maxHelper} suffix={inputSuffix} value={limits.max} placeholder={maxPlaceholder} onChange={(max) => setLimits((x) => ({ ...x, max }))} /><InputField label={text.minValue} helper={text.minHelper} suffix={inputSuffix} value={limits.min} placeholder={minPlaceholder} onChange={(min) => setLimits((x) => ({ ...x, min }))} /></div>
           )}
-          <div className="form-clear-row form-action-row"><button className="clear-button form-save-button" onClick={saveHistory} type="button" disabled={!result}>{text.save}</button><button className="clear-button form-clear-button" onClick={clear} type="button"><span aria-hidden="true">🗑️</span> {text.clear}</button></div>
           {copyStatus && <div className="form-status">{copyStatus}</div>}
           {validation.errors.length > 0 && <div className="validation-box">{validation.errors.map((msg) => <p key={msg}>{msg}</p>)}</div>}
         </section>
@@ -431,23 +402,13 @@ export default function EnhancedApp() {
         <button
           className={`drawer-icon-handle result-drawer-handle ${resultOpen ? 'open' : ''}`}
           type="button"
-          aria-controls="result-drawer history-drawer"
+          aria-controls="history-drawer"
           aria-expanded={resultOpen}
           aria-label={resultOpen ? text.closeResults : text.openResults}
           onClick={() => setResultOpen((open) => !open)}
         >
           <span aria-hidden="true">⌄</span>
         </button>
-
-        <section id="result-drawer" className={`result-drawer ${resultOpen ? 'open' : ''}`} ref={resultSectionRef} aria-hidden={!resultOpen}>
-          {resultOpen && (
-            <div className="result-drawer-inner">
-              <div className="result-actions enhanced-actions"><button className="clear-button" type="button" onClick={() => copyText(shortText, text.shortCopied)} disabled={!result}>{text.shortCopy}</button><button className="clear-button" type="button" onClick={() => copyText(currentText, text.fullCopied)} disabled={!result}>{text.fullCopy}</button><button className="clear-button" type="button" onClick={shareResult} disabled={!result}>{text.share}</button></div>
-              <div key={`result-${mode}-${unitMode}`} className="result-transition"><ResultPanel mode={mode} result={result} digits={digits} unitLabel={targetLabel} language={language} /></div>
-              {result && <div className="result-explanation">{mode === 'plus-minus' ? text.explanationPlus : text.explanationLimits}</div>}
-            </div>
-          )}
-        </section>
 
         <section id="history-drawer" className={`history-section history-drawer ${resultOpen ? 'open' : ''}`} aria-hidden={!resultOpen}>
           {resultOpen && (
@@ -458,7 +419,15 @@ export default function EnhancedApp() {
         </section>
       </section>
 
-      {result && resultOpen && <aside className={`mobile-result-bar ${resultSectionVisible ? 'input-mode' : ''}`} aria-live="polite">{resultSectionVisible ? <div className="mobile-input-actions"><button type="button" onClick={saveHistory} disabled={!result}>{text.save}</button><button type="button" onClick={clear}>{text.clear}</button><button type="button" onClick={scrollToInputs}>{text.editValues}</button></div> : <><div className="mobile-result-items">{mobileResult.map(([label, value]) => <span key={label}><small>{label}</small><strong>{formatNumber(value, digits)} {targetLabel}</strong></span>)}</div><button type="button" onClick={() => copyText(shortText, text.copied)}>{text.copy}</button></>}</aside>}
+      {result && (
+        <aside className="sticky-action-bar visible" aria-live="polite">
+          <button type="button" onClick={() => copyText(shortText, text.shortCopied)}>{text.shortCopy}</button>
+          <button type="button" onClick={() => copyText(currentText, text.fullCopied)}>{text.fullCopy}</button>
+          <button type="button" onClick={saveHistory}>{text.save}</button>
+          <button type="button" onClick={clear}>{text.clear}</button>
+          <button type="button" onClick={shareResult}>{text.share}</button>
+        </aside>
+      )}
 
       <footer className="app-footer">Markulator · {WEB_VERSION} · PWA-ready</footer>
     </main>
