@@ -3,7 +3,7 @@ import { calculateMaxMinTolerance, calculatePlusMinusTolerance } from '../markul
 import logoSymbol from '../assets/logo-symbol.jpg';
 import InputField from './InputField.jsx';
 import ResultPanel from './ResultPanel.jsx';
-import { WEB_VERSION, buildCopyText, toNumber, validateInputs } from './calcTools.js';
+import { WEB_VERSION, buildCopyText, formatNumber, toNumber, validateInputs } from './calcTools.js';
 
 const emptyTol = { positive: '', nominal: '', negative: '' };
 const emptyLimits = { max: '', min: '' };
@@ -24,6 +24,22 @@ export default function EnhancedApp() {
     }
     return calculateMaxMinTolerance(toNumber(limits.max), toNumber(limits.min));
   }, [mode, tol, limits, validation]);
+
+  const mobileResult = useMemo(() => {
+    if (!result) return [];
+    if (mode === 'plus-minus') {
+      return [
+        ['נומינלי', result.nominalMm],
+        ['עליון', result.maxLimitMm],
+        ['תחתון', result.minLimitMm],
+      ];
+    }
+    return [
+      ['מקסימום', result.maxMm],
+      ['מינימום', result.minMm],
+      ['טווח', result.rangeMm],
+    ];
+  }, [mode, result]);
 
   const switchMode = (nextMode) => {
     if (nextMode === mode) return;
@@ -60,6 +76,10 @@ export default function EnhancedApp() {
           </div>
         </div>
         <p className="hero-copy">מחשבון סבולות להמרת מידות מאינצ׳ים למילימטרים.</p>
+        <details className="mobile-guide">
+          <summary>איך זה עובד?</summary>
+          <p>בחרו סוג חישוב, הזינו ערכים באינץ׳ וקבלו תוצאה במילימטרים.</p>
+        </details>
         <div className="quick-guide">
           <article><span>01</span><strong>סבולת חיובית</strong><p>כמה המידה יכולה לגדול.</p></article>
           <article><span>02</span><strong>מידה נומינלית</strong><p>המידה המרכזית של החלק.</p></article>
@@ -108,6 +128,17 @@ export default function EnhancedApp() {
           </div>
         </section>
       </section>
+
+      {result && (
+        <aside className="mobile-result-bar" aria-live="polite">
+          <div className="mobile-result-items">
+            {mobileResult.map(([label, value]) => (
+              <span key={label}><small>{label}</small><strong>{formatNumber(value, digits)} mm</strong></span>
+            ))}
+          </div>
+          <button type="button" onClick={copyResult}>העתק</button>
+        </aside>
+      )}
 
       <footer className="app-footer">Markulator · {WEB_VERSION} · PWA-ready</footer>
     </main>
