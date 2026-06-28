@@ -131,14 +131,72 @@ pyinstaller --onefile --noconsole --icon=pictures/calc.ico .\Marlulator_app.py
 
 ## Version History
 
-| Version | Notes |
-| :--- | :--- |
-| Web v0.9.2 | Added polished Hebrew/English language support, fixed RTL/LTR layout, updated README. |
-| Web v0.9.1 | Added smart sticky mobile bar that switches between result summary and quick input actions. |
-| Web v0.9 | Added side settings drawer, local calculation history, copy/share actions, PWA support, and refreshed mobile UI. |
-| Web v0.5 | Updated symbol/logo handling for deployment. |
-| Web v0.4 | Added Hebrew RTL React/Vite web app with ordered tolerance workflow. |
-| Desktop v1.2 | Stable Python CustomTkinter desktop calculator. |
+### Web v0.9.2 — Language and layout polish
+
+- Added a complete **Hebrew / English language setting** in the side settings drawer.
+- Set **Hebrew as the default language**.
+- Added `localStorage` persistence for the selected interface language.
+- Added Hebrew RTL behavior and English LTR behavior.
+- Fixed English layout so the hero area, guide cards, headings, and app sections align naturally to the left.
+- Fixed Hebrew mode text so the tolerance button no longer shows English-only helper text.
+- Kept technical units in English: `inch`, `mm`, `inch → mm`, and `mm → inch`.
+- Kept the Markulator title on the left and the app symbol on the right in both languages.
+- Added `language-layout.css` for language-specific layout overrides.
+- Bumped the web package version to `0.9.2`.
+- Updated service worker cache naming for the v0.9.2 deploy.
+
+### Web v0.9.1 — Smart mobile sticky bar
+
+- Added a smarter mobile sticky bar.
+- While editing values, the sticky bar shows a compact result summary.
+- When the full result section is visible, the sticky bar switches to quick actions:
+  - Save
+  - Clear
+  - Edit values
+- Added scroll-back behavior from the sticky bar to the input section.
+- Added result-section visibility detection with `IntersectionObserver`.
+- Updated the service worker cache for the new mobile behavior.
+- Bumped the web package version to `0.9.1`.
+
+### Web v0.9 — App-style web upgrade
+
+- Added a side settings drawer with a prominent gear button.
+- Moved conversion direction controls into settings.
+- Added support for both `inch → mm` and `mm → inch` conversion directions.
+- Added result precision settings: 2, 3, or 4 decimals.
+- Added local calculation history using browser `localStorage`.
+- Added a save button next to the clear button.
+- Added short copy, full copy, and share actions.
+- Added a mobile result bar for quick access to calculated values.
+- Added PWA-ready service worker registration.
+- Refreshed the interface with a more mobile-app-like design.
+
+### Web v0.5 — Deployment polish
+
+- Updated symbol/logo handling for the deployed web app.
+- Improved asset loading for the hosted Vercel version.
+- Stabilized the visual identity around the Markulator icon.
+
+### Web v0.4 — First Hebrew RTL web workflow
+
+- Added the React/Vite Hebrew RTL web version.
+- Implemented the ordered tolerance workflow: `Tol+ → Nominal → Tol-`.
+- Added a clean calculator layout for tolerance inputs and result output.
+- Focused the web version around practical inch-to-mm conversion.
+
+### Earlier web prototypes
+
+- Built the first modern dark UI prototypes.
+- Tested result cards, simplified input sections, and early responsive layouts.
+- Removed older experimental history/UI ideas before rebuilding the app flow in v0.9.
+
+### Desktop v1.2 — Python desktop app
+
+- Stable Python CustomTkinter desktop calculator.
+- Supports tolerance ± and max/min calculation modes.
+- Includes dark/light theme behavior through `darkdetect`.
+- Supports previous-calculation memory navigation.
+- Can be packaged as a Windows executable using PyInstaller.
 
 ---
 
