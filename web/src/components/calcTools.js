@@ -1,4 +1,21 @@
-export const WEB_VERSION = 'Web v0.8';
+export const WEB_VERSION = 'Web v0.9';
+
+export const UNIT_MODES = {
+  IN_TO_MM: 'in-to-mm',
+  MM_TO_IN: 'mm-to-in',
+};
+
+export function getUnits(unitMode) {
+  if (unitMode === UNIT_MODES.MM_TO_IN) {
+    return { input: 'mm', output: 'in', outputLabel: 'in', inputLabel: 'מ״מ' };
+  }
+  return { input: 'in', output: 'mm', outputLabel: 'מ״מ', inputLabel: 'in' };
+}
+
+export function convertValue(value, unitMode) {
+  if (unitMode === UNIT_MODES.MM_TO_IN) return value / 25.4;
+  return value * 25.4;
+}
 
 export function toNumber(value) {
   if (value === '' || value == null) return null;
@@ -41,20 +58,28 @@ export function validateInputs(mode, tol, limits) {
   return { ready, errors };
 }
 
-export function buildCopyText(mode, result, digits) {
+export function buildCopyText(mode, result, digits, unitLabel = 'מ״מ') {
   if (mode === 'plus-minus') {
     return [
-      `Tol+ ${formatNumber(result.posTolMm, digits)} mm`,
-      `Nominal ${formatNumber(result.nominalMm, digits)} mm`,
-      `Tol- ${formatNumber(result.negTolMm, digits)} mm`,
-      `Upper limit ${formatNumber(result.maxLimitMm, digits)} mm`,
-      `Lower limit ${formatNumber(result.minLimitMm, digits)} mm`,
+      `Tol+ ${formatNumber(result.posTolMm, digits)} ${unitLabel}`,
+      `Nominal ${formatNumber(result.nominalMm, digits)} ${unitLabel}`,
+      `Tol- ${formatNumber(result.negTolMm, digits)} ${unitLabel}`,
+      `Upper limit ${formatNumber(result.maxLimitMm, digits)} ${unitLabel}`,
+      `Lower limit ${formatNumber(result.minLimitMm, digits)} ${unitLabel}`,
     ].join('\n');
   }
 
   return [
-    `Max ${formatNumber(result.maxMm, digits)} mm`,
-    `Min ${formatNumber(result.minMm, digits)} mm`,
-    `Range ${formatNumber(result.rangeMm, digits)} mm`,
+    `Max ${formatNumber(result.maxMm, digits)} ${unitLabel}`,
+    `Min ${formatNumber(result.minMm, digits)} ${unitLabel}`,
+    `Range ${formatNumber(result.rangeMm, digits)} ${unitLabel}`,
   ].join('\n');
+}
+
+export function buildShortCopyText(mode, result, digits, unitLabel = 'מ״מ') {
+  if (!result) return '';
+  if (mode === 'plus-minus') {
+    return `Nominal ${formatNumber(result.nominalMm, digits)} ${unitLabel} | Upper ${formatNumber(result.maxLimitMm, digits)} ${unitLabel} | Lower ${formatNumber(result.minLimitMm, digits)} ${unitLabel}`;
+  }
+  return `Max ${formatNumber(result.maxMm, digits)} ${unitLabel} | Min ${formatNumber(result.minMm, digits)} ${unitLabel} | Range ${formatNumber(result.rangeMm, digits)} ${unitLabel}`;
 }
