@@ -99,7 +99,7 @@ export default function EnhancedApp() {
         </div>
 
         <section className="form-section">
-          <div className="section-title-row"><div><p className="section-label">שלב שני</p><h2>הזינו ערכים באינץ׳</h2></div><button className="clear-button" onClick={clear} type="button">ניקוי</button></div>
+          <div className="section-title-row"><div><p className="section-label">שלב שני</p><h2>הזינו ערכים באינץ׳</h2></div></div>
           {mode === 'plus-minus' ? (
             <div key="plus-minus-form" className="input-grid mode-content">
               <InputField label="סבולת חיובית" helper="כמה המידה יכולה לגדול." suffix="+ in" value={tol.positive} placeholder="לדוגמה: 0.005" onChange={(positive) => setTol((x) => ({ ...x, positive }))} />
@@ -116,6 +116,13 @@ export default function EnhancedApp() {
           <div className="utility-row">
             <label className="select-field">דיוק תוצאה<select value={digits} onChange={(e) => setDigits(Number(e.target.value))}><option value="2">2 ספרות</option><option value="3">3 ספרות</option><option value="4">4 ספרות</option></select></label>
             <span className="version-pill">{WEB_VERSION}</span>
+          </div>
+
+          <div className="form-clear-row">
+            <button className="clear-button form-clear-button" onClick={clear} type="button">
+              <span aria-hidden="true">🧽</span>
+              ניקוי
+            </button>
           </div>
 
           {validation.errors.length > 0 && <div className="validation-box">{validation.errors.map((msg) => <p key={msg}>{msg}</p>)}</div>}
