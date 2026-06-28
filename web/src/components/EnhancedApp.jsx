@@ -65,6 +65,8 @@ const TEXT = {
     clear: 'ניקוי',
     step3: 'שלב שלישי',
     resultIn: 'תוצאה ב־',
+    openResults: 'פתח תוצאה',
+    closeResults: 'סגור תוצאה',
     shortCopy: 'העתקה קצרה',
     fullCopy: 'העתקה מלאה',
     share: 'שיתוף',
@@ -143,6 +145,8 @@ const TEXT = {
     clear: 'Clear',
     step3: 'Step three',
     resultIn: 'Result in ',
+    openResults: 'Open result',
+    closeResults: 'Close result',
     shortCopy: 'Short copy',
     fullCopy: 'Full copy',
     share: 'Share',
@@ -222,6 +226,7 @@ export default function EnhancedApp() {
   const [history, setHistory] = useState([]);
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [resultSectionVisible, setResultSectionVisible] = useState(false);
+  const [resultOpen, setResultOpen] = useState(false);
   const [themeMode, setThemeMode] = useState(getSavedThemeMode);
   const [systemTheme, setSystemTheme] = useState(getSystemTheme);
   const [themeAnimating, setThemeAnimating] = useState(false);
@@ -281,6 +286,11 @@ export default function EnhancedApp() {
   }, [drawerOpen]);
 
   useEffect(() => {
+    if (!resultOpen) {
+      setResultSectionVisible(false);
+      return;
+    }
+
     const target = resultSectionRef.current;
     if (!target || typeof IntersectionObserver === 'undefined') return;
     const observer = new IntersectionObserver(
@@ -289,7 +299,7 @@ export default function EnhancedApp() {
     );
     observer.observe(target);
     return () => observer.disconnect();
-  }, []);
+  }, [resultOpen]);
 
   const result = useMemo(() => {
     if (!validation.ready || validation.errors.length) return null;
@@ -416,17 +426,31 @@ export default function EnhancedApp() {
           {validation.errors.length > 0 && <div className="validation-box">{validation.errors.map((msg) => <p key={msg}>{msg}</p>)}</div>}
         </section>
 
-        <section className="result-section" ref={resultSectionRef}>
-          <div className="section-title-row"><div><p className="section-label">{text.step3}</p><h2>{text.resultIn}{targetLabel}</h2></div></div>
-          <div className="result-actions enhanced-actions"><button className="clear-button" type="button" onClick={() => copyText(shortText, text.shortCopied)} disabled={!result}>{text.shortCopy}</button><button className="clear-button" type="button" onClick={() => copyText(currentText, text.fullCopied)} disabled={!result}>{text.fullCopy}</button><button className="clear-button" type="button" onClick={shareResult} disabled={!result}>{text.share}</button></div>
-          <div key={`result-${mode}-${unitMode}`} className="result-transition"><ResultPanel mode={mode} result={result} digits={digits} unitLabel={targetLabel} language={language} /></div>
-          {result && <div className="result-explanation">{mode === 'plus-minus' ? text.explanationPlus : text.explanationLimits}</div>}
+        <button
+          className={`result-drawer-handle ${resultOpen ? 'open' : ''}`}
+          type="button"
+          aria-controls="result-drawer"
+          aria-expanded={resultOpen}
+          aria-label={resultOpen ? text.closeResults : text.openResults}
+          onClick={() => setResultOpen((open) => !open)}
+        >
+          <span aria-hidden="true">⌄</span>
+        </button>
+
+        <section id="result-drawer" className={`result-drawer ${resultOpen ? 'open' : ''}`} ref={resultSectionRef} aria-hidden={!resultOpen}>
+          {resultOpen && (
+            <div className="result-drawer-inner">
+              <div className="result-actions enhanced-actions"><button className="clear-button" type="button" onClick={() => copyText(shortText, text.shortCopied)} disabled={!result}>{text.shortCopy}</button><button className="clear-button" type="button" onClick={() => copyText(currentText, text.fullCopied)} disabled={!result}>{text.fullCopy}</button><button className="clear-button" type="button" onClick={shareResult} disabled={!result}>{text.share}</button></div>
+              <div key={`result-${mode}-${unitMode}`} className="result-transition"><ResultPanel mode={mode} result={result} digits={digits} unitLabel={targetLabel} language={language} /></div>
+              {result && <div className="result-explanation">{mode === 'plus-minus' ? text.explanationPlus : text.explanationLimits}</div>}
+            </div>
+          )}
         </section>
 
-        <section className="history-section"><div className="section-title-row history-title"><div><p className="section-label">v0.9.4</p><h2>{text.historyTitle}</h2></div>{history.length > 0 && <button className="clear-button" type="button" onClick={clearHistory}>{text.clearHistory}</button>}</div>{history.length === 0 ? <p className="history-empty">{text.emptyHistory}</p> : <div className="history-list">{history.map((item) => <button key={item.id} type="button" onClick={() => copyText(item.fullText, text.historyCopied)}><span>{item.unitMode === UNIT_MODES.IN_TO_MM ? 'inch → mm' : 'mm → inch'}</span><strong>{item.text}</strong></button>)}</div>}</section>
+        <section className="history-section"><div className="section-title-row history-title"><div><p className="section-label">v0.9.5</p><h2>{text.historyTitle}</h2></div>{history.length > 0 && <button className="clear-button" type="button" onClick={clearHistory}>{text.clearHistory}</button>}</div>{history.length === 0 ? <p className="history-empty">{text.emptyHistory}</p> : <div className="history-list">{history.map((item) => <button key={item.id} type="button" onClick={() => copyText(item.fullText, text.historyCopied)}><span>{item.unitMode === UNIT_MODES.IN_TO_MM ? 'inch → mm' : 'mm → inch'}</span><strong>{item.text}</strong></button>)}</div>}</section>
       </section>
 
-      {result && <aside className={`mobile-result-bar ${resultSectionVisible ? 'input-mode' : ''}`} aria-live="polite">{resultSectionVisible ? <div className="mobile-input-actions"><button type="button" onClick={saveHistory} disabled={!result}>{text.save}</button><button type="button" onClick={clear}>{text.clear}</button><button type="button" onClick={scrollToInputs}>{text.editValues}</button></div> : <><div className="mobile-result-items">{mobileResult.map(([label, value]) => <span key={label}><small>{label}</small><strong>{formatNumber(value, digits)} {targetLabel}</strong></span>)}</div><button type="button" onClick={() => copyText(shortText, text.copied)}>{text.copy}</button></>}</aside>}
+      {result && resultOpen && <aside className={`mobile-result-bar ${resultSectionVisible ? 'input-mode' : ''}`} aria-live="polite">{resultSectionVisible ? <div className="mobile-input-actions"><button type="button" onClick={saveHistory} disabled={!result}>{text.save}</button><button type="button" onClick={clear}>{text.clear}</button><button type="button" onClick={scrollToInputs}>{text.editValues}</button></div> : <><div className="mobile-result-items">{mobileResult.map(([label, value]) => <span key={label}><small>{label}</small><strong>{formatNumber(value, digits)} {targetLabel}</strong></span>)}</div><button type="button" onClick={() => copyText(shortText, text.copied)}>{text.copy}</button></>}</aside>}
 
       <footer className="app-footer">Markulator · {WEB_VERSION} · PWA-ready</footer>
     </main>
