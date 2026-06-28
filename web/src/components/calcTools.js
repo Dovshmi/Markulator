@@ -59,6 +59,7 @@ export function validateInputs(mode, tol, limits) {
 }
 
 export function buildCopyText(mode, result, digits, unitLabel = 'מ״מ') {
+  if (!result) return '';
   if (mode === 'plus-minus') {
     return [
       `Tol+ ${formatNumber(result.posTolMm, digits)} ${unitLabel}`,
