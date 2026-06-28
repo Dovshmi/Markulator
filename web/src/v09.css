@@ -1,63 +1,113 @@
-.settings-panel {
-  margin-top: 16px;
-  border: 1px solid rgba(148, 163, 184, 0.16);
-  border-radius: 22px;
-  background: rgba(2, 6, 23, 0.34);
-  overflow: hidden;
+.app-menu-button {
+  position: fixed;
+  top: max(14px, env(safe-area-inset-top));
+  right: 14px;
+  z-index: 80;
+  display: grid;
+  place-items: center;
+  gap: 4px;
+  width: 48px;
+  height: 48px;
+  border: 1px solid rgba(103, 232, 249, 0.22);
+  border-radius: 16px;
+  background: rgba(2, 6, 23, 0.78);
+  box-shadow: 0 14px 34px rgba(0, 0, 0, 0.32);
 }
 
-.settings-toggle {
+.app-menu-button span {
+  display: block;
+  width: 20px;
+  height: 2px;
+  border-radius: 999px;
+  background: #e2e8f0;
+}
+
+.drawer-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 90;
+  background: rgba(2, 6, 23, 0.62);
+}
+
+.settings-drawer {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 100;
+  width: min(88vw, 360px);
+  padding: max(20px, env(safe-area-inset-top)) 18px max(20px, env(safe-area-inset-bottom));
+  border-left: 1px solid rgba(103, 232, 249, 0.22);
+  background:
+    radial-gradient(circle at 80% 0%, rgba(14, 165, 233, 0.18), transparent 16rem),
+    linear-gradient(180deg, rgba(15, 23, 42, 0.98), rgba(2, 6, 23, 0.98));
+  box-shadow: -22px 0 55px rgba(0, 0, 0, 0.42);
+  transform: translateX(105%);
+  transition: transform 220ms ease;
+  overflow-y: auto;
+}
+
+.settings-drawer.open {
+  transform: translateX(0);
+}
+
+.drawer-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 10px;
-  min-height: 54px;
-  padding: 0 16px;
-  color: #dbeafe;
-  cursor: pointer;
-  font-weight: 950;
-  list-style: none;
+  gap: 14px;
+  margin-bottom: 24px;
 }
 
-.settings-toggle::-webkit-details-marker {
-  display: none;
+.drawer-header h2 {
+  margin: 4px 0 0;
+  color: #ffffff;
+  font-size: 1.35rem;
 }
 
-.settings-toggle::after {
-  content: '▼';
-  color: #67e8f9;
-  font-size: 0.82rem;
-}
-
-.settings-panel[open] .settings-toggle::after {
-  content: '▲';
-}
-
-.settings-content {
+.drawer-close {
   display: grid;
-  gap: 16px;
-  padding: 0 16px 16px;
+  place-items: center;
+  width: 42px;
+  height: 42px;
+  border-radius: 14px;
+  color: #e2e8f0;
+  background: rgba(148, 163, 184, 0.12);
+  font-size: 1.6rem;
+  line-height: 1;
 }
 
-.settings-row {
+.drawer-section {
   display: grid;
   gap: 10px;
+  margin-bottom: 18px;
+  padding: 14px;
+  border: 1px solid rgba(148, 163, 184, 0.16);
+  border-radius: 20px;
+  background: rgba(2, 6, 23, 0.34);
 }
 
-.settings-row strong,
-.settings-row small {
+.drawer-section strong,
+.drawer-section small {
   display: block;
 }
 
-.settings-row strong {
+.drawer-section strong {
   color: #ffffff;
   font-weight: 950;
 }
 
-.settings-row small {
-  margin-top: 4px;
+.drawer-section small {
   color: #94a3b8;
   line-height: 1.5;
+}
+
+.drawer-status {
+  grid-template-columns: 1fr 1fr;
+  color: #67e8f9;
+  font-size: 0.88rem;
+  font-weight: 950;
+  text-align: center;
 }
 
 .unit-switch {
@@ -180,18 +230,18 @@
 }
 
 @media (max-width: 640px) {
-  .settings-panel {
-    margin-top: 12px;
-    border-radius: 20px;
+  .app-menu-button {
+    top: max(10px, env(safe-area-inset-top));
+    right: 10px;
+    width: 46px;
+    height: 46px;
+    border-radius: 15px;
   }
 
-  .settings-toggle {
-    min-height: 50px;
-    padding: 0 14px;
-  }
-
-  .settings-content {
-    padding: 0 14px 14px;
+  .settings-drawer {
+    width: min(90vw, 340px);
+    padding-right: 14px;
+    padding-left: 14px;
   }
 
   .unit-switch {
