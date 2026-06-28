@@ -314,7 +314,7 @@
 
   .tolerance-box-content,
   .tolerance-middle-panel {
-    gap: 10px;
+    gap: 0;
   }
 
   .tolerance-field-label {
@@ -322,19 +322,19 @@
   }
 
   .tolerance-value-frame {
-    height: 43px;
-    padding: 0 10px;
-    gap: 6px;
-    border-radius: 12px;
+    height: 58px;
+    padding: 0 14px;
+    gap: 8px;
+    border-radius: 16px;
   }
 
   .tolerance-value-frame input,
   .tolerance-output-frame strong {
-    font-size: 1.06rem;
+    font-size: 1.20rem;
   }
 
   .tolerance-value-frame em {
-    font-size: 0.84rem;
+    font-size: 0.94rem;
   }
 
   .tolerance-middle-content {
@@ -347,17 +347,18 @@
   }
 
   .tolerance-middle-panel .tolerance-value-frame {
-    height: 52px;
+    height: 66px;
+    border-radius: 18px;
     max-width: 100%;
   }
 
   .tolerance-middle-panel .tolerance-value-frame input,
   .tolerance-middle-panel .tolerance-output-frame strong {
-    font-size: 1.36rem;
+    font-size: 1.52rem;
   }
 
   .tolerance-middle-panel .tolerance-value-frame em {
-    font-size: 0.96rem;
+    font-size: 1.08rem;
   }
 }
 
@@ -374,12 +375,30 @@
     font-size: 0.96rem;
   }
 
+  .tolerance-value-frame {
+    height: 54px;
+    padding: 0 12px;
+  }
+
   .tolerance-value-frame input,
   .tolerance-output-frame strong {
-    font-size: 0.96rem;
+    font-size: 1.08rem;
   }
 
   .tolerance-value-frame em {
-    font-size: 0.78rem;
+    font-size: 0.88rem;
+  }
+
+  .tolerance-middle-panel .tolerance-value-frame {
+    height: 62px;
+  }
+
+  .tolerance-middle-panel .tolerance-value-frame input,
+  .tolerance-middle-panel .tolerance-output-frame strong {
+    font-size: 1.40rem;
+  }
+
+  .tolerance-middle-panel .tolerance-value-frame em {
+    font-size: 1rem;
   }
 }
