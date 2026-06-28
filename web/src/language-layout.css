@@ -1,0 +1,56 @@
+.brand-row-fixed {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  direction: ltr;
+}
+
+.brand-title-block {
+  flex: 1;
+  min-width: 0;
+  text-align: left;
+}
+
+.brand-title-block h1,
+.brand-title-block .eyebrow {
+  text-align: left;
+}
+
+.brand-row-fixed .logo-image-wrap {
+  flex-shrink: 0;
+}
+
+.app-shell.lang-en .hero-card {
+  direction: ltr;
+  text-align: left;
+}
+
+.app-shell.lang-en .hero-copy,
+.app-shell.lang-en .mobile-guide,
+.app-shell.lang-en .mobile-guide summary,
+.app-shell.lang-en .mobile-guide p {
+  text-align: left;
+}
+
+.app-shell.lang-en .quick-guide article {
+  direction: ltr;
+  text-align: left;
+}
+
+.app-shell.lang-en .quick-guide article strong,
+.app-shell.lang-en .quick-guide article p {
+  text-align: left;
+}
+
+.app-shell.lang-en .card-header,
+.app-shell.lang-en .section-title-row,
+.app-shell.lang-en .history-title {
+  direction: ltr;
+}
+
+.app-shell.lang-en .card-header h2,
+.app-shell.lang-en .section-title-row h2,
+.app-shell.lang-en .section-label {
+  text-align: left;
+}
