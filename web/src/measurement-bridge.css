@@ -272,11 +272,11 @@
 
 @media (max-width: 760px) {
   .tolerance-bridge {
-    --tolerance-side-width: clamp(106px, 30vw, 150px);
-    --tolerance-middle-height: clamp(144px, 29vw, 170px);
+    --tolerance-side-width: clamp(92px, 27vw, 130px);
+    --tolerance-middle-height: clamp(132px, 26vw, 154px);
     --tolerance-side-shift: 21px;
-    grid-template-columns: var(--tolerance-side-width) minmax(24px, 1fr) var(--tolerance-side-width);
-    row-gap: 14px;
+    grid-template-columns: var(--tolerance-side-width) minmax(20px, 1fr) var(--tolerance-side-width);
+    row-gap: 12px;
   }
 
   .tolerance-unit-title span {
@@ -290,79 +290,80 @@
   }
 
   .tolerance-mini-card {
-    min-height: 94px;
-    border-width: 2.5px;
-    border-radius: 20px;
-    padding: 10px 8px;
+    min-height: 78px;
+    border-width: 2.25px;
+    border-radius: 18px;
+    padding: 8px 7px;
   }
 
   .tolerance-box-content,
   .tolerance-middle-panel {
-    gap: 8px;
+    gap: 7px;
   }
 
   .tolerance-field-label {
-    font-size: 0.68rem;
+    font-size: 0.90rem;
   }
 
   .tolerance-value-frame {
-    height: 32px;
-    padding: 0 7px;
-    gap: 4px;
+    height: 34px;
+    padding: 0 8px;
+    gap: 5px;
     border-radius: 10px;
   }
 
   .tolerance-value-frame input,
   .tolerance-output-frame strong {
-    font-size: 0.68rem;
+    font-size: 0.92rem;
   }
 
   .tolerance-value-frame em {
-    font-size: 0.55rem;
-  }
-
-  .tolerance-middle-content {
-    grid-template-columns: minmax(0, 1fr) 50px minmax(0, 1fr);
-    padding: 22px 18px;
-  }
-
-  .tolerance-middle-panel .tolerance-field-label {
     font-size: 0.74rem;
   }
 
+  .tolerance-middle-content {
+    grid-template-columns: minmax(0, 1fr) 42px minmax(0, 1fr);
+    padding: 18px 14px;
+  }
+
+  .tolerance-middle-panel .tolerance-field-label {
+    font-size: 1.00rem;
+  }
+
   .tolerance-middle-panel .tolerance-value-frame {
-    height: 38px;
+    height: 40px;
+    max-width: 100%;
   }
 
   .tolerance-middle-panel .tolerance-value-frame input,
   .tolerance-middle-panel .tolerance-output-frame strong {
-    font-size: 0.82rem;
+    font-size: 1.18rem;
   }
 
   .tolerance-middle-panel .tolerance-value-frame em {
-    font-size: 0.62rem;
+    font-size: 0.84rem;
   }
 }
 
 @media (max-width: 430px) {
   .tolerance-bridge {
-    row-gap: 10px;
+    row-gap: 9px;
   }
 
   .tolerance-mini-card {
-    min-height: 84px;
+    min-height: 72px;
   }
 
   .tolerance-field-label {
-    font-size: 0.58rem;
+    font-size: 0.84rem;
   }
 
   .tolerance-value-frame input,
   .tolerance-output-frame strong {
-    font-size: 0.56rem;
+    font-size: 0.82rem;
   }
 
   .tolerance-value-frame em {
-    font-size: 0.48rem;
+    font-size: 0.68rem;
   }
 }
