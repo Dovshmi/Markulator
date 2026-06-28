@@ -16,7 +16,7 @@ function getInputSuffix(field, unit) {
 }
 
 function getOutputValue(field, result, digits) {
-  if (!result) return '—';
+  if (!result) return '';
   return formatNumber(result[FIELDS[field].resultKey], digits);
 }
 
@@ -30,28 +30,26 @@ function getIdleInputStyle(value, isMiddle) {
   return { fontSize: isMiddle ? '1.12rem' : '0.94rem' };
 }
 
-function SourceValue({ field, unit, tol, setTol, placeholderLabel, isMiddle = false }) {
+function convertToLeftUnit(value, unitMode) {
+  if (value === '' || value == null) return '';
+  const number = Number(value);
+  if (!Number.isFinite(number)) return value;
+  return String(unitMode === UNIT_MODES.IN_TO_MM ? number / 25.4 : number * 25.4);
+}
+
+function ValueInput({ field, unit, value, onChange, placeholderLabel, isMiddle = false }) {
   return (
     <span className="tolerance-value-frame tolerance-input-frame">
       <input
         type="number"
         inputMode="decimal"
         step="0.0001"
-        value={tol[field]}
+        value={value}
         placeholder={placeholderLabel}
-        style={getIdleInputStyle(tol[field], isMiddle)}
-        onChange={(event) => setTol((current) => ({ ...current, [field]: event.currentTarget.value }))}
+        style={getIdleInputStyle(value, isMiddle)}
+        onChange={(event) => onChange(field, event.currentTarget.value)}
       />
       <em>{getInputSuffix(field, unit)}</em>
-    </span>
-  );
-}
-
-function TargetValue({ field, unit, result, digits }) {
-  return (
-    <span className="tolerance-value-frame tolerance-output-frame">
-      <strong>{getOutputValue(field, result, digits)}</strong>
-      <em>{unit}</em>
     </span>
   );
 }
@@ -60,27 +58,29 @@ export default function ToleranceBridge({ unitMode, tol, setTol, result, digits,
   const sourceUnit = unitMode === UNIT_MODES.IN_TO_MM ? 'in' : 'mm';
   const targetUnit = unitMode === UNIT_MODES.IN_TO_MM ? 'mm' : 'in';
 
+  const updateSource = (field, value) => {
+    setTol((current) => ({ ...current, [field]: value }));
+  };
+
+  const updateTarget = (field, value) => {
+    setTol((current) => ({ ...current, [field]: convertToLeftUnit(value, unitMode) }));
+  };
+
   const renderMiniCard = (side, field, position) => {
     const isSource = side === 'source';
     const unit = isSource ? sourceUnit : targetUnit;
     const fullLabel = text[FIELDS[field].labelKey];
     const label = getLabel(text, field);
+    const value = isSource ? tol[field] : getOutputValue(field, result, digits);
+    const onChange = isSource ? updateSource : updateTarget;
 
-    const content = (
-      <span className="tolerance-box-content">
-        {isSource ? (
-          <SourceValue field={field} unit={unit} tol={tol} setTol={setTol} placeholderLabel={label} />
-        ) : (
-          <TargetValue field={field} unit={unit} result={result} digits={digits} />
-        )}
-      </span>
+    return (
+      <label className={`tolerance-mini-card tolerance-${position} tolerance-${side}`} aria-label={`${fullLabel} ${unit}`}>
+        <span className="tolerance-box-content">
+          <ValueInput field={field} unit={unit} value={value || ''} onChange={onChange} placeholderLabel={label} />
+        </span>
+      </label>
     );
-
-    const className = `tolerance-mini-card tolerance-${position} tolerance-${side}`;
-    if (isSource) {
-      return <label className={className} aria-label={`${fullLabel} ${unit}`}>{content}</label>;
-    }
-    return <div className={className} aria-label={`${fullLabel} ${unit}`}>{content}</div>;
   };
 
   const nominalLabel = getLabel(text, 'nominal');
@@ -105,11 +105,11 @@ export default function ToleranceBridge({ unitMode, tol, setTol, result, digits,
 
         <div className="tolerance-middle-content">
           <label className="tolerance-middle-panel tolerance-source" aria-label={`${text.nominal} ${sourceUnit}`}>
-            <SourceValue field="nominal" unit={sourceUnit} tol={tol} setTol={setTol} placeholderLabel={nominalLabel} isMiddle />
+            <ValueInput field="nominal" unit={sourceUnit} value={tol.nominal || ''} onChange={updateSource} placeholderLabel={nominalLabel} isMiddle />
           </label>
-          <div className="tolerance-middle-panel tolerance-target" aria-label={`${text.nominal} ${targetUnit}`}>
-            <TargetValue field="nominal" unit={targetUnit} result={result} digits={digits} />
-          </div>
+          <label className="tolerance-middle-panel tolerance-target" aria-label={`${text.nominal} ${targetUnit}`}>
+            <ValueInput field="nominal" unit={targetUnit} value={getOutputValue('nominal', result, digits)} onChange={updateTarget} placeholderLabel={nominalLabel} isMiddle />
+          </label>
         </div>
       </section>
 
