@@ -120,7 +120,7 @@ export default function EnhancedApp() {
 
           <div className="form-clear-row">
             <button className="clear-button form-clear-button" onClick={clear} type="button">
-              <span aria-hidden="true">🧽</span>
+              <span aria-hidden="true">🗑️</span>
               ניקוי
             </button>
           </div>
