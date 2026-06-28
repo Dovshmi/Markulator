@@ -19,6 +19,7 @@ const emptyTol = { positive: '', nominal: '', negative: '' };
 const emptyLimits = { max: '', min: '' };
 const HISTORY_KEY = 'markulator-history-v1';
 const LANGUAGE_KEY = 'markulator-language-v1';
+const THEME_KEY = 'markulator-theme-v1';
 
 const TEXT = {
   he: {
@@ -31,6 +32,11 @@ const TEXT = {
     languageHelp: 'בחרו את שפת הממשק. הבחירה נשמרת בדפדפן.',
     hebrew: 'עברית',
     english: 'English',
+    theme: 'ערכת צבעים',
+    themeHelp: 'בחרו מצב בהיר, כהה או אוטומטי לפי המכשיר.',
+    autoTheme: 'אוטומטי',
+    lightTheme: 'בהיר',
+    darkTheme: 'כהה',
     conversionDirection: 'כיוון המרה',
     conversionHelp: 'בחרו באילו יחידות להזין ובאילו יחידות לקבל תוצאה.',
     resultPrecision: 'דיוק תוצאה',
@@ -112,6 +118,11 @@ const TEXT = {
     languageHelp: 'Choose the interface language. Your choice is saved in this browser.',
     hebrew: 'עברית',
     english: 'English',
+    theme: 'Theme',
+    themeHelp: 'Choose light, dark, or automatic mode based on your device.',
+    autoTheme: 'Auto',
+    lightTheme: 'Light',
+    darkTheme: 'Dark',
     conversionDirection: 'Conversion direction',
     conversionHelp: 'Choose the input unit and the output unit.',
     resultPrecision: 'Result precision',
@@ -185,6 +196,20 @@ const TEXT = {
   },
 };
 
+function getSystemTheme() {
+  if (typeof window === 'undefined' || !window.matchMedia) return 'dark';
+  return window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
+}
+
+function getSavedThemeMode() {
+  try {
+    const saved = localStorage.getItem(THEME_KEY);
+    return ['auto', 'light', 'dark'].includes(saved) ? saved : 'auto';
+  } catch {
+    return 'auto';
+  }
+}
+
 function buildConvertedResult(mode, tol, limits, unitMode) {
   if (unitMode === UNIT_MODES.IN_TO_MM) {
     if (mode === 'plus-minus') return calculatePlusMinusTolerance(toNumber(tol.nominal), toNumber(tol.positive), toNumber(tol.negative));
@@ -213,13 +238,18 @@ export default function EnhancedApp() {
   const [history, setHistory] = useState([]);
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [resultSectionVisible, setResultSectionVisible] = useState(false);
+  const [themeMode, setThemeMode] = useState(getSavedThemeMode);
+  const [systemTheme, setSystemTheme] = useState(getSystemTheme);
+  const [themeAnimating, setThemeAnimating] = useState(false);
   const [language, setLanguage] = useState(() => {
     try { return localStorage.getItem(LANGUAGE_KEY) === 'en' ? 'en' : 'he'; } catch { return 'he'; }
   });
   const inputSectionRef = useRef(null);
   const resultSectionRef = useRef(null);
+  const themeTimerRef = useRef(null);
   const text = TEXT[language];
   const dir = language === 'he' ? 'rtl' : 'ltr';
+  const resolvedTheme = themeMode === 'auto' ? systemTheme : themeMode;
 
   const units = useMemo(() => getUnits(unitMode), [unitMode]);
   const validation = useMemo(() => validateInputs(mode, tol, limits, language), [mode, tol, limits, language]);
@@ -229,6 +259,26 @@ export default function EnhancedApp() {
     document.documentElement.dir = dir;
     try { localStorage.setItem(LANGUAGE_KEY, language); } catch { return; }
   }, [language, dir]);
+
+  useEffect(() => {
+    if (typeof window === 'undefined' || !window.matchMedia) return;
+    const query = window.matchMedia('(prefers-color-scheme: light)');
+    const updateSystemTheme = () => setSystemTheme(query.matches ? 'light' : 'dark');
+    updateSystemTheme();
+    query.addEventListener?.('change', updateSystemTheme);
+    return () => query.removeEventListener?.('change', updateSystemTheme);
+  }, []);
+
+  useEffect(() => {
+    try { localStorage.setItem(THEME_KEY, themeMode); } catch { return; }
+    document.documentElement.style.colorScheme = resolvedTheme;
+    document.body.classList.toggle('theme-light', resolvedTheme === 'light');
+    document.body.classList.toggle('theme-dark', resolvedTheme === 'dark');
+    setThemeAnimating(true);
+    window.clearTimeout(themeTimerRef.current);
+    themeTimerRef.current = window.setTimeout(() => setThemeAnimating(false), 520);
+    return () => window.clearTimeout(themeTimerRef.current);
+  }, [themeMode, resolvedTheme]);
 
   useEffect(() => {
     try {
@@ -323,7 +373,7 @@ export default function EnhancedApp() {
   const minPlaceholder = unitMode === UNIT_MODES.IN_TO_MM ? text.minPlaceholderIn : text.minPlaceholderMm;
 
   return (
-    <main className={`app-shell lang-${language}`} dir={dir} lang={language}>
+    <main className={`app-shell lang-${language} theme-${resolvedTheme} theme-mode-${themeMode} ${themeAnimating ? 'theme-animating' : ''}`} dir={dir} lang={language}>
       <button className="app-menu-button" type="button" aria-label={text.openSettings} onClick={() => setDrawerOpen(true)}><span></span><span></span><span></span></button>
       {drawerOpen && <button className="drawer-backdrop" type="button" aria-label={text.closeMenu} onClick={() => setDrawerOpen(false)} />}
 
@@ -339,6 +389,15 @@ export default function EnhancedApp() {
         </div>
 
         <div className="drawer-section">
+          <strong>{text.theme}</strong><small>{text.themeHelp}</small>
+          <div className="unit-switch theme-switch" aria-label={text.theme}>
+            <button className={themeMode === 'auto' ? 'active' : ''} type="button" onClick={() => setThemeMode('auto')}>◎ {text.autoTheme}</button>
+            <button className={themeMode === 'light' ? 'active' : ''} type="button" onClick={() => setThemeMode('light')}>☀ {text.lightTheme}</button>
+            <button className={themeMode === 'dark' ? 'active' : ''} type="button" onClick={() => setThemeMode('dark')}>☾ {text.darkTheme}</button>
+          </div>
+        </div>
+
+        <div className="drawer-section">
           <strong>{text.conversionDirection}</strong><small>{text.conversionHelp}</small>
           <div className="unit-switch" aria-label={text.conversionDirection}>
             <button className={unitMode === UNIT_MODES.IN_TO_MM ? 'active' : ''} type="button" onClick={() => setUnitMode(UNIT_MODES.IN_TO_MM)}>inch → mm</button>
@@ -350,7 +409,7 @@ export default function EnhancedApp() {
           <label className="select-field settings-select">{text.resultPrecision}<select value={digits} onChange={(e) => setDigits(Number(e.target.value))}><option value="2">{text.digits2}</option><option value="3">{text.digits3}</option><option value="4">{text.digits4}</option></select></label>
         </div>
 
-        <div className="drawer-section drawer-status"><span>{WEB_VERSION}</span><span>{unitMode === UNIT_MODES.IN_TO_MM ? 'inch → mm' : 'mm → inch'}</span></div>
+        <div className="drawer-section drawer-status"><span>{WEB_VERSION}</span><span>{themeMode === 'auto' ? `${text.autoTheme} · ${resolvedTheme}` : themeMode}</span></div>
       </aside>
 
       <section className="hero-card">
@@ -383,7 +442,7 @@ export default function EnhancedApp() {
           {result && <div className="result-explanation">{mode === 'plus-minus' ? text.explanationPlus : text.explanationLimits}</div>}
         </section>
 
-        <section className="history-section"><div className="section-title-row history-title"><div><p className="section-label">v0.9.2</p><h2>{text.historyTitle}</h2></div>{history.length > 0 && <button className="clear-button" type="button" onClick={clearHistory}>{text.clearHistory}</button>}</div>{history.length === 0 ? <p className="history-empty">{text.emptyHistory}</p> : <div className="history-list">{history.map((item) => <button key={item.id} type="button" onClick={() => copyText(item.fullText, text.historyCopied)}><span>{item.unitMode === UNIT_MODES.IN_TO_MM ? 'inch → mm' : 'mm → inch'}</span><strong>{item.text}</strong></button>)}</div>}</section>
+        <section className="history-section"><div className="section-title-row history-title"><div><p className="section-label">v0.9.3</p><h2>{text.historyTitle}</h2></div>{history.length > 0 && <button className="clear-button" type="button" onClick={clearHistory}>{text.clearHistory}</button>}</div>{history.length === 0 ? <p className="history-empty">{text.emptyHistory}</p> : <div className="history-list">{history.map((item) => <button key={item.id} type="button" onClick={() => copyText(item.fullText, text.historyCopied)}><span>{item.unitMode === UNIT_MODES.IN_TO_MM ? 'inch → mm' : 'mm → inch'}</span><strong>{item.text}</strong></button>)}</div>}</section>
       </section>
 
       {result && <aside className={`mobile-result-bar ${resultSectionVisible ? 'input-mode' : ''}`} aria-live="polite">{resultSectionVisible ? <div className="mobile-input-actions"><button type="button" onClick={saveHistory} disabled={!result}>{text.save}</button><button type="button" onClick={clear}>{text.clear}</button><button type="button" onClick={scrollToInputs}>{text.editValues}</button></div> : <><div className="mobile-result-items">{mobileResult.map(([label, value]) => <span key={label}><small>{label}</small><strong>{formatNumber(value, digits)} {targetLabel}</strong></span>)}</div><button type="button" onClick={() => copyText(shortText, text.copied)}>{text.copy}</button></>}</aside>}
