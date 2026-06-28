@@ -163,7 +163,7 @@
 }
 
 .tolerance-value-frame input::placeholder {
-  color: rgba(148, 163, 184, 0.55);
+  color: rgba(148, 163, 184, 0.58);
 }
 
 .tolerance-value-frame input[type="number"]::-webkit-outer-spin-button,
@@ -210,6 +210,14 @@
   stroke: rgba(255,255,255,0.055);
   stroke-width: 1.1;
   vector-effect: non-scaling-stroke;
+}
+
+.tolerance-mobile-shape {
+  display: none;
+}
+
+.tolerance-desktop-shape {
+  display: inline;
 }
 
 .tolerance-middle-content {
@@ -272,11 +280,19 @@
 
 @media (max-width: 760px) {
   .tolerance-bridge {
-    --tolerance-side-width: clamp(92px, 27vw, 130px);
-    --tolerance-middle-height: clamp(132px, 26vw, 154px);
+    --tolerance-side-width: clamp(108px, 31vw, 148px);
+    --tolerance-middle-height: clamp(176px, 36vw, 212px);
     --tolerance-side-shift: 21px;
-    grid-template-columns: var(--tolerance-side-width) minmax(20px, 1fr) var(--tolerance-side-width);
-    row-gap: 12px;
+    grid-template-columns: var(--tolerance-side-width) minmax(18px, 1fr) var(--tolerance-side-width);
+    row-gap: 14px;
+  }
+
+  .tolerance-desktop-shape {
+    display: none;
+  }
+
+  .tolerance-mobile-shape {
+    display: inline;
   }
 
   .tolerance-unit-title span {
@@ -290,58 +306,58 @@
   }
 
   .tolerance-mini-card {
-    min-height: 78px;
-    border-width: 2.25px;
-    border-radius: 18px;
-    padding: 8px 7px;
+    min-height: 91px;
+    border-width: 2.5px;
+    border-radius: 20px;
+    padding: 9px 8px;
   }
 
   .tolerance-box-content,
   .tolerance-middle-panel {
-    gap: 7px;
+    gap: 10px;
   }
 
   .tolerance-field-label {
-    font-size: 0.90rem;
+    font-size: 1.02rem;
   }
 
   .tolerance-value-frame {
-    height: 34px;
-    padding: 0 8px;
-    gap: 5px;
-    border-radius: 10px;
+    height: 43px;
+    padding: 0 10px;
+    gap: 6px;
+    border-radius: 12px;
   }
 
   .tolerance-value-frame input,
   .tolerance-output-frame strong {
-    font-size: 0.92rem;
+    font-size: 1.06rem;
   }
 
   .tolerance-value-frame em {
-    font-size: 0.74rem;
+    font-size: 0.84rem;
   }
 
   .tolerance-middle-content {
-    grid-template-columns: minmax(0, 1fr) 42px minmax(0, 1fr);
-    padding: 18px 14px;
+    grid-template-columns: minmax(0, 1fr) 64px minmax(0, 1fr);
+    padding: 26px 18px;
   }
 
   .tolerance-middle-panel .tolerance-field-label {
-    font-size: 1.00rem;
+    font-size: 1.16rem;
   }
 
   .tolerance-middle-panel .tolerance-value-frame {
-    height: 40px;
+    height: 52px;
     max-width: 100%;
   }
 
   .tolerance-middle-panel .tolerance-value-frame input,
   .tolerance-middle-panel .tolerance-output-frame strong {
-    font-size: 1.18rem;
+    font-size: 1.36rem;
   }
 
   .tolerance-middle-panel .tolerance-value-frame em {
-    font-size: 0.84rem;
+    font-size: 0.96rem;
   }
 }
 
@@ -351,19 +367,19 @@
   }
 
   .tolerance-mini-card {
-    min-height: 72px;
+    min-height: 84px;
   }
 
   .tolerance-field-label {
-    font-size: 0.84rem;
+    font-size: 0.96rem;
   }
 
   .tolerance-value-frame input,
   .tolerance-output-frame strong {
-    font-size: 0.82rem;
+    font-size: 0.96rem;
   }
 
   .tolerance-value-frame em {
-    font-size: 0.68rem;
+    font-size: 0.78rem;
   }
 }
