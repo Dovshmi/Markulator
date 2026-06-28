@@ -1,4 +1,4 @@
-const CACHE_NAME = 'markulator-v092-cache';
+const CACHE_NAME = 'markulator-v093-theme-cache';
 const APP_SHELL = ['/', '/manifest.webmanifest', '/markulator-icon.svg'];
 
 self.addEventListener('install', (event) => {
