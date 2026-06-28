@@ -48,6 +48,7 @@ const TEXT = {
     step1: 'שלב ראשון',
     chooseCalcType: 'בחרו את סוג החישוב',
     plusMinus: 'סבולת ±',
+    plusMinusHint: 'סבולת+ • נומינלי • סבולת-',
     maxMin: 'מקסימום / מינימום',
     maxMinHint: 'גבול עליון וגבול תחתון',
     step2: 'שלב שני',
@@ -128,6 +129,7 @@ const TEXT = {
     step1: 'Step one',
     chooseCalcType: 'Choose calculation type',
     plusMinus: 'Tolerance ±',
+    plusMinusHint: 'Tol+ → Nominal → Tol-',
     maxMin: 'Maximum / Minimum',
     maxMinHint: 'Upper limit and lower limit',
     step2: 'Step two',
@@ -262,9 +264,7 @@ export default function EnhancedApp() {
 
   const mobileResult = useMemo(() => {
     if (!result) return [];
-    if (mode === 'plus-minus') {
-      return [[text.mobileNominal, result.nominalMm], [text.mobileUpper, result.maxLimitMm], [text.mobileLower, result.minLimitMm]];
-    }
+    if (mode === 'plus-minus') return [[text.mobileNominal, result.nominalMm], [text.mobileUpper, result.maxLimitMm], [text.mobileLower, result.minLimitMm]];
     return [[text.mobileMax, result.maxMm], [text.mobileMin, result.minMm], [text.mobileRange, result.rangeMm]];
   }, [mode, result, text]);
 
@@ -323,7 +323,7 @@ export default function EnhancedApp() {
   const minPlaceholder = unitMode === UNIT_MODES.IN_TO_MM ? text.minPlaceholderIn : text.minPlaceholderMm;
 
   return (
-    <main className="app-shell" dir={dir} lang={language}>
+    <main className={`app-shell lang-${language}`} dir={dir} lang={language}>
       <button className="app-menu-button" type="button" aria-label={text.openSettings} onClick={() => setDrawerOpen(true)}><span></span><span></span><span></span></button>
       {drawerOpen && <button className="drawer-backdrop" type="button" aria-label={text.closeMenu} onClick={() => setDrawerOpen(false)} />}
 
@@ -354,7 +354,7 @@ export default function EnhancedApp() {
       </aside>
 
       <section className="hero-card">
-        <div className="brand-row"><div className="logo-image-wrap" aria-label="Markulator symbol"><img src={logoSymbol} alt="Markulator symbol" className="logo-image" /></div><div><p className="eyebrow">{WEB_VERSION}</p><h1>Markulator</h1></div></div>
+        <div className="brand-row brand-row-fixed"><div className="brand-title-block"><p className="eyebrow">{WEB_VERSION}</p><h1>Markulator</h1></div><div className="logo-image-wrap" aria-label="Markulator symbol"><img src={logoSymbol} alt="Markulator symbol" className="logo-image" /></div></div>
         <p className="hero-copy">{text.appDescription}</p>
         <details className="mobile-guide"><summary>{text.howItWorks}</summary><p>{text.guideText}</p></details>
         <div className="quick-guide"><article><span>01</span><strong>{text.quick1Title}</strong><p>{text.quick1Text}</p></article><article><span>02</span><strong>{text.quick2Title}</strong><p>{text.quick2Text}</p></article><article><span>03</span><strong>{text.quick3Title}</strong><p>{text.quick3Text}</p></article></div>
@@ -362,7 +362,7 @@ export default function EnhancedApp() {
 
       <section className="calculator-card">
         <header className="card-header"><div><p className="section-label">{text.step1}</p><h2>{text.chooseCalcType}</h2></div><span className="conversion-pill">{unitMode === UNIT_MODES.IN_TO_MM ? 'inch → mm' : 'mm → inch'}</span></header>
-        <div className="mode-switch"><button className={mode === 'plus-minus' ? 'active' : ''} aria-pressed={mode === 'plus-minus'} onClick={() => switchMode('plus-minus')} type="button"><strong>{text.plusMinus}</strong><span>Tol+ → Nominal → Tol-</span></button><button className={mode === 'max-min' ? 'active' : ''} aria-pressed={mode === 'max-min'} onClick={() => switchMode('max-min')} type="button"><strong>{text.maxMin}</strong><span>{text.maxMinHint}</span></button></div>
+        <div className="mode-switch"><button className={mode === 'plus-minus' ? 'active' : ''} aria-pressed={mode === 'plus-minus'} onClick={() => switchMode('plus-minus')} type="button"><strong>{text.plusMinus}</strong><span>{text.plusMinusHint}</span></button><button className={mode === 'max-min' ? 'active' : ''} aria-pressed={mode === 'max-min'} onClick={() => switchMode('max-min')} type="button"><strong>{text.maxMin}</strong><span>{text.maxMinHint}</span></button></div>
 
         <section className="form-section" ref={inputSectionRef}>
           <div className="section-title-row"><div><p className="section-label">{text.step2}</p><h2>{text.enterValues}{units.input}</h2></div></div>
