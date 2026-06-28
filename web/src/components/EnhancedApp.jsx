@@ -25,6 +25,12 @@ export default function EnhancedApp() {
     return calculateMaxMinTolerance(toNumber(limits.max), toNumber(limits.min));
   }, [mode, tol, limits, validation]);
 
+  const switchMode = (nextMode) => {
+    if (nextMode === mode) return;
+    setMode(nextMode);
+    setCopyStatus('');
+  };
+
   const clear = () => {
     if (mode === 'plus-minus') setTol(emptyTol);
     else setLimits(emptyLimits);
@@ -68,20 +74,20 @@ export default function EnhancedApp() {
         </header>
 
         <div className="mode-switch">
-          <button className={mode === 'plus-minus' ? 'active' : ''} onClick={() => setMode('plus-minus')} type="button"><strong>סבולת ±</strong><span>Tol+ → Nominal → Tol-</span></button>
-          <button className={mode === 'max-min' ? 'active' : ''} onClick={() => setMode('max-min')} type="button"><strong>מקסימום / מינימום</strong><span>גבול עליון וגבול תחתון</span></button>
+          <button className={mode === 'plus-minus' ? 'active' : ''} aria-pressed={mode === 'plus-minus'} onClick={() => switchMode('plus-minus')} type="button"><strong>סבולת ±</strong><span>Tol+ → Nominal → Tol-</span></button>
+          <button className={mode === 'max-min' ? 'active' : ''} aria-pressed={mode === 'max-min'} onClick={() => switchMode('max-min')} type="button"><strong>מקסימום / מינימום</strong><span>גבול עליון וגבול תחתון</span></button>
         </div>
 
         <section className="form-section">
           <div className="section-title-row"><div><p className="section-label">שלב שני</p><h2>הזינו ערכים באינץ׳</h2></div><button className="clear-button" onClick={clear} type="button">ניקוי</button></div>
           {mode === 'plus-minus' ? (
-            <div className="input-grid">
+            <div key="plus-minus-form" className="input-grid mode-content">
               <InputField label="סבולת חיובית" helper="כמה המידה יכולה לגדול." suffix="+ in" value={tol.positive} placeholder="לדוגמה: 0.005" onChange={(positive) => setTol((x) => ({ ...x, positive }))} />
               <InputField label="מידה נומינלית" helper="המידה הבסיסית לפני הוספת הסבולת." suffix="in" value={tol.nominal} placeholder="לדוגמה: 1.2500" onChange={(nominal) => setTol((x) => ({ ...x, nominal }))} />
               <InputField label="סבולת שלילית" helper="כמה המידה יכולה לקטון." suffix="- in" value={tol.negative} placeholder="לדוגמה: 0.002" onChange={(negative) => setTol((x) => ({ ...x, negative }))} />
             </div>
           ) : (
-            <div className="input-grid two">
+            <div key="max-min-form" className="input-grid two mode-content">
               <InputField label="ערך מקסימלי" helper="המידה הגבוהה ביותר המותרת." suffix="in" value={limits.max} placeholder="לדוגמה: 1.255" onChange={(max) => setLimits((x) => ({ ...x, max }))} />
               <InputField label="ערך מינימלי" helper="המידה הנמוכה ביותר המותרת." suffix="in" value={limits.min} placeholder="לדוגמה: 1.248" onChange={(min) => setLimits((x) => ({ ...x, min }))} />
             </div>
@@ -97,7 +103,9 @@ export default function EnhancedApp() {
 
         <section className="result-section">
           <div className="section-title-row"><div><p className="section-label">שלב שלישי</p><h2>תוצאה במילימטרים</h2></div><div className="result-actions"><button className="clear-button" type="button" onClick={copyResult} disabled={!result}>העתקת תוצאה</button>{copyStatus && <span>{copyStatus}</span>}</div></div>
-          <ResultPanel mode={mode} result={result} digits={digits} />
+          <div key={`result-${mode}`} className="result-transition">
+            <ResultPanel mode={mode} result={result} digits={digits} />
+          </div>
         </section>
       </section>
 
