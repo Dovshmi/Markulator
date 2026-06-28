@@ -9,7 +9,7 @@
   --tolerance-field-border: rgba(148, 163, 184, 0.14);
   --tolerance-side-width: clamp(150px, 19vw, 198px);
   --tolerance-middle-height: clamp(174px, 19.2vw, 202px);
-  --tolerance-side-shift: 18px;
+  --tolerance-side-shift: 38px;
   --tolerance-stroke: 3.2;
 
   width: min(1000px, 100%);
@@ -274,7 +274,7 @@
   .tolerance-bridge {
     --tolerance-side-width: clamp(106px, 30vw, 150px);
     --tolerance-middle-height: clamp(144px, 29vw, 170px);
-    --tolerance-side-shift: 10px;
+    --tolerance-side-shift: 21px;
     grid-template-columns: var(--tolerance-side-width) minmax(24px, 1fr) var(--tolerance-side-width);
     row-gap: 14px;
   }
