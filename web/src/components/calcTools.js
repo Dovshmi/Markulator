@@ -1,4 +1,4 @@
-export const WEB_VERSION = 'Web v0.9.5';
+export const WEB_VERSION = 'Web v0.9.6';
 
 export const UNIT_MODES = {
   IN_TO_MM: 'in-to-mm',
