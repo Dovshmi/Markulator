@@ -1,22 +1,22 @@
 .tolerance-bridge {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) clamp(30px, 7vw, 66px) minmax(0, 1fr);
+  grid-template-columns: minmax(0, 1fr) clamp(28px, 6vw, 58px) minmax(0, 1fr);
   grid-template-rows: auto auto auto auto;
-  gap: 12px 0;
+  gap: 16px 0;
   align-items: center;
-  margin-top: 6px;
+  margin-top: 8px;
 }
 
 .tolerance-unit-label {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: center;
   gap: 10px;
   min-width: 0;
   margin-bottom: 2px;
   padding: 0 10px;
   color: #94a3b8;
-  font-size: 0.78rem;
+  font-size: 0.76rem;
   font-weight: 950;
   letter-spacing: 0.06em;
   text-transform: uppercase;
@@ -47,10 +47,10 @@
 .tolerance-cell {
   position: relative;
   display: grid;
+  align-content: center;
   gap: 8px;
   min-width: 0;
-  min-height: 112px;
-  padding: 14px;
+  padding: 12px;
   border: 1px solid rgba(148, 163, 184, 0.18);
   background:
     radial-gradient(circle at 50% 0%, rgba(103, 232, 249, 0.08), transparent 9rem),
@@ -60,13 +60,21 @@
 
 .tolerance-cell-left {
   grid-column: 1;
-  text-align: left;
+  text-align: center;
   border-radius: 20px;
 }
 
 .tolerance-cell-right {
   grid-column: 3;
-  text-align: left;
+  text-align: center;
+  border-radius: 20px;
+}
+
+.tolerance-cell-upper,
+.tolerance-cell-lower {
+  width: clamp(118px, 42%, 152px);
+  min-height: 112px;
+  justify-self: center;
   border-radius: 20px;
 }
 
@@ -74,9 +82,15 @@
   grid-row: 2;
 }
 
+.tolerance-cell-lower {
+  grid-row: 4;
+}
+
 .tolerance-cell-nominal {
   grid-row: 3;
-  min-height: 128px;
+  z-index: 2;
+  min-height: 124px;
+  padding-inline: 16px;
   border-color: rgba(103, 232, 249, 0.36);
   background:
     radial-gradient(circle at 50% 0%, rgba(103, 232, 249, 0.16), transparent 10rem),
@@ -84,53 +98,53 @@
 }
 
 .tolerance-cell-nominal.tolerance-cell-left {
-  border-top-right-radius: 14px;
-  border-bottom-right-radius: 14px;
+  justify-self: stretch;
+  border-top-right-radius: 12px;
+  border-bottom-right-radius: 12px;
+  clip-path: polygon(0 0, calc(100% - 18px) 0, 100% 28%, 100% 72%, calc(100% - 18px) 100%, 0 100%);
 }
 
 .tolerance-cell-nominal.tolerance-cell-right {
-  border-top-left-radius: 14px;
-  border-bottom-left-radius: 14px;
-}
-
-.tolerance-cell-lower {
-  grid-row: 4;
+  justify-self: stretch;
+  border-top-left-radius: 12px;
+  border-bottom-left-radius: 12px;
+  clip-path: polygon(18px 0, 100% 0, 100% 100%, 18px 100%, 0 72%, 0 28%);
 }
 
 .tolerance-cell-target {
-  opacity: 0.95;
+  opacity: 0.96;
 }
 
 .tolerance-cell-label {
   display: block;
   min-width: 0;
   color: #ffffff;
-  font-size: 0.94rem;
+  font-size: 0.9rem;
   font-weight: 950;
-  line-height: 1.2;
+  line-height: 1.15;
 }
 
 .tolerance-cell small {
-  display: block;
-  min-height: 2.7em;
-  margin: 0;
-  color: #94a3b8;
-  font-size: 0.78rem;
-  font-weight: 760;
-  line-height: 1.35;
+  display: none;
 }
 
 .tolerance-value-frame {
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto;
   align-items: center;
-  gap: 8px;
+  gap: 7px;
   min-width: 0;
-  height: 50px;
-  padding: 0 12px;
+  height: 46px;
+  padding: 0 10px;
   border: 1px solid rgba(148, 163, 184, 0.20);
-  border-radius: 16px;
+  border-radius: 15px;
   background: rgba(2, 6, 23, 0.58);
+}
+
+.tolerance-cell-upper .tolerance-value-frame,
+.tolerance-cell-lower .tolerance-value-frame {
+  height: 42px;
+  padding: 0 8px;
 }
 
 .tolerance-input-frame:focus-within {
@@ -149,12 +163,19 @@
   background: transparent;
   direction: ltr;
   text-align: left;
-  font-size: clamp(0.95rem, 2.8vw, 1.12rem);
+  font-size: clamp(0.88rem, 2.4vw, 1.06rem);
   font-weight: 950;
   line-height: 1;
   appearance: textfield;
   -webkit-appearance: none;
   -moz-appearance: textfield;
+}
+
+.tolerance-cell-upper .tolerance-value-frame input,
+.tolerance-cell-upper .tolerance-output-frame strong,
+.tolerance-cell-lower .tolerance-value-frame input,
+.tolerance-cell-lower .tolerance-output-frame strong {
+  font-size: clamp(0.8rem, 2vw, 0.95rem);
 }
 
 .tolerance-value-frame input::placeholder {
@@ -165,7 +186,7 @@
   color: #67e8f9;
   direction: ltr;
   font-style: normal;
-  font-size: 0.82rem;
+  font-size: 0.76rem;
   font-weight: 950;
   white-space: nowrap;
 }
@@ -174,48 +195,44 @@
   grid-column: 2;
   grid-row: 3;
   position: relative;
+  z-index: 3;
   display: grid;
   place-items: center;
-  height: 76px;
-  margin-inline: -2px;
-  color: #67e8f9;
+  align-self: center;
+  height: 78px;
+  margin-inline: -12px;
   isolation: isolate;
+  pointer-events: none;
 }
 
 .tolerance-nominal-connector::before,
 .tolerance-nominal-connector::after {
   content: "";
   position: absolute;
-  inset-inline: -8px;
-  height: 24px;
+  left: 0;
+  right: 0;
+  height: 27px;
   border-color: rgba(103, 232, 249, 0.42);
-  z-index: -1;
 }
 
 .tolerance-nominal-connector::before {
-  top: 9px;
-  border-bottom: 3px solid rgba(103, 232, 249, 0.42);
+  top: 8px;
+  border-bottom: 4px solid rgba(103, 232, 249, 0.42);
   border-radius: 0 0 999px 999px;
 }
 
 .tolerance-nominal-connector::after {
-  bottom: 9px;
-  border-top: 3px solid rgba(103, 232, 249, 0.42);
+  bottom: 8px;
+  border-top: 4px solid rgba(103, 232, 249, 0.42);
   border-radius: 999px 999px 0 0;
 }
 
 .tolerance-nominal-connector span {
-  display: grid;
-  place-items: center;
-  width: 30px;
-  height: 30px;
-  border: 1px solid rgba(103, 232, 249, 0.30);
+  width: 100%;
+  height: 18px;
   border-radius: 999px;
-  color: #ffffff;
-  background: linear-gradient(135deg, rgba(14, 165, 233, 0.82), rgba(20, 184, 166, 0.62));
-  box-shadow: 0 0 24px rgba(103, 232, 249, 0.24);
-  font-size: 0.92rem;
-  font-weight: 950;
+  background: linear-gradient(90deg, rgba(14, 165, 233, 0.34), rgba(103, 232, 249, 0.22), rgba(20, 184, 166, 0.34));
+  box-shadow: 0 0 20px rgba(103, 232, 249, 0.16);
 }
 
 .theme-light .tolerance-unit-label {
@@ -248,10 +265,6 @@
   color: #0f172a;
 }
 
-.theme-light .tolerance-cell small {
-  color: #475569;
-}
-
 .theme-light .tolerance-value-frame {
   border-color: rgba(15, 23, 42, 0.14);
   background: rgba(226, 232, 240, 0.68);
@@ -272,96 +285,132 @@
   border-color: rgba(14, 116, 144, 0.34);
 }
 
+.theme-light .tolerance-nominal-connector span {
+  background: linear-gradient(90deg, rgba(14, 116, 144, 0.20), rgba(2, 132, 199, 0.12), rgba(13, 148, 136, 0.20));
+}
+
 @media (max-width: 640px) {
   .tolerance-bridge {
-    grid-template-columns: minmax(0, 1fr) 26px minmax(0, 1fr);
-    gap: 9px 0;
+    grid-template-columns: minmax(0, 1fr) 24px minmax(0, 1fr);
+    gap: 12px 0;
   }
 
   .tolerance-unit-label {
-    padding: 0 5px;
-    font-size: 0.66rem;
+    gap: 6px;
+    padding: 0 4px;
+    font-size: 0.62rem;
     letter-spacing: 0.04em;
   }
 
   .tolerance-unit-label strong {
-    min-width: 30px;
-    height: 24px;
-    font-size: 0.68rem;
+    min-width: 28px;
+    height: 23px;
+    font-size: 0.66rem;
+  }
+
+  .tolerance-cell-upper,
+  .tolerance-cell-lower {
+    width: clamp(86px, 68%, 116px);
+    min-height: 88px;
   }
 
   .tolerance-cell {
-    min-height: 92px;
-    padding: 10px 8px;
+    padding: 9px 7px;
     gap: 6px;
     border-radius: 17px;
   }
 
   .tolerance-cell-nominal {
-    min-height: 104px;
+    min-height: 100px;
+    padding-inline: 10px;
   }
 
   .tolerance-cell-label {
-    font-size: 0.76rem;
-  }
-
-  .tolerance-cell small {
-    min-height: 0;
-    font-size: 0.64rem;
-    line-height: 1.24;
+    font-size: 0.72rem;
   }
 
   .tolerance-value-frame {
-    height: 44px;
+    height: 42px;
     gap: 5px;
-    padding: 0 8px;
-    border-radius: 14px;
+    padding: 0 7px;
+    border-radius: 13px;
+  }
+
+  .tolerance-cell-upper .tolerance-value-frame,
+  .tolerance-cell-lower .tolerance-value-frame {
+    height: 38px;
   }
 
   .tolerance-value-frame input,
   .tolerance-output-frame strong {
-    font-size: 0.82rem;
+    font-size: 0.78rem;
+  }
+
+  .tolerance-cell-upper .tolerance-value-frame input,
+  .tolerance-cell-upper .tolerance-output-frame strong,
+  .tolerance-cell-lower .tolerance-value-frame input,
+  .tolerance-cell-lower .tolerance-output-frame strong {
+    font-size: 0.7rem;
   }
 
   .tolerance-value-frame em {
-    font-size: 0.68rem;
+    font-size: 0.62rem;
   }
 
   .tolerance-nominal-connector {
-    height: 66px;
+    height: 62px;
+    margin-inline: -8px;
   }
 
   .tolerance-nominal-connector::before,
   .tolerance-nominal-connector::after {
-    inset-inline: -5px;
+    height: 22px;
+  }
+
+  .tolerance-nominal-connector::before {
+    top: 7px;
+    border-bottom-width: 3px;
+  }
+
+  .tolerance-nominal-connector::after {
+    bottom: 7px;
+    border-top-width: 3px;
   }
 
   .tolerance-nominal-connector span {
-    width: 24px;
-    height: 24px;
-    font-size: 0.74rem;
+    height: 14px;
   }
 }
 
 @media (max-width: 390px) {
   .tolerance-bridge {
-    grid-template-columns: minmax(0, 1fr) 20px minmax(0, 1fr);
+    grid-template-columns: minmax(0, 1fr) 18px minmax(0, 1fr);
   }
 
-  .tolerance-cell {
-    padding: 9px 6px;
-  }
-
-  .tolerance-cell small {
+  .tolerance-unit-label span {
     display: none;
   }
 
+  .tolerance-cell-upper,
+  .tolerance-cell-lower {
+    width: clamp(76px, 72%, 104px);
+    min-height: 82px;
+  }
+
+  .tolerance-cell {
+    padding: 8px 5px;
+  }
+
   .tolerance-value-frame {
-    padding: 0 6px;
+    padding: 0 5px;
   }
 
   .tolerance-value-frame input,
   .tolerance-output-frame strong {
-    font-size: 0.76rem;
+    font-size: 0.72rem;
+  }
+
+  .tolerance-value-frame em {
+    font-size: 0.58rem;
   }
 }
