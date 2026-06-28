@@ -1,0 +1,48 @@
+.history-section.history-drawer.open {
+  max-height: min(620px, calc(100vh - 190px));
+}
+
+.history-list {
+  max-height: 330px;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding-inline-end: 4px;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(103, 232, 249, 0.48) rgba(15, 23, 42, 0.26);
+}
+
+.history-list::-webkit-scrollbar {
+  width: 7px;
+}
+
+.history-list::-webkit-scrollbar-track {
+  border-radius: 999px;
+  background: rgba(15, 23, 42, 0.26);
+}
+
+.history-list::-webkit-scrollbar-thumb {
+  border-radius: 999px;
+  background: rgba(103, 232, 249, 0.48);
+}
+
+.theme-light .history-list {
+  scrollbar-color: rgba(14, 116, 144, 0.44) rgba(203, 213, 225, 0.58);
+}
+
+.theme-light .history-list::-webkit-scrollbar-track {
+  background: rgba(203, 213, 225, 0.58);
+}
+
+.theme-light .history-list::-webkit-scrollbar-thumb {
+  background: rgba(14, 116, 144, 0.44);
+}
+
+@media (max-width: 640px) {
+  .history-section.history-drawer.open {
+    max-height: min(560px, calc(100vh - 170px));
+  }
+
+  .history-list {
+    max-height: 292px;
+  }
+}
