@@ -5,6 +5,8 @@ import './styles.css';
 import './upgrade.css';
 import './slow-motion.css';
 import './mobile-performance.css';
+import './sticky-result-bar.css';
+import './sticky-result-bar.js';
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
