@@ -57,6 +57,7 @@ export default function EnhancedApp() {
   const [digits, setDigits] = useState(2);
   const [copyStatus, setCopyStatus] = useState('');
   const [history, setHistory] = useState([]);
+  const [drawerOpen, setDrawerOpen] = useState(false);
 
   const units = useMemo(() => getUnits(unitMode), [unitMode]);
   const validation = useMemo(() => validateInputs(mode, tol, limits), [mode, tol, limits]);
@@ -77,6 +78,11 @@ export default function EnhancedApp() {
       // Ignore storage errors.
     }
   }, [history]);
+
+  useEffect(() => {
+    document.body.classList.toggle('drawer-open', drawerOpen);
+    return () => document.body.classList.remove('drawer-open');
+  }, [drawerOpen]);
 
   const result = useMemo(() => {
     if (!validation.ready || validation.errors.length) return null;
@@ -164,6 +170,37 @@ export default function EnhancedApp() {
 
   return (
     <main className="app-shell">
+      <button className="app-menu-button" type="button" aria-label="פתח תפריט הגדרות" onClick={() => setDrawerOpen(true)}>
+        <span></span><span></span><span></span>
+      </button>
+
+      {drawerOpen && <button className="drawer-backdrop" type="button" aria-label="סגור תפריט" onClick={() => setDrawerOpen(false)} />}
+
+      <aside className={`settings-drawer ${drawerOpen ? 'open' : ''}`} aria-hidden={!drawerOpen}>
+        <div className="drawer-header">
+          <div><p className="section-label">הגדרות</p><h2>תפריט אפליקציה</h2></div>
+          <button type="button" className="drawer-close" aria-label="סגור תפריט" onClick={() => setDrawerOpen(false)}>×</button>
+        </div>
+
+        <div className="drawer-section">
+          <strong>כיוון המרה</strong>
+          <small>בחרו באילו יחידות להזין ובאילו יחידות לקבל תוצאה.</small>
+          <div className="unit-switch" aria-label="כיוון המרה">
+            <button className={unitMode === UNIT_MODES.IN_TO_MM ? 'active' : ''} type="button" onClick={() => setUnitMode(UNIT_MODES.IN_TO_MM)}>inch → mm</button>
+            <button className={unitMode === UNIT_MODES.MM_TO_IN ? 'active' : ''} type="button" onClick={() => setUnitMode(UNIT_MODES.MM_TO_IN)}>mm → inch</button>
+          </div>
+        </div>
+
+        <div className="drawer-section">
+          <label className="select-field settings-select">דיוק תוצאה<select value={digits} onChange={(e) => setDigits(Number(e.target.value))}><option value="2">2 ספרות</option><option value="3">3 ספרות</option><option value="4">4 ספרות</option></select></label>
+        </div>
+
+        <div className="drawer-section drawer-status">
+          <span>{WEB_VERSION}</span>
+          <span>{unitMode === UNIT_MODES.IN_TO_MM ? 'inch → mm' : 'mm → inch'}</span>
+        </div>
+      </aside>
+
       <section className="hero-card">
         <div className="brand-row">
           <div className="logo-image-wrap" aria-label="Markulator symbol">
@@ -177,10 +214,10 @@ export default function EnhancedApp() {
         <p className="hero-copy">מחשבון סבולות להמרת מידות בין אינצ׳ים למילימטרים.</p>
         <details className="mobile-guide">
           <summary>איך זה עובד?</summary>
-          <p>בחרו סוג חישוב, הגדירו כיוון המרה בתפריט ההגדרות, הזינו ערכים וקבלו תוצאה מדויקת.</p>
+          <p>פתחו את תפריט הצד, הגדירו כיוון המרה ודיוק, הזינו ערכים וקבלו תוצאה.</p>
         </details>
         <div className="quick-guide">
-          <article><span>01</span><strong>פתחו הגדרות</strong><p>בחרו כיוון המרה ודיוק תוצאה.</p></article>
+          <article><span>01</span><strong>פתחו תפריט</strong><p>שלושת הקווים פותחים את הגדרות האפליקציה.</p></article>
           <article><span>02</span><strong>הזינו סבולות</strong><p>המידה המרכזית והסטייה המותרת.</p></article>
           <article><span>03</span><strong>שמרו ושתפו</strong><p>העתקה, שיתוף והיסטוריית חישובים.</p></article>
         </div>
@@ -189,27 +226,13 @@ export default function EnhancedApp() {
       <section className="calculator-card">
         <header className="card-header">
           <div><p className="section-label">שלב ראשון</p><h2>בחרו את סוג החישוב</h2></div>
-          <span className="conversion-pill">1 אינץ׳ = 25.4 מ״מ</span>
+          <span className="conversion-pill">{unitMode === UNIT_MODES.IN_TO_MM ? 'inch → mm' : 'mm → inch'}</span>
         </header>
 
         <div className="mode-switch">
           <button className={mode === 'plus-minus' ? 'active' : ''} aria-pressed={mode === 'plus-minus'} onClick={() => switchMode('plus-minus')} type="button"><strong>סבולת ±</strong><span>Tol+ → Nominal → Tol-</span></button>
           <button className={mode === 'max-min' ? 'active' : ''} aria-pressed={mode === 'max-min'} onClick={() => switchMode('max-min')} type="button"><strong>מקסימום / מינימום</strong><span>גבול עליון וגבול תחתון</span></button>
         </div>
-
-        <details className="settings-panel">
-          <summary className="settings-toggle"><span aria-hidden="true">⚙</span> הגדרות</summary>
-          <div className="settings-content">
-            <div className="settings-row">
-              <div><strong>כיוון המרה</strong><small>בחרו באילו יחידות להזין ובאילו יחידות לקבל תוצאה.</small></div>
-              <div className="unit-switch" aria-label="כיוון המרה">
-                <button className={unitMode === UNIT_MODES.IN_TO_MM ? 'active' : ''} type="button" onClick={() => setUnitMode(UNIT_MODES.IN_TO_MM)}>inch → mm</button>
-                <button className={unitMode === UNIT_MODES.MM_TO_IN ? 'active' : ''} type="button" onClick={() => setUnitMode(UNIT_MODES.MM_TO_IN)}>mm → inch</button>
-              </div>
-            </div>
-            <label className="select-field settings-select">דיוק תוצאה<select value={digits} onChange={(e) => setDigits(Number(e.target.value))}><option value="2">2 ספרות</option><option value="3">3 ספרות</option><option value="4">4 ספרות</option></select></label>
-          </div>
-        </details>
 
         <section className="form-section">
           <div className="section-title-row"><div><p className="section-label">שלב שני</p><h2>הזינו ערכים ב־{units.input}</h2></div></div>
@@ -226,9 +249,7 @@ export default function EnhancedApp() {
             </div>
           )}
 
-          <div className="utility-row">
-            <span className="version-pill">{WEB_VERSION}</span>
-          </div>
+          <div className="utility-row"><span className="version-pill">{WEB_VERSION}</span></div>
 
           <div className="form-clear-row form-action-row">
             <button className="clear-button form-save-button" onClick={saveHistory} type="button" disabled={!result}>שמירה</button>
