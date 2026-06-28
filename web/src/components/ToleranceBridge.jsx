@@ -40,7 +40,12 @@ function getLabel(text, field) {
   return text[config.compactLabelKey] || text[config.labelKey];
 }
 
-function SourceValue({ field, unit, tol, setTol, placeholderLabel }) {
+function getIdleInputStyle(value, isMiddle) {
+  if (value) return undefined;
+  return { fontSize: isMiddle ? '1.12rem' : '0.94rem' };
+}
+
+function SourceValue({ field, unit, tol, setTol, placeholderLabel, isMiddle = false }) {
   return (
     <span className="tolerance-value-frame tolerance-input-frame">
       <input
@@ -49,6 +54,7 @@ function SourceValue({ field, unit, tol, setTol, placeholderLabel }) {
         step="0.0001"
         value={tol[field]}
         placeholder={placeholderLabel}
+        style={getIdleInputStyle(tol[field], isMiddle)}
         onFocus={(event) => event.target.select()}
         onChange={(event) => setTol((current) => ({ ...current, [field]: event.target.value }))}
       />
@@ -115,7 +121,7 @@ export default function ToleranceBridge({ unitMode, tol, setTol, result, digits,
 
         <div className="tolerance-middle-content">
           <label className="tolerance-middle-panel tolerance-source" aria-label={`${text.nominal} ${sourceUnit}`}>
-            <SourceValue field="nominal" unit={sourceUnit} tol={tol} setTol={setTol} placeholderLabel={nominalLabel} />
+            <SourceValue field="nominal" unit={sourceUnit} tol={tol} setTol={setTol} placeholderLabel={nominalLabel} isMiddle />
           </label>
           <div className="tolerance-middle-panel tolerance-target" aria-label={`${text.nominal} ${targetUnit}`}>
             <TargetValue field="nominal" unit={targetUnit} result={result} digits={digits} />
