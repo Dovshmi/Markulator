@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { calculateMaxMinTolerance, calculatePlusMinusTolerance } from '../markulator.js';
 import logoSymbol from '../assets/logo-symbol.jpg';
 import InputField from './InputField.jsx';
@@ -58,6 +58,9 @@ export default function EnhancedApp() {
   const [copyStatus, setCopyStatus] = useState('');
   const [history, setHistory] = useState([]);
   const [drawerOpen, setDrawerOpen] = useState(false);
+  const [resultSectionVisible, setResultSectionVisible] = useState(false);
+  const inputSectionRef = useRef(null);
+  const resultSectionRef = useRef(null);
 
   const units = useMemo(() => getUnits(unitMode), [unitMode]);
   const validation = useMemo(() => validateInputs(mode, tol, limits), [mode, tol, limits]);
@@ -83,6 +86,19 @@ export default function EnhancedApp() {
     document.body.classList.toggle('drawer-open', drawerOpen);
     return () => document.body.classList.remove('drawer-open');
   }, [drawerOpen]);
+
+  useEffect(() => {
+    const target = resultSectionRef.current;
+    if (!target || typeof IntersectionObserver === 'undefined') return;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => setResultSectionVisible(entry.isIntersecting && entry.intersectionRatio >= 0.35),
+      { threshold: [0, 0.35, 0.6] }
+    );
+
+    observer.observe(target);
+    return () => observer.disconnect();
+  }, []);
 
   const result = useMemo(() => {
     if (!validation.ready || validation.errors.length) return null;
@@ -118,6 +134,10 @@ export default function EnhancedApp() {
     if (mode === 'plus-minus') setTol(emptyTol);
     else setLimits(emptyLimits);
     setCopyStatus('');
+  };
+
+  const scrollToInputs = () => {
+    inputSectionRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
   };
 
   const copyText = async (text, successMessage) => {
@@ -217,7 +237,7 @@ export default function EnhancedApp() {
           <p>פתחו את תפריט הצד, הגדירו כיוון המרה ודיוק, הזינו ערכים וקבלו תוצאה.</p>
         </details>
         <div className="quick-guide">
-          <article><span>01</span><strong>פתחו תפריט</strong><p>שלושת הקווים פותחים את הגדרות האפליקציה.</p></article>
+          <article><span>01</span><strong>פתחו תפריט</strong><p>גלגל השיניים פותח את הגדרות האפליקציה.</p></article>
           <article><span>02</span><strong>הזינו סבולות</strong><p>המידה המרכזית והסטייה המותרת.</p></article>
           <article><span>03</span><strong>שמרו ושתפו</strong><p>העתקה, שיתוף והיסטוריית חישובים.</p></article>
         </div>
@@ -234,7 +254,7 @@ export default function EnhancedApp() {
           <button className={mode === 'max-min' ? 'active' : ''} aria-pressed={mode === 'max-min'} onClick={() => switchMode('max-min')} type="button"><strong>מקסימום / מינימום</strong><span>גבול עליון וגבול תחתון</span></button>
         </div>
 
-        <section className="form-section">
+        <section className="form-section" ref={inputSectionRef}>
           <div className="section-title-row"><div><p className="section-label">שלב שני</p><h2>הזינו ערכים ב־{units.input}</h2></div></div>
           {mode === 'plus-minus' ? (
             <div key={`plus-minus-form-${unitMode}`} className="input-grid mode-content">
@@ -258,7 +278,7 @@ export default function EnhancedApp() {
           {validation.errors.length > 0 && <div className="validation-box">{validation.errors.map((msg) => <p key={msg}>{msg}</p>)}</div>}
         </section>
 
-        <section className="result-section">
+        <section className="result-section" ref={resultSectionRef}>
           <div className="section-title-row"><div><p className="section-label">שלב שלישי</p><h2>תוצאה ב־{targetLabel}</h2></div></div>
           <div className="result-actions enhanced-actions">
             <button className="clear-button" type="button" onClick={() => copyText(shortText, 'התוצאה הקצרה הועתקה')} disabled={!result}>העתקה קצרה</button>
@@ -278,7 +298,7 @@ export default function EnhancedApp() {
         </section>
 
         <section className="history-section">
-          <div className="section-title-row history-title"><div><p className="section-label">v0.9</p><h2>היסטוריית חישובים</h2></div>{history.length > 0 && <button className="clear-button" type="button" onClick={clearHistory}>נקה היסטוריה</button>}</div>
+          <div className="section-title-row history-title"><div><p className="section-label">v0.9.1</p><h2>היסטוריית חישובים</h2></div>{history.length > 0 && <button className="clear-button" type="button" onClick={clearHistory}>נקה היסטוריה</button>}</div>
           {history.length === 0 ? (
             <p className="history-empty">עדיין אין חישובים שמורים. אחרי חישוב, לחצו על שמירה.</p>
           ) : (
@@ -295,13 +315,23 @@ export default function EnhancedApp() {
       </section>
 
       {result && (
-        <aside className="mobile-result-bar" aria-live="polite">
-          <div className="mobile-result-items">
-            {mobileResult.map(([label, value]) => (
-              <span key={label}><small>{label}</small><strong>{formatNumber(value, digits)} {targetLabel}</strong></span>
-            ))}
-          </div>
-          <button type="button" onClick={() => copyText(shortText, 'התוצאה הועתקה')}>העתק</button>
+        <aside className={`mobile-result-bar ${resultSectionVisible ? 'input-mode' : ''}`} aria-live="polite">
+          {resultSectionVisible ? (
+            <div className="mobile-input-actions">
+              <button type="button" onClick={saveHistory} disabled={!result}>שמירה</button>
+              <button type="button" onClick={clear}>ניקוי</button>
+              <button type="button" onClick={scrollToInputs}>ערוך ערכים</button>
+            </div>
+          ) : (
+            <>
+              <div className="mobile-result-items">
+                {mobileResult.map(([label, value]) => (
+                  <span key={label}><small>{label}</small><strong>{formatNumber(value, digits)} {targetLabel}</strong></span>
+                ))}
+              </div>
+              <button type="button" onClick={() => copyText(shortText, 'התוצאה הועתקה')}>העתק</button>
+            </>
+          )}
         </aside>
       )}
 
