@@ -141,21 +141,6 @@
   overflow: hidden;
 }
 
-.result-box::after,
-.mode-switch button.active::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  background: linear-gradient(120deg, transparent 0%, rgba(255,255,255,0.12) 42%, transparent 68%);
-  transform: translateX(130%);
-}
-
-.result-box:hover::after,
-.mode-switch button.active:hover::after {
-  animation: soft-shine 900ms ease;
-}
-
 .validation-box {
   animation: notice-in 260ms ease both;
 }
@@ -205,15 +190,6 @@
   to {
     opacity: 1;
     transform: translateY(0);
-  }
-}
-
-@keyframes soft-shine {
-  from {
-    transform: translateX(130%);
-  }
-  to {
-    transform: translateX(-130%);
   }
 }
 
