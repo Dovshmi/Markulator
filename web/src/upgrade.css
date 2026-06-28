@@ -132,7 +132,30 @@
   transform: translateY(-1px);
 }
 
-.result-layout {
+.mode-content {
+  animation: mode-slide-in 430ms cubic-bezier(.2, .85, .25, 1) both;
+  will-change: transform, opacity;
+}
+
+.mode-content .input-field {
+  opacity: 0;
+  animation: field-stagger-in 380ms cubic-bezier(.2, .85, .25, 1) forwards;
+}
+
+.mode-content .input-field:nth-child(1) {
+  animation-delay: 50ms;
+}
+
+.mode-content .input-field:nth-child(2) {
+  animation-delay: 120ms;
+}
+
+.mode-content .input-field:nth-child(3) {
+  animation-delay: 190ms;
+}
+
+.result-layout,
+.result-transition {
   animation: result-in 360ms cubic-bezier(.2, .85, .25, 1) both;
 }
 
@@ -182,7 +205,20 @@
   }
 }
 
-@keyframes result-in {
+@keyframes mode-slide-in {
+  from {
+    opacity: 0;
+    transform: translateY(14px) scale(0.992);
+    filter: blur(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    filter: blur(0);
+  }
+}
+
+@keyframes field-stagger-in {
   from {
     opacity: 0;
     transform: translateY(10px);
@@ -190,6 +226,17 @@
   to {
     opacity: 1;
     transform: translateY(0);
+  }
+}
+
+@keyframes result-in {
+  from {
+    opacity: 0;
+    transform: translateY(10px) scale(0.994);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
   }
 }
 
