@@ -74,7 +74,7 @@ export default function EnhancedApp() {
     try {
       localStorage.setItem(HISTORY_KEY, JSON.stringify(history.slice(0, 6)));
     } catch {
-      // Ignore storage errors in private browsing.
+      // Ignore storage errors.
     }
   }, [history]);
 
@@ -131,11 +131,11 @@ export default function EnhancedApp() {
         await navigator.share({ title: 'Markulator result', text: currentText });
         setCopyStatus('התוצאה שותפה');
       } catch {
-        // User cancelled share sheet.
+        return;
       }
       return;
     }
-    await copyText(currentText, 'שיתוף לא זמין — התוצאה הועתקה');
+    await copyText(currentText, 'שיתוף לא זמין - התוצאה הועתקה');
   };
 
   const saveHistory = () => {
@@ -177,10 +177,10 @@ export default function EnhancedApp() {
         <p className="hero-copy">מחשבון סבולות להמרת מידות בין אינצ׳ים למילימטרים.</p>
         <details className="mobile-guide">
           <summary>איך זה עובד?</summary>
-          <p>בחרו סוג חישוב, בחרו כיוון המרה, הזינו ערכים וקבלו תוצאה מדויקת.</p>
+          <p>בחרו סוג חישוב, הגדירו כיוון המרה בתפריט ההגדרות, הזינו ערכים וקבלו תוצאה מדויקת.</p>
         </details>
         <div className="quick-guide">
-          <article><span>01</span><strong>בחרו יחידות</strong><p>אפשר לעבוד מ־inch ל־mm או מ־mm ל־inch.</p></article>
+          <article><span>01</span><strong>פתחו הגדרות</strong><p>בחרו כיוון המרה ודיוק תוצאה.</p></article>
           <article><span>02</span><strong>הזינו סבולות</strong><p>המידה המרכזית והסטייה המותרת.</p></article>
           <article><span>03</span><strong>שמרו ושתפו</strong><p>העתקה, שיתוף והיסטוריית חישובים.</p></article>
         </div>
@@ -197,10 +197,19 @@ export default function EnhancedApp() {
           <button className={mode === 'max-min' ? 'active' : ''} aria-pressed={mode === 'max-min'} onClick={() => switchMode('max-min')} type="button"><strong>מקסימום / מינימום</strong><span>גבול עליון וגבול תחתון</span></button>
         </div>
 
-        <div className="unit-switch" aria-label="כיוון המרה">
-          <button className={unitMode === UNIT_MODES.IN_TO_MM ? 'active' : ''} type="button" onClick={() => setUnitMode(UNIT_MODES.IN_TO_MM)}>inch → mm</button>
-          <button className={unitMode === UNIT_MODES.MM_TO_IN ? 'active' : ''} type="button" onClick={() => setUnitMode(UNIT_MODES.MM_TO_IN)}>mm → inch</button>
-        </div>
+        <details className="settings-panel">
+          <summary className="settings-toggle"><span aria-hidden="true">⚙</span> הגדרות</summary>
+          <div className="settings-content">
+            <div className="settings-row">
+              <div><strong>כיוון המרה</strong><small>בחרו באילו יחידות להזין ובאילו יחידות לקבל תוצאה.</small></div>
+              <div className="unit-switch" aria-label="כיוון המרה">
+                <button className={unitMode === UNIT_MODES.IN_TO_MM ? 'active' : ''} type="button" onClick={() => setUnitMode(UNIT_MODES.IN_TO_MM)}>inch → mm</button>
+                <button className={unitMode === UNIT_MODES.MM_TO_IN ? 'active' : ''} type="button" onClick={() => setUnitMode(UNIT_MODES.MM_TO_IN)}>mm → inch</button>
+              </div>
+            </div>
+            <label className="select-field settings-select">דיוק תוצאה<select value={digits} onChange={(e) => setDigits(Number(e.target.value))}><option value="2">2 ספרות</option><option value="3">3 ספרות</option><option value="4">4 ספרות</option></select></label>
+          </div>
+        </details>
 
         <section className="form-section">
           <div className="section-title-row"><div><p className="section-label">שלב שני</p><h2>הזינו ערכים ב־{units.input}</h2></div></div>
@@ -218,17 +227,15 @@ export default function EnhancedApp() {
           )}
 
           <div className="utility-row">
-            <label className="select-field">דיוק תוצאה<select value={digits} onChange={(e) => setDigits(Number(e.target.value))}><option value="2">2 ספרות</option><option value="3">3 ספרות</option><option value="4">4 ספרות</option></select></label>
             <span className="version-pill">{WEB_VERSION}</span>
           </div>
 
-          <div className="form-clear-row">
-            <button className="clear-button form-clear-button" onClick={clear} type="button">
-              <span aria-hidden="true">🗑️</span>
-              ניקוי
-            </button>
+          <div className="form-clear-row form-action-row">
+            <button className="clear-button form-save-button" onClick={saveHistory} type="button" disabled={!result}>שמירה</button>
+            <button className="clear-button form-clear-button" onClick={clear} type="button"><span aria-hidden="true">🗑️</span> ניקוי</button>
           </div>
 
+          {copyStatus && <div className="form-status">{copyStatus}</div>}
           {validation.errors.length > 0 && <div className="validation-box">{validation.errors.map((msg) => <p key={msg}>{msg}</p>)}</div>}
         </section>
 
@@ -238,8 +245,6 @@ export default function EnhancedApp() {
             <button className="clear-button" type="button" onClick={() => copyText(shortText, 'התוצאה הקצרה הועתקה')} disabled={!result}>העתקה קצרה</button>
             <button className="clear-button" type="button" onClick={() => copyText(currentText, 'התוצאה המלאה הועתקה')} disabled={!result}>העתקה מלאה</button>
             <button className="clear-button" type="button" onClick={shareResult} disabled={!result}>שיתוף</button>
-            <button className="clear-button" type="button" onClick={saveHistory} disabled={!result}>שמירה</button>
-            {copyStatus && <span>{copyStatus}</span>}
           </div>
           <div key={`result-${mode}-${unitMode}`} className="result-transition">
             <ResultPanel mode={mode} result={result} digits={digits} unitLabel={targetLabel} />
