@@ -78,7 +78,6 @@ export default function ToleranceBridge({ unitMode, tol, setTol, result, digits,
 
     const content = (
       <span className="tolerance-box-content">
-        <span className="tolerance-field-label">{label}</span>
         {isSource ? (
           <SourceValue field={field} unit={unit} tol={tol} setTol={setTol} placeholderLabel={label} />
         ) : (
@@ -116,11 +115,9 @@ export default function ToleranceBridge({ unitMode, tol, setTol, result, digits,
 
         <div className="tolerance-middle-content">
           <label className="tolerance-middle-panel tolerance-source" aria-label={`${text.nominal} ${sourceUnit}`}>
-            <span className="tolerance-field-label">{nominalLabel}</span>
             <SourceValue field="nominal" unit={sourceUnit} tol={tol} setTol={setTol} placeholderLabel={nominalLabel} />
           </label>
           <div className="tolerance-middle-panel tolerance-target" aria-label={`${text.nominal} ${targetUnit}`}>
-            <span className="tolerance-field-label">{nominalLabel}</span>
             <TargetValue field="nominal" unit={targetUnit} result={result} digits={digits} />
           </div>
         </div>
