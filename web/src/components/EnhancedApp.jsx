@@ -249,8 +249,6 @@ export default function EnhancedApp() {
             </div>
           )}
 
-          <div className="utility-row"><span className="version-pill">{WEB_VERSION}</span></div>
-
           <div className="form-clear-row form-action-row">
             <button className="clear-button form-save-button" onClick={saveHistory} type="button" disabled={!result}>שמירה</button>
             <button className="clear-button form-clear-button" onClick={clear} type="button"><span aria-hidden="true">🗑️</span> ניקוי</button>
