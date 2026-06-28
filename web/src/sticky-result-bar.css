@@ -67,7 +67,7 @@
   min-width: 0;
 }
 
-.sticky-result-items span {
+.sticky-result-item {
   display: grid;
   gap: 5px;
   min-width: 0;
@@ -78,13 +78,52 @@
   text-align: center;
 }
 
-.sticky-result-items small {
+.sticky-result-nominal {
+  border-color: rgba(103, 232, 249, 0.22);
+  background:
+    radial-gradient(circle at 50% 0%, rgba(103, 232, 249, 0.13), transparent 70%),
+    rgba(14, 165, 233, 0.09);
+}
+
+.sticky-result-item small {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  min-width: 0;
   color: #94a3b8;
   font-size: 0.74rem;
   font-weight: 900;
+  line-height: 1;
 }
 
-.sticky-result-items strong {
+.sticky-result-item small em {
+  font-style: normal;
+}
+
+.sticky-result-icon {
+  display: inline-grid;
+  place-items: center;
+  width: 17px;
+  height: 17px;
+  border-radius: 999px;
+  color: #ffffff;
+  background: rgba(14, 165, 233, 0.38);
+  box-shadow: 0 0 14px rgba(103, 232, 249, 0.22);
+  font-size: 0.78rem;
+  font-weight: 950;
+  line-height: 1;
+}
+
+.sticky-result-upper .sticky-result-icon {
+  background: linear-gradient(135deg, rgba(34, 197, 94, 0.74), rgba(20, 184, 166, 0.58));
+}
+
+.sticky-result-lower .sticky-result-icon {
+  background: linear-gradient(135deg, rgba(56, 189, 248, 0.74), rgba(99, 102, 241, 0.58));
+}
+
+.sticky-result-item strong {
   min-width: 0;
   color: #ffffff;
   font-size: 0.98rem;
@@ -104,16 +143,23 @@
     inset 0 1px 0 rgba(255, 255, 255, 0.58);
 }
 
-.theme-light .sticky-result-items span {
+.theme-light .sticky-result-item {
   border-color: rgba(15, 23, 42, 0.12);
   background: rgba(14, 116, 144, 0.07);
 }
 
-.theme-light .sticky-result-items small {
+.theme-light .sticky-result-nominal {
+  border-color: rgba(14, 116, 144, 0.22);
+  background:
+    radial-gradient(circle at 50% 0%, rgba(14, 116, 144, 0.10), transparent 70%),
+    rgba(14, 116, 144, 0.06);
+}
+
+.theme-light .sticky-result-item small {
   color: #64748b;
 }
 
-.theme-light .sticky-result-items strong {
+.theme-light .sticky-result-item strong {
   color: #0f172a;
 }
 
@@ -148,17 +194,24 @@
     gap: 6px;
   }
 
-  .sticky-result-items span {
+  .sticky-result-item {
     gap: 3px;
     padding: 8px 7px;
     border-radius: 15px;
   }
 
-  .sticky-result-items small {
+  .sticky-result-item small {
+    gap: 3px;
     font-size: 0.68rem;
   }
 
-  .sticky-result-items strong {
+  .sticky-result-icon {
+    width: 15px;
+    height: 15px;
+    font-size: 0.68rem;
+  }
+
+  .sticky-result-item strong {
     font-size: 0.78rem;
   }
 }
@@ -175,7 +228,17 @@
     font-size: 0.82rem;
   }
 
-  .sticky-result-items strong {
+  .sticky-result-item small {
+    font-size: 0.63rem;
+  }
+
+  .sticky-result-icon {
+    width: 14px;
+    height: 14px;
+    font-size: 0.62rem;
+  }
+
+  .sticky-result-item strong {
     font-size: 0.72rem;
   }
 }
