@@ -1,4 +1,7 @@
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { UNIT_MODES, formatNumber } from './calcTools.js';
+
+const EMPTY_VALUES = { positive: '', nominal: '', negative: '' };
 
 const FIELDS = {
   positive: { labelKey: 'positiveTolerance', compactLabelKey: 'mobileUpper', sign: '+', resultKey: 'posTolMm' },
@@ -37,6 +40,31 @@ function convertToLeftUnit(value, unitMode) {
   return String(unitMode === UNIT_MODES.IN_TO_MM ? number / 25.4 : number * 25.4);
 }
 
+function convertToRightUnit(value, unitMode, digits) {
+  if (value === '' || value == null) return '';
+  const number = Number(value);
+  if (!Number.isFinite(number)) return value;
+  const converted = unitMode === UNIT_MODES.IN_TO_MM ? number * 25.4 : number / 25.4;
+  return formatNumber(converted, digits);
+}
+
+function buildRightValuesFromLeft(leftValues, unitMode, digits) {
+  return {
+    positive: convertToRightUnit(leftValues.positive, unitMode, digits),
+    nominal: convertToRightUnit(leftValues.nominal, unitMode, digits),
+    negative: convertToRightUnit(leftValues.negative, unitMode, digits),
+  };
+}
+
+function buildRightValuesFromResult(result, fallbackValues, digits) {
+  if (!result) return fallbackValues;
+  return {
+    positive: getOutputValue('positive', result, digits),
+    nominal: getOutputValue('nominal', result, digits),
+    negative: getOutputValue('negative', result, digits),
+  };
+}
+
 function ValueInput({ field, unit, value, onChange, placeholderLabel, isMiddle = false }) {
   return (
     <span className="tolerance-value-frame tolerance-input-frame">
@@ -55,14 +83,38 @@ function ValueInput({ field, unit, value, onChange, placeholderLabel, isMiddle =
 }
 
 export default function ToleranceBridge({ unitMode, tol, setTol, result, digits, text }) {
+  const [editingSide, setEditingSide] = useState('left');
+  const [rightDraft, setRightDraft] = useState(EMPTY_VALUES);
+  const previousUnitModeRef = useRef(unitMode);
+  const swapValuesRef = useRef(EMPTY_VALUES);
+
   const sourceUnit = unitMode === UNIT_MODES.IN_TO_MM ? 'in' : 'mm';
   const targetUnit = unitMode === UNIT_MODES.IN_TO_MM ? 'mm' : 'in';
+  const fallbackRightValues = useMemo(() => buildRightValuesFromLeft(tol, unitMode, digits), [tol, unitMode, digits]);
+  const calculatedRightValues = useMemo(() => buildRightValuesFromResult(result, fallbackRightValues, digits), [result, fallbackRightValues, digits]);
+  const rightValues = editingSide === 'right' ? rightDraft : calculatedRightValues;
+
+  useEffect(() => {
+    if (previousUnitModeRef.current !== unitMode) {
+      setTol(swapValuesRef.current);
+      setEditingSide('left');
+      setRightDraft(EMPTY_VALUES);
+      previousUnitModeRef.current = unitMode;
+      return;
+    }
+
+    swapValuesRef.current = editingSide === 'right' ? rightDraft : calculatedRightValues;
+  }, [unitMode, editingSide, rightDraft, calculatedRightValues, setTol]);
 
   const updateSource = (field, value) => {
+    setEditingSide('left');
     setTol((current) => ({ ...current, [field]: value }));
   };
 
   const updateTarget = (field, value) => {
+    const nextRightValues = { ...(editingSide === 'right' ? rightDraft : calculatedRightValues), [field]: value };
+    setEditingSide('right');
+    setRightDraft(nextRightValues);
     setTol((current) => ({ ...current, [field]: convertToLeftUnit(value, unitMode) }));
   };
 
@@ -71,7 +123,7 @@ export default function ToleranceBridge({ unitMode, tol, setTol, result, digits,
     const unit = isSource ? sourceUnit : targetUnit;
     const fullLabel = text[FIELDS[field].labelKey];
     const label = getLabel(text, field);
-    const value = isSource ? tol[field] : getOutputValue(field, result, digits);
+    const value = isSource ? tol[field] : rightValues[field];
     const onChange = isSource ? updateSource : updateTarget;
 
     return (
@@ -108,7 +160,7 @@ export default function ToleranceBridge({ unitMode, tol, setTol, result, digits,
             <ValueInput field="nominal" unit={sourceUnit} value={tol.nominal || ''} onChange={updateSource} placeholderLabel={nominalLabel} isMiddle />
           </label>
           <label className="tolerance-middle-panel tolerance-target" aria-label={`${text.nominal} ${targetUnit}`}>
-            <ValueInput field="nominal" unit={targetUnit} value={getOutputValue('nominal', result, digits)} onChange={updateTarget} placeholderLabel={nominalLabel} isMiddle />
+            <ValueInput field="nominal" unit={targetUnit} value={rightValues.nominal || ''} onChange={updateTarget} placeholderLabel={nominalLabel} isMiddle />
           </label>
         </div>
       </section>
