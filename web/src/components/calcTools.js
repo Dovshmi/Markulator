@@ -1,4 +1,4 @@
-export const WEB_VERSION = 'Web v0.7';
+export const WEB_VERSION = 'Web v0.8';
 
 export function toNumber(value) {
   if (value === '' || value == null) return null;
