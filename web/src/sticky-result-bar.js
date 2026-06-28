@@ -122,26 +122,26 @@ function buildResult() {
   return { mode, unit: 'in', result: { maxMm, minMm, rangeMm: maxMm - minMm } };
 }
 
-function buildItems(data, language, digits) {
+function buildItems(data, language) {
   const labels = LABELS[language];
 
   if (data.mode === 'plus-minus') {
     return [
-      [labels.nominal, data.result.nominalMm],
-      [labels.upper, data.result.maxLimitMm],
-      [labels.lower, data.result.minLimitMm],
+      { key: 'upper', label: labels.upper, value: data.result.maxLimitMm, icon: '↑' },
+      { key: 'nominal', label: labels.nominal, value: data.result.nominalMm },
+      { key: 'lower', label: labels.lower, value: data.result.minLimitMm, icon: '↓' },
     ];
   }
 
   return [
-    [labels.max, data.result.maxMm],
-    [labels.min, data.result.minMm],
-    [labels.range, data.result.rangeMm],
+    { key: 'max', label: labels.max, value: data.result.maxMm },
+    { key: 'min', label: labels.min, value: data.result.minMm },
+    { key: 'range', label: labels.range, value: data.result.rangeMm },
   ];
 }
 
 function buildCopyText(items, unit, digits) {
-  return items.map(([label, value]) => `${label} ${formatNumber(value, digits)} ${unit}`).join(' | ');
+  return items.map((item) => `${item.label} ${formatNumber(item.value, digits)} ${unit}`).join(' | ');
 }
 
 function isResultDrawerVisible() {
@@ -184,17 +184,17 @@ function updateBar() {
   const language = getLanguage();
   const digits = getDigits();
   const labels = LABELS[language];
-  const items = buildItems(data, language, digits);
+  const items = buildItems(data, language);
   latestCopyText = buildCopyText(items, data.unit, digits);
 
   const copyButton = bar.querySelector('.sticky-result-copy');
   const itemsContainer = bar.querySelector('.sticky-result-items');
   copyButton.textContent = labels.copy;
   copyButton.setAttribute('aria-label', labels.copy);
-  itemsContainer.innerHTML = items.map(([label, value]) => `
-    <span>
-      <small>${label}</small>
-      <strong>${formatNumber(value, digits)} ${data.unit}</strong>
+  itemsContainer.innerHTML = items.map((item) => `
+    <span class="sticky-result-item sticky-result-${item.key}">
+      <small>${item.icon ? `<b class="sticky-result-icon" aria-hidden="true">${item.icon}</b>` : ''}<em>${item.label}</em></small>
+      <strong>${formatNumber(item.value, digits)} ${data.unit}</strong>
     </span>
   `).join('');
 }
