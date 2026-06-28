@@ -3,20 +3,18 @@
 <div align="center">
   <img src="https://img.shields.io/badge/React-Web_App-61DAFB?style=for-the-badge&logo=react&logoColor=black" alt="React" />
   <img src="https://img.shields.io/badge/Vite-Build_Tool-646CFF?style=for-the-badge&logo=vite&logoColor=white" alt="Vite" />
-  <img src="https://img.shields.io/badge/RTL-Hebrew-0F172A?style=for-the-badge" alt="RTL Hebrew" />
-  <img src="https://img.shields.io/badge/Vercel-Deployable-000000?style=for-the-badge&logo=vercel&logoColor=white" alt="Vercel" />
-  <img src="https://img.shields.io/badge/Python-Desktop_App-3776AB?style=for-the-badge&logo=python&logoColor=white" alt="Python" />
-  <img src="https://img.shields.io/badge/CustomTkinter-GUI-1F2937?style=for-the-badge" alt="CustomTkinter" />
-  <img src="https://img.shields.io/badge/Precision-2_Decimals-10B981?style=for-the-badge" alt="Precision" />
+  <img src="https://img.shields.io/badge/Web-v0.9.2-14B8A6?style=for-the-badge" alt="Web v0.9.2" />
+  <img src="https://img.shields.io/badge/Hebrew_%2F_English-UI-0F172A?style=for-the-badge" alt="Hebrew and English UI" />
+  <img src="https://img.shields.io/badge/Vercel-Live-000000?style=for-the-badge&logo=vercel&logoColor=white" alt="Vercel" />
   <img src="https://img.shields.io/badge/License-GPL--3.0-4B5563?style=for-the-badge" alt="GPL-3.0 License" />
 </div>
 
 <div align="center">
-  <p><strong>A clean tolerance calculator for converting inch-based measurements into millimeter results.</strong></p>
+  <p><strong>A clean tolerance calculator for converting between inches and millimeters.</strong></p>
   <p>
     <a href="https://markulator-zeta.vercel.app/"><strong>Live Web App</strong></a>
     ·
-    <a href="https://github.com/Dovshmi/Markulator"><strong>GitHub Repository</strong></a>
+    <a href="https://github.com/Dovshmi/Markulator"><strong>Repository</strong></a>
     ·
     <a href="https://github.com/Dovshmi/Markulator/releases/latest"><strong>Latest Release</strong></a>
   </p>
@@ -26,40 +24,24 @@
 
 ## Overview
 
-**Markulator** is a tolerance calculator built for fast inch-to-millimeter conversion. It supports practical measurement workflows used in machining, inspection, manufacturing, engineering, and workshop environments.
+**Markulator** is a practical tolerance calculator for converting between **inch** and **mm** measurements. It is built for machining, inspection, workshop, and engineering workflows where clear upper/lower tolerance results matter.
 
-The project now includes two versions: a modern **React/Vite Hebrew RTL web app** and the original **Python CustomTkinter desktop app**.
-
----
-
-## Product Goals
-
-- Convert inch measurements into millimeter results quickly.
-- Keep tolerance input and output clear and readable.
-- Support the workflow: **Tol+ → Nominal → Tol-**.
-- Provide both a web version and a desktop version.
-- Keep deployment simple through Vercel and GitHub.
+The project includes a modern **React/Vite web app** and the original **Python CustomTkinter desktop app**.
 
 ---
 
-## Core Features
+## Current Web Features
 
-### Web App
-
-- **Hebrew RTL interface** for right-to-left layout and Hebrew labels.
-- **Tol+ / Nominal / Tol- workflow** for tolerance-based calculations.
-- **Max / Min mode** for direct upper/lower limit conversion.
-- **Live result display** with rounded millimeter values.
-- **Modern responsive UI** for desktop and mobile.
-- **Vercel-ready structure** inside the `web/` directory.
-
-### Desktop App
-
-- **Python CustomTkinter GUI** for Windows desktop usage.
-- **Two calculation modes**: tolerance ± and max/min.
-- **Light/dark theme support** using `darkdetect`.
-- **Memory navigation** for previous calculations.
-- **PyInstaller support** for building a standalone executable.
+- **Two calculation modes:** `Tolerance ±` and `Maximum / Minimum`.
+- **Two conversion directions:** `inch → mm` and `mm → inch`.
+- **Hebrew and English UI:** Hebrew uses RTL layout, English uses LTR layout.
+- **Side settings drawer:** language, conversion direction, and result precision.
+- **Persistent preferences:** selected language is saved in `localStorage`.
+- **Calculation history:** saved locally in the browser.
+- **Smart mobile sticky bar:** shows result summary while editing and switches to quick actions near the result section.
+- **Copy/share actions:** short copy, full copy, and native share where supported.
+- **PWA-ready service worker:** cache refreshes per version.
+- **Responsive mobile-first design** with a dark professional UI.
 
 ---
 
@@ -70,12 +52,8 @@ The project now includes two versions: a modern **React/Vite Hebrew RTL web app*
 | Web Frontend | React |
 | Web Build Tool | Vite |
 | Web Styling | CSS |
-| Web Deployment | Vercel |
-| Desktop Language | Python |
-| Desktop GUI | CustomTkinter |
-| Image Handling | Pillow |
-| Theme Detection | darkdetect |
-| Desktop Packaging | PyInstaller |
+| Web Deploy | Vercel |
+| Desktop App | Python + CustomTkinter |
 | License | GPL-3.0 |
 
 ---
@@ -84,25 +62,27 @@ The project now includes two versions: a modern **React/Vite Hebrew RTL web app*
 
 ```text
 Markulator/
-├── web/                     # React/Vite Hebrew RTL web app
+├── web/
 │   ├── src/
-│   │   ├── App.jsx          # Main web calculator UI
-│   │   ├── markulator.js    # Web calculation logic
-│   │   ├── main.jsx         # React entry point
-│   │   └── styles.css       # Main responsive styling
-│   ├── index.html
+│   │   ├── components/          # React UI components
+│   │   ├── App.jsx              # Web app wrapper
+│   │   ├── markulator.js        # Calculation logic
+│   │   ├── main.jsx             # React entry point
+│   │   ├── styles.css           # Base styling
+│   │   ├── v09.css              # Modern web UI styling
+│   │   └── language-layout.css  # Hebrew/English layout fixes
+│   ├── public/                  # Manifest, icon, service worker
 │   ├── package.json
 │   └── vite.config.js
-├── Screenshots/             # Desktop screenshots and examples
-├── pictures/                # Desktop icon/image assets
-├── dist/                    # Desktop build artifacts
-├── Markulator.py            # Console/prototype calculator
-├── Marlulator_app.py        # Main Python desktop app
+├── Screenshots/                 # Desktop screenshots/examples
+├── pictures/                    # Desktop icon/image assets
+├── Markulator.py                # Console/prototype calculator
+├── Marlulator_app.py            # Python desktop app
 ├── LICENSE
 └── README.md
 ```
 
-> Note: the current desktop entry file is named `Marlulator_app.py`.
+> Note: the desktop entry file is currently named `Marlulator_app.py`.
 
 ---
 
@@ -151,22 +131,20 @@ pyinstaller --onefile --noconsole --icon=pictures/calc.ico .\Marlulator_app.py
 
 ## Version History
 
-| Version | Type | Notes |
-| :--- | :--- | :--- |
-| Web v0.5 | Web | Updated symbol/logo handling for the deployed web app. |
-| Web v0.4 | Web | Hebrew RTL React/Vite version with ordered **Tol+ → Nominal → Tol-** workflow. |
-| Web v0.3 | Web | Simplified layout, clearer input/result sections, removed history. |
-| Web v0.2 | Web | Modern dark UI prototype with result cards. |
-| Web v0.1 | Web | First React/Vite web implementation. |
-| Desktop v1.2 | Desktop | Stable Python CustomTkinter desktop calculator. |
+| Version | Notes |
+| :--- | :--- |
+| Web v0.9.2 | Added polished Hebrew/English language support, fixed RTL/LTR layout, updated README. |
+| Web v0.9.1 | Added smart sticky mobile bar that switches between result summary and quick input actions. |
+| Web v0.9 | Added side settings drawer, local calculation history, copy/share actions, PWA support, and refreshed mobile UI. |
+| Web v0.5 | Updated symbol/logo handling for deployment. |
+| Web v0.4 | Added Hebrew RTL React/Vite web app with ordered tolerance workflow. |
+| Desktop v1.2 | Stable Python CustomTkinter desktop calculator. |
 
 ---
 
 ## Precision Notes
 
-Markulator displays millimeter results with two decimal places. The calculation logic also includes rounding/deviation handling to reduce tolerance-edge drift after conversion.
-
-For production-critical engineering, machining, inspection, or safety-sensitive use, verify results against the approved drawing, measurement standard, or certified calculation process.
+Markulator is a convenience calculator. For production-critical engineering, machining, inspection, or safety-sensitive work, verify results against the approved drawing, measurement standard, or certified calculation process.
 
 ---
 
@@ -178,5 +156,5 @@ This project is licensed under the **GNU General Public License v3.0**. See [`LI
 
 <div align="center">
   Built by <strong>Rony Shmidov</strong><br />
-  A focused tool for practical tolerance conversion.
+  Practical tolerance conversion for web and desktop.
 </div>
