@@ -1,0 +1,148 @@
+@media (max-width: 640px) {
+  body {
+    background:
+      radial-gradient(circle at 15% 8%, rgba(59, 130, 246, 0.16), transparent 18rem),
+      radial-gradient(circle at 88% 4%, rgba(20, 184, 166, 0.12), transparent 18rem),
+      linear-gradient(135deg, #020617 0%, #08111f 48%, #0f172a 100%);
+  }
+
+  body::before {
+    opacity: 0.42;
+    background-size: 64px 64px;
+  }
+
+  .hero-card,
+  .calculator-card {
+    padding: 18px;
+    border-radius: 24px;
+    box-shadow:
+      0 14px 38px rgba(0, 0, 0, 0.30),
+      inset 0 1px 0 rgba(255, 255, 255, 0.05);
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+  }
+
+  .hero-card::after {
+    opacity: 0.34;
+    filter: none;
+  }
+
+  .logo-image-wrap,
+  .mode-switch button.active {
+    animation: none;
+  }
+
+  .logo-image-wrap {
+    width: 72px;
+    height: 72px;
+    border-radius: 20px;
+    box-shadow: 0 12px 30px rgba(14, 165, 233, 0.18);
+  }
+
+  .mode-content {
+    animation-name: mobile-mode-slide-in;
+    animation-duration: 360ms;
+  }
+
+  .mode-content .input-field {
+    animation-name: mobile-field-in;
+    animation-duration: 320ms;
+  }
+
+  .mode-content .input-field:nth-child(1) {
+    animation-delay: 35ms;
+  }
+
+  .mode-content .input-field:nth-child(2) {
+    animation-delay: 80ms;
+  }
+
+  .mode-content .input-field:nth-child(3) {
+    animation-delay: 125ms;
+  }
+
+  .result-layout,
+  .result-transition {
+    animation-name: mobile-result-in;
+    animation-duration: 320ms;
+  }
+
+  .quick-guide article:hover,
+  .result-box:hover,
+  .mode-switch button:hover,
+  .clear-button:hover,
+  .select-field select:hover,
+  .input-frame:focus-within {
+    transform: none;
+  }
+
+  .result-box,
+  .result-box.main,
+  .result-box.accent {
+    box-shadow: none;
+    background: rgba(2, 6, 23, 0.48);
+  }
+
+  .input-frame,
+  .mode-switch button,
+  .clear-button,
+  .select-field select {
+    transition-duration: 120ms;
+  }
+
+  .input-frame input {
+    font-size: 16px;
+  }
+
+  .mode-switch button {
+    min-height: 70px;
+  }
+
+  .result-box {
+    min-height: 118px;
+  }
+}
+
+@media (hover: none) and (pointer: coarse) {
+  .quick-guide article:hover,
+  .result-box:hover,
+  .mode-switch button:hover,
+  .clear-button:hover,
+  .select-field select:hover {
+    transform: none;
+    box-shadow: none;
+  }
+}
+
+@keyframes mobile-mode-slide-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes mobile-field-in {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes mobile-result-in {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
