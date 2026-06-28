@@ -333,6 +333,10 @@
     font-size: 1.20rem;
   }
 
+  .tolerance-value-frame input::placeholder {
+    font-size: 0.82rem;
+  }
+
   .tolerance-value-frame em {
     font-size: 0.94rem;
   }
@@ -355,6 +359,10 @@
   .tolerance-middle-panel .tolerance-value-frame input,
   .tolerance-middle-panel .tolerance-output-frame strong {
     font-size: 1.52rem;
+  }
+
+  .tolerance-middle-panel .tolerance-value-frame input::placeholder {
+    font-size: 0.98rem;
   }
 
   .tolerance-middle-panel .tolerance-value-frame em {
@@ -385,6 +393,10 @@
     font-size: 1.08rem;
   }
 
+  .tolerance-value-frame input::placeholder {
+    font-size: 0.76rem;
+  }
+
   .tolerance-value-frame em {
     font-size: 0.88rem;
   }
@@ -396,6 +408,10 @@
   .tolerance-middle-panel .tolerance-value-frame input,
   .tolerance-middle-panel .tolerance-output-frame strong {
     font-size: 1.40rem;
+  }
+
+  .tolerance-middle-panel .tolerance-value-frame input::placeholder {
+    font-size: 0.90rem;
   }
 
   .tolerance-middle-panel .tolerance-value-frame em {
