@@ -127,9 +127,9 @@ function buildItems(data, language) {
 
   if (data.mode === 'plus-minus') {
     return [
-      { key: 'upper', label: labels.upper, value: data.result.maxLimitMm, icon: '↑' },
-      { key: 'nominal', label: labels.nominal, value: data.result.nominalMm },
       { key: 'lower', label: labels.lower, value: data.result.minLimitMm, icon: '↓' },
+      { key: 'nominal', label: labels.nominal, value: data.result.nominalMm },
+      { key: 'upper', label: labels.upper, value: data.result.maxLimitMm, icon: '↑' },
     ];
   }
 
