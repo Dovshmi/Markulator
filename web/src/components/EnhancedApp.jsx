@@ -3,6 +3,7 @@ import { calculateMaxMinTolerance, calculatePlusMinusTolerance } from '../markul
 import logoSymbol from '../assets/logo-symbol.jpg';
 import InputField from './InputField.jsx';
 import ResultPanel from './ResultPanel.jsx';
+import ToleranceBridge from './ToleranceBridge.jsx';
 import {
   UNIT_MODES,
   WEB_VERSION,
@@ -361,6 +362,11 @@ export default function EnhancedApp() {
   const minusPlaceholder = unitMode === UNIT_MODES.IN_TO_MM ? text.negativePlaceholderIn : text.negativePlaceholderMm;
   const maxPlaceholder = unitMode === UNIT_MODES.IN_TO_MM ? text.maxPlaceholderIn : text.maxPlaceholderMm;
   const minPlaceholder = unitMode === UNIT_MODES.IN_TO_MM ? text.minPlaceholderIn : text.minPlaceholderMm;
+  const tolerancePlaceholders = useMemo(() => ({
+    positive: plusPlaceholder,
+    nominal: nominalPlaceholder,
+    negative: minusPlaceholder,
+  }), [plusPlaceholder, nominalPlaceholder, minusPlaceholder]);
 
   return (
     <main className={`app-shell lang-${language} theme-${resolvedTheme} theme-mode-${themeMode} ${themeAnimating ? 'theme-animating' : ''}`} dir={dir} lang={language}>
@@ -413,7 +419,7 @@ export default function EnhancedApp() {
         <section className="form-section" ref={inputSectionRef}>
           <div className="section-title-row"><div><p className="section-label">{text.step2}</p><h2>{text.enterValues}{units.input}</h2></div></div>
           {mode === 'plus-minus' ? (
-            <div key={`plus-minus-form-${unitMode}`} className="input-grid mode-content"><InputField label={text.positiveTolerance} helper={text.positiveHelper} suffix={`+ ${inputSuffix}`} value={tol.positive} placeholder={plusPlaceholder} onChange={(positive) => setTol((x) => ({ ...x, positive }))} /><InputField label={text.nominal} helper={text.nominalHelper} suffix={inputSuffix} value={tol.nominal} placeholder={nominalPlaceholder} onChange={(nominal) => setTol((x) => ({ ...x, nominal }))} /><InputField label={text.negativeTolerance} helper={text.negativeHelper} suffix={`- ${inputSuffix}`} value={tol.negative} placeholder={minusPlaceholder} onChange={(negative) => setTol((x) => ({ ...x, negative }))} /></div>
+            <ToleranceBridge unitMode={unitMode} tol={tol} setTol={setTol} result={result} digits={digits} text={text} placeholders={tolerancePlaceholders} />
           ) : (
             <div key={`max-min-form-${unitMode}`} className="input-grid two mode-content"><InputField label={text.maxValue} helper={text.maxHelper} suffix={inputSuffix} value={limits.max} placeholder={maxPlaceholder} onChange={(max) => setLimits((x) => ({ ...x, max }))} /><InputField label={text.minValue} helper={text.minHelper} suffix={inputSuffix} value={limits.min} placeholder={minPlaceholder} onChange={(min) => setLimits((x) => ({ ...x, min }))} /></div>
           )}
@@ -446,7 +452,7 @@ export default function EnhancedApp() {
         <section id="history-drawer" className={`history-section history-drawer ${resultOpen ? 'open' : ''}`} aria-hidden={!resultOpen}>
           {resultOpen && (
             <div className="history-drawer-inner">
-              <div className="section-title-row history-title"><div><p className="section-label">v0.9.5</p><h2>{text.historyTitle}</h2></div>{history.length > 0 && <button className="clear-button" type="button" onClick={clearHistory}>{text.clearHistory}</button>}</div>{history.length === 0 ? <p className="history-empty">{text.emptyHistory}</p> : <div className="history-list">{history.map((item) => <button key={item.id} type="button" onClick={() => copyText(item.fullText, text.historyCopied)}><span>{item.unitMode === UNIT_MODES.IN_TO_MM ? 'inch → mm' : 'mm → inch'}</span><strong>{item.text}</strong></button>)}</div>}
+              <div className="section-title-row history-title"><div><p className="section-label">v0.9.6</p><h2>{text.historyTitle}</h2></div>{history.length > 0 && <button className="clear-button" type="button" onClick={clearHistory}>{text.clearHistory}</button>}</div>{history.length === 0 ? <p className="history-empty">{text.emptyHistory}</p> : <div className="history-list">{history.map((item) => <button key={item.id} type="button" onClick={() => copyText(item.fullText, text.historyCopied)}><span>{item.unitMode === UNIT_MODES.IN_TO_MM ? 'inch → mm' : 'mm → inch'}</span><strong>{item.text}</strong></button>)}</div>}
             </div>
           )}
         </section>
