@@ -23,8 +23,26 @@ const MESSAGES = {
 };
 
 const COPY_LABELS = {
-  he: { tolPlus: 'Tol+', nominal: 'Nominal', tolMinus: 'Tol-', upper: 'Upper limit', lower: 'Lower limit', max: 'Max', min: 'Min', range: 'Range' },
-  en: { tolPlus: 'Tol+', nominal: 'Nominal', tolMinus: 'Tol-', upper: 'Upper limit', lower: 'Lower limit', max: 'Max', min: 'Min', range: 'Range' },
+  he: {
+    tolPlus: 'סבולת +',
+    nominal: 'נומינלי',
+    tolMinus: 'סבולת -',
+    upper: 'גבול עליון',
+    lower: 'גבול תחתון',
+    max: 'מקסימום',
+    min: 'מינימום',
+    range: 'טווח',
+  },
+  en: {
+    tolPlus: 'Tol+',
+    nominal: 'Nominal',
+    tolMinus: 'Tol-',
+    upper: 'Upper limit',
+    lower: 'Lower limit',
+    max: 'Max',
+    min: 'Min',
+    range: 'Range',
+  },
 };
 
 function getLanguage(language) {
