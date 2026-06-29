@@ -1,0 +1,7 @@
+.form-section > .section-title-row h2 {
+  display: none;
+}
+
+.calculator-card > .card-header .conversion-pill {
+  display: none !important;
+}
