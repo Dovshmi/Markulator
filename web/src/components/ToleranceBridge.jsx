@@ -71,6 +71,25 @@ function getTabIndex(activeSide, side, field) {
   return FIELD_ORDER.indexOf(field) + 1;
 }
 
+function getFieldsAfterCurrent(field) {
+  const currentIndex = FIELD_ORDER.indexOf(field);
+  if (currentIndex < 0) return FIELD_ORDER;
+  return [...FIELD_ORDER.slice(currentIndex + 1), ...FIELD_ORDER.slice(0, currentIndex)];
+}
+
+function findNextEmptyInput(bridge, side, field) {
+  if (!bridge) return null;
+
+  const nextFields = getFieldsAfterCurrent(field);
+
+  for (const nextField of nextFields) {
+    const input = bridge.querySelector(`input[data-tolerance-side="${side}"][data-tolerance-field="${nextField}"]`);
+    if (input && input.value.trim() === '') return input;
+  }
+
+  return null;
+}
+
 function moveToNextField(event, side, field, phase = 'down') {
   if (event.key !== 'Enter') return;
 
@@ -90,14 +109,7 @@ function moveToNextField(event, side, field, phase = 'down') {
     bridge.dataset.toleranceLastKeyboardNavigation = String(Date.now());
   }
 
-  const nextField = FIELD_ORDER[FIELD_ORDER.indexOf(field) + 1];
-
-  if (!nextField) {
-    event.currentTarget.blur();
-    return;
-  }
-
-  const nextInput = bridge?.querySelector(`input[data-tolerance-side="${side}"][data-tolerance-field="${nextField}"]`);
+  const nextInput = findNextEmptyInput(bridge, side, field);
 
   if (nextInput) {
     nextInput.focus();
