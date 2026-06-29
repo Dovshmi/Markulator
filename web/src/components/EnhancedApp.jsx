@@ -1,6 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { calculateMaxMinTolerance, calculatePlusMinusTolerance } from '../markulator.js';
-import logoSymbol from '../assets/logo-symbol.jpg';
 import InputField from './InputField.jsx';
 import ToleranceBridge from './ToleranceBridge.jsx';
 import {
@@ -193,6 +192,16 @@ function getSavedThemeMode() {
   }
 }
 
+function scheduleIdleTask(callback) {
+  if (typeof window === 'undefined') return () => {};
+  if ('requestIdleCallback' in window) {
+    const idleId = window.requestIdleCallback(callback, { timeout: 900 });
+    return () => window.cancelIdleCallback?.(idleId);
+  }
+  const timeoutId = window.setTimeout(callback, 160);
+  return () => window.clearTimeout(timeoutId);
+}
+
 function buildConvertedResult(mode, tol, limits, unitMode) {
   if (unitMode === UNIT_MODES.IN_TO_MM) {
     if (mode === 'plus-minus') return calculatePlusMinusTolerance(toNumber(tol.nominal), toNumber(tol.positive), toNumber(tol.negative));
@@ -213,6 +222,7 @@ function buildConvertedResult(mode, tol, limits, unitMode) {
 
 export default function EnhancedApp() {
   const [mode, setMode] = useState('plus-minus');
+  const [modeHasSwitched, setModeHasSwitched] = useState(false);
   const [unitMode, setUnitMode] = useState(UNIT_MODES.IN_TO_MM);
   const [tol, setTol] = useState(emptyTol);
   const [limits, setLimits] = useState(emptyLimits);
@@ -220,6 +230,7 @@ export default function EnhancedApp() {
   const [copyStatus, setCopyStatus] = useState('');
   const [history, setHistory] = useState([]);
   const [drawerOpen, setDrawerOpen] = useState(false);
+  const [drawerMounted, setDrawerMounted] = useState(false);
   const [resultOpen, setResultOpen] = useState(false);
   const [themeMode, setThemeMode] = useState(getSavedThemeMode);
   const [systemTheme, setSystemTheme] = useState(getSystemTheme);
@@ -229,6 +240,8 @@ export default function EnhancedApp() {
   });
   const inputSectionRef = useRef(null);
   const themeTimerRef = useRef(null);
+  const initialThemeAppliedRef = useRef(false);
+  const historyReadyRef = useRef(false);
   const text = TEXT[language];
   const dir = language === 'he' ? 'rtl' : 'ltr';
   const resolvedTheme = themeMode === 'auto' ? systemTheme : themeMode;
@@ -253,7 +266,6 @@ export default function EnhancedApp() {
     if (typeof window === 'undefined' || !window.matchMedia) return;
     const query = window.matchMedia('(prefers-color-scheme: light)');
     const updateSystemTheme = () => setSystemTheme(query.matches ? 'light' : 'dark');
-    updateSystemTheme();
     query.addEventListener?.('change', updateSystemTheme);
     return () => query.removeEventListener?.('change', updateSystemTheme);
   }, []);
@@ -263,20 +275,28 @@ export default function EnhancedApp() {
     document.documentElement.style.colorScheme = resolvedTheme;
     document.body.classList.toggle('theme-light', resolvedTheme === 'light');
     document.body.classList.toggle('theme-dark', resolvedTheme === 'dark');
+
+    if (!initialThemeAppliedRef.current) {
+      initialThemeAppliedRef.current = true;
+      return;
+    }
+
     setThemeAnimating(true);
     window.clearTimeout(themeTimerRef.current);
-    themeTimerRef.current = window.setTimeout(() => setThemeAnimating(false), 520);
+    themeTimerRef.current = window.setTimeout(() => setThemeAnimating(false), 300);
     return () => window.clearTimeout(themeTimerRef.current);
   }, [themeMode, resolvedTheme]);
 
-  useEffect(() => {
+  useEffect(() => scheduleIdleTask(() => {
     try {
       const saved = JSON.parse(localStorage.getItem(HISTORY_KEY) || '[]');
       if (Array.isArray(saved)) setHistory(saved.slice(0, 6));
     } catch { setHistory([]); }
-  }, []);
+    historyReadyRef.current = true;
+  }), []);
 
   useEffect(() => {
+    if (!historyReadyRef.current) return;
     try { localStorage.setItem(HISTORY_KEY, JSON.stringify(history.slice(0, 6))); } catch { return; }
   }, [history]);
 
@@ -292,8 +312,18 @@ export default function EnhancedApp() {
 
   const switchMode = (nextMode) => {
     if (nextMode === mode) return;
+    setModeHasSwitched(true);
     setMode(nextMode);
     setCopyStatus('');
+  };
+
+  const openDrawer = () => {
+    setDrawerMounted(true);
+    setDrawerOpen(true);
+  };
+
+  const switchUnitMode = () => {
+    setUnitMode((current) => (current === UNIT_MODES.IN_TO_MM ? UNIT_MODES.MM_TO_IN : UNIT_MODES.IN_TO_MM));
   };
 
   const clear = () => {
@@ -324,12 +354,16 @@ export default function EnhancedApp() {
 
   const saveHistory = () => {
     if (!result) return;
+    historyReadyRef.current = true;
     const item = { id: Date.now(), mode, unitMode, unitLabel: units.outputLabel, text: shortText, fullText: currentText };
     setHistory((items) => [item, ...items.filter((x) => x.text !== item.text)].slice(0, 6));
     setCopyStatus(text.saved);
   };
 
-  const clearHistory = () => setHistory([]);
+  const clearHistory = () => {
+    historyReadyRef.current = true;
+    setHistory([]);
+  };
 
   const inputSuffix = units.input;
   const maxPlaceholder = unitMode === UNIT_MODES.IN_TO_MM ? text.maxPlaceholderIn : text.maxPlaceholderMm;
@@ -344,43 +378,45 @@ export default function EnhancedApp() {
     <main className={`app-shell lang-${language} theme-${resolvedTheme} theme-mode-${themeMode} ${themeAnimating ? 'theme-animating' : ''}`} dir={dir} lang={language}>
       {drawerOpen && <button className="drawer-backdrop" type="button" aria-label={text.closeMenu} onClick={() => setDrawerOpen(false)} />}
 
-      <aside className={`settings-drawer ${drawerOpen ? 'open' : ''}`} aria-hidden={!drawerOpen}>
-        <div className="drawer-header"><div><p className="section-label">{text.settings}</p><h2>{text.appMenu}</h2></div><button type="button" className="drawer-close" aria-label={text.closeMenu} onClick={() => setDrawerOpen(false)}>×</button></div>
+      {drawerMounted && (
+        <aside className={`settings-drawer ${drawerOpen ? 'open' : ''}`} aria-hidden={!drawerOpen}>
+          <div className="drawer-header"><div><p className="section-label">{text.settings}</p><h2>{text.appMenu}</h2></div><button type="button" className="drawer-close" aria-label={text.closeMenu} onClick={() => setDrawerOpen(false)}>×</button></div>
 
-        <div className="drawer-section">
-          <strong>{text.language}</strong><small>{text.languageHelp}</small>
-          <div className="unit-switch language-switch" aria-label={text.language}>
-            <button className={language === 'he' ? 'active' : ''} type="button" onClick={() => setLanguage('he')}>{text.hebrew}</button>
-            <button className={language === 'en' ? 'active' : ''} type="button" onClick={() => setLanguage('en')}>{text.english}</button>
+          <div className="drawer-section">
+            <strong>{text.language}</strong><small>{text.languageHelp}</small>
+            <div className="unit-switch language-switch" aria-label={text.language}>
+              <button className={language === 'he' ? 'active' : ''} type="button" onClick={() => setLanguage('he')}>{text.hebrew}</button>
+              <button className={language === 'en' ? 'active' : ''} type="button" onClick={() => setLanguage('en')}>{text.english}</button>
+            </div>
           </div>
-        </div>
 
-        <div className="drawer-section">
-          <strong>{text.theme}</strong><small>{text.themeHelp}</small>
-          <div className="unit-switch theme-switch" aria-label={text.theme}>
-            <button className={themeMode === 'auto' ? 'active' : ''} type="button" onClick={() => setThemeMode('auto')}>◎ {text.autoTheme}</button>
-            <button className={themeMode === 'light' ? 'active' : ''} type="button" onClick={() => setThemeMode('light')}>☀ {text.lightTheme}</button>
-            <button className={themeMode === 'dark' ? 'active' : ''} type="button" onClick={() => setThemeMode('dark')}>☾ {text.darkTheme}</button>
+          <div className="drawer-section">
+            <strong>{text.theme}</strong><small>{text.themeHelp}</small>
+            <div className="unit-switch theme-switch" aria-label={text.theme}>
+              <button className={themeMode === 'auto' ? 'active' : ''} type="button" onClick={() => setThemeMode('auto')}>◎ {text.autoTheme}</button>
+              <button className={themeMode === 'light' ? 'active' : ''} type="button" onClick={() => setThemeMode('light')}>☀ {text.lightTheme}</button>
+              <button className={themeMode === 'dark' ? 'active' : ''} type="button" onClick={() => setThemeMode('dark')}>☾ {text.darkTheme}</button>
+            </div>
           </div>
-        </div>
 
-        <div className="drawer-section">
-          <strong>{text.conversionDirection}</strong><small>{text.conversionHelp}</small>
-          <div className="unit-switch" aria-label={text.conversionDirection}>
-            <button className={unitMode === UNIT_MODES.IN_TO_MM ? 'active' : ''} type="button" onClick={() => setUnitMode(UNIT_MODES.IN_TO_MM)}>inch → mm</button>
-            <button className={unitMode === UNIT_MODES.MM_TO_IN ? 'active' : ''} type="button" onClick={() => setUnitMode(UNIT_MODES.MM_TO_IN)}>mm → inch</button>
+          <div className="drawer-section">
+            <strong>{text.conversionDirection}</strong><small>{text.conversionHelp}</small>
+            <div className="unit-switch" aria-label={text.conversionDirection}>
+              <button className={unitMode === UNIT_MODES.IN_TO_MM ? 'active' : ''} type="button" onClick={() => setUnitMode(UNIT_MODES.IN_TO_MM)}>inch → mm</button>
+              <button className={unitMode === UNIT_MODES.MM_TO_IN ? 'active' : ''} type="button" onClick={() => setUnitMode(UNIT_MODES.MM_TO_IN)}>mm → inch</button>
+            </div>
           </div>
-        </div>
 
-        <div className="drawer-section">
-          <label className="select-field settings-select">{text.resultPrecision}<select value={digits} onChange={(e) => setDigits(Number(e.target.value))}><option value="2">{text.digits2}</option><option value="3">{text.digits3}</option><option value="4">{text.digits4}</option></select></label>
-        </div>
+          <div className="drawer-section">
+            <label className="select-field settings-select">{text.resultPrecision}<select value={digits} onChange={(e) => setDigits(Number(e.target.value))}><option value="2">{text.digits2}</option><option value="3">{text.digits3}</option><option value="4">{text.digits4}</option></select></label>
+          </div>
 
-        <div className="drawer-section drawer-status"><span>{WEB_VERSION}</span><span>{themeMode === 'auto' ? `${text.autoTheme} · ${resolvedTheme}` : themeMode}</span></div>
-      </aside>
+          <div className="drawer-section drawer-status"><span>{WEB_VERSION}</span><span>{themeMode === 'auto' ? `${text.autoTheme} · ${resolvedTheme}` : themeMode}</span></div>
+        </aside>
+      )}
 
       <section className="hero-card compact-hero">
-        <div className="brand-row brand-row-fixed"><div className="brand-title-block"><p className="eyebrow">{WEB_VERSION}</p><h1>Markulator</h1></div><div className="logo-image-wrap" aria-label="Markulator symbol"><img src={logoSymbol} alt="Markulator symbol" className="logo-image" /></div></div>
+        <div className="brand-row brand-row-fixed"><div className="brand-title-block"><p className="eyebrow">{WEB_VERSION}</p><h1>Markulator</h1></div><div className="logo-image-wrap" aria-label="Markulator symbol"><img src="/markulator-icon.svg" alt="Markulator symbol" className="logo-image" width="92" height="92" decoding="async" /></div></div>
       </section>
 
       <section className="calculator-card">
@@ -388,13 +424,15 @@ export default function EnhancedApp() {
         <div className="mode-switch"><button className={mode === 'plus-minus' ? 'active' : ''} aria-pressed={mode === 'plus-minus'} onClick={() => switchMode('plus-minus')} type="button"><strong>{text.plusMinus}</strong><span>{text.plusMinusHint}</span></button><button className={mode === 'max-min' ? 'active' : ''} aria-pressed={mode === 'max-min'} onClick={() => switchMode('max-min')} type="button"><strong>{text.maxMin}</strong><span>{text.maxMinHint}</span></button></div>
 
         <section className="form-section" ref={inputSectionRef}>
-          <button className="app-menu-button form-settings-button" type="button" aria-label={text.openSettings} onClick={() => setDrawerOpen(true)}><span></span><span></span><span></span></button>
+          <button className="app-menu-button form-settings-button" type="button" aria-label={text.openSettings} onClick={openDrawer}><span></span><span></span><span></span></button>
           <div className="section-title-row"><div><p className="section-label">{text.step2}</p><h2>{text.enterValues}{units.input}</h2></div></div>
-          {mode === 'plus-minus' ? (
-            <ToleranceBridge unitMode={unitMode} tol={tol} setTol={setTol} result={result} digits={digits} text={text} placeholders={tolerancePlaceholders} />
-          ) : (
-            <div key={`max-min-form-${unitMode}`} className="input-grid two mode-content"><InputField label={text.maxValue} helper={text.maxHelper} suffix={inputSuffix} value={limits.max} placeholder={maxPlaceholder} onChange={(max) => setLimits((x) => ({ ...x, max }))} /><InputField label={text.minValue} helper={text.minHelper} suffix={inputSuffix} value={limits.min} placeholder={minPlaceholder} onChange={(min) => setLimits((x) => ({ ...x, min }))} /></div>
-          )}
+          <div key={mode} className={`calculator-mode-panel ${modeHasSwitched ? 'mode-panel-animated' : ''}`}>
+            {mode === 'plus-minus' ? (
+              <ToleranceBridge unitMode={unitMode} tol={tol} setTol={setTol} result={result} digits={digits} text={text} placeholders={tolerancePlaceholders} onSwitchUnitMode={switchUnitMode} />
+            ) : (
+              <div key={`max-min-form-${unitMode}`} className="input-grid two mode-content"><InputField label={text.maxValue} helper={text.maxHelper} suffix={inputSuffix} value={limits.max} placeholder={maxPlaceholder} onChange={(max) => setLimits((x) => ({ ...x, max }))} /><InputField label={text.minValue} helper={text.minHelper} suffix={inputSuffix} value={limits.min} placeholder={minPlaceholder} onChange={(min) => setLimits((x) => ({ ...x, min }))} /></div>
+            )}
+          </div>
           {copyStatus && <div className="form-status">{copyStatus}</div>}
           {validation.errors.length > 0 && <div className="validation-box">{validation.errors.map((msg) => <p key={msg}>{msg}</p>)}</div>}
         </section>
@@ -413,14 +451,14 @@ export default function EnhancedApp() {
         <section id="history-drawer" className={`history-section history-drawer ${resultOpen ? 'open' : ''}`} aria-hidden={!resultOpen}>
           {resultOpen && (
             <div className="history-drawer-inner">
-              <div className="section-title-row history-title"><div><p className="section-label">v0.9.6</p><h2>{text.historyTitle}</h2></div>{history.length > 0 && <button className="clear-button" type="button" onClick={clearHistory}>{text.clearHistory}</button>}</div>{history.length === 0 ? <p className="history-empty">{text.emptyHistory}</p> : <div className="history-list">{history.map((item) => <button key={item.id} type="button" onClick={() => copyText(item.fullText, text.historyCopied)}><span>{item.unitMode === UNIT_MODES.IN_TO_MM ? 'inch → mm' : 'mm → inch'}</span><strong>{item.text}</strong></button>)}</div>}
+              <div className="section-title-row history-title"><div><p className="section-label">v0.9.7</p><h2>{text.historyTitle}</h2></div>{history.length > 0 && <button className="clear-button" type="button" onClick={clearHistory}>{text.clearHistory}</button>}</div>{history.length === 0 ? <p className="history-empty">{text.emptyHistory}</p> : <div className="history-list">{history.map((item) => <button key={item.id} type="button" onClick={() => copyText(item.fullText, text.historyCopied)}><span>{item.unitMode === UNIT_MODES.IN_TO_MM ? 'inch → mm' : 'mm → inch'}</span><strong>{item.text}</strong></button>)}</div>}
             </div>
           )}
         </section>
       </section>
 
       {result && (
-        <aside className="sticky-action-bar visible" aria-live="polite">
+        <aside key={`${mode}-${shortText}`} className="sticky-action-bar visible result-arrive" aria-live="polite">
           <button type="button" onClick={() => copyText(shortText, text.shortCopied)}>{text.shortCopy}</button>
           <button type="button" onClick={() => copyText(currentText, text.fullCopied)}>{text.fullCopy}</button>
           <button type="button" onClick={saveHistory}>{text.save}</button>

@@ -173,14 +173,6 @@ function handleInputBlur(event, side, field) {
   }, 60);
 }
 
-function switchConversionDirection(unitMode) {
-  if (typeof document === 'undefined') return;
-  const nextLabel = unitMode === UNIT_MODES.IN_TO_MM ? 'mm → inch' : 'inch → mm';
-  const buttons = Array.from(document.querySelectorAll('.settings-drawer .unit-switch button'));
-  const targetButton = buttons.find((button) => button.textContent?.trim() === nextLabel);
-  targetButton?.click();
-}
-
 function ValueInput({ side, activeSide, onFocusSide, field, unit, value, onChange, placeholderLabel, hasNextEmptyField, isMiddle = false }) {
   return (
     <span className="tolerance-value-frame tolerance-input-frame">
@@ -208,12 +200,15 @@ function ValueInput({ side, activeSide, onFocusSide, field, unit, value, onChang
   );
 }
 
-export default function ToleranceBridge({ unitMode, tol, setTol, result, digits, text }) {
+export default function ToleranceBridge({ unitMode, tol, setTol, result, digits, text, onSwitchUnitMode }) {
   const [editingSide, setEditingSide] = useState('left');
   const [navigationSide, setNavigationSide] = useState('left');
   const [rightDraft, setRightDraft] = useState(EMPTY_VALUES);
+  const [conversionAnimating, setConversionAnimating] = useState(false);
   const previousUnitModeRef = useRef(unitMode);
   const swapValuesRef = useRef(EMPTY_VALUES);
+  const conversionTimerRef = useRef(null);
+  const conversionFrameRef = useRef(null);
 
   const sourceUnit = unitMode === UNIT_MODES.IN_TO_MM ? 'in' : 'mm';
   const targetUnit = unitMode === UNIT_MODES.IN_TO_MM ? 'mm' : 'in';
@@ -235,6 +230,11 @@ export default function ToleranceBridge({ unitMode, tol, setTol, result, digits,
       window.removeEventListener('pointerdown', markPointerDown, true);
       window.removeEventListener('touchstart', markPointerDown, true);
     };
+  }, []);
+
+  useEffect(() => () => {
+    window.clearTimeout(conversionTimerRef.current);
+    if (conversionFrameRef.current != null) window.cancelAnimationFrame?.(conversionFrameRef.current);
   }, []);
 
   useEffect(() => {
@@ -264,6 +264,19 @@ export default function ToleranceBridge({ unitMode, tol, setTol, result, digits,
     setTol((current) => ({ ...current, [field]: convertToLeftUnit(value, unitMode) }));
   };
 
+  const handleSwitchDirection = () => {
+    setConversionAnimating(false);
+    window.clearTimeout(conversionTimerRef.current);
+    if (conversionFrameRef.current != null) window.cancelAnimationFrame?.(conversionFrameRef.current);
+
+    const startSwapAnimation = () => setConversionAnimating(true);
+    if (window.requestAnimationFrame) conversionFrameRef.current = window.requestAnimationFrame(startSwapAnimation);
+    else startSwapAnimation();
+
+    conversionTimerRef.current = window.setTimeout(() => setConversionAnimating(false), 760);
+    onSwitchUnitMode?.();
+  };
+
   const renderMiniCard = (side, field, position) => {
     const isSource = side === 'source';
     const unit = isSource ? sourceUnit : targetUnit;
@@ -286,9 +299,9 @@ export default function ToleranceBridge({ unitMode, tol, setTol, result, digits,
   const nominalLabel = getLabel(text, 'nominal');
 
   return (
-    <section key={`tolerance-bridge-${unitMode}`} className="tolerance-bridge mode-content" dir="ltr" aria-label="Tolerance calculator">
+    <section className={`tolerance-bridge mode-content ${conversionAnimating ? 'tolerance-conversion-animating' : ''}`} dir="ltr" aria-label="Tolerance calculator">
       <div className="tolerance-unit-title tolerance-unit-left"><span>{getUnitName(sourceUnit)}</span><b>{sourceUnit}</b></div>
-      <button type="button" className="tolerance-swap-button" aria-label={text.conversionDirection} onClick={() => switchConversionDirection(unitMode)}>⇄</button>
+      <button type="button" className="tolerance-swap-button" aria-label={text.conversionDirection} onClick={handleSwitchDirection}>⇄</button>
       <div className="tolerance-unit-title tolerance-unit-right"><span>{getUnitName(targetUnit)}</span><b>{targetUnit}</b></div>
 
       {renderMiniCard('source', 'positive', 'upper-left')}
