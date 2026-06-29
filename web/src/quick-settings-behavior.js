@@ -187,13 +187,10 @@ function bindQuickButtons() {
     event.stopPropagation();
     closeMiniPicker();
 
-    const bounds = themeSection.getBoundingClientRect();
-    const x = event.clientX - bounds.left;
-    const y = event.clientY - bounds.top;
-    const topHalf = y < bounds.height * 0.46;
-    const nextIndex = topHalf ? 0 : x < bounds.width / 2 ? 1 : 2;
+    const active = drawer.querySelector('.theme-switch button.active');
     const buttons = Array.from(drawer.querySelectorAll('.theme-switch button'));
-    clickWithReact(buttons[nextIndex], themeSection);
+    const index = Math.max(0, buttons.indexOf(active));
+    clickWithReact(buttons[(index + 1) % buttons.length], themeSection);
     window.setTimeout(syncThemeMode, 0);
   }, true);
 }
