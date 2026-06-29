@@ -7,13 +7,13 @@
   --limit-field: #0d1728;
   --limit-field-border: rgba(148, 163, 184, 0.14);
 
-  width: min(1000px, 100%);
+  width: min(1040px, 100%);
   margin: 0 auto;
   direction: ltr;
   display: grid;
-  grid-template-columns: minmax(128px, 1fr) minmax(46px, 86px) minmax(128px, 1fr);
+  grid-template-columns: minmax(138px, 1fr) minmax(54px, 92px) minmax(138px, 1fr);
   grid-template-rows: auto auto;
-  row-gap: clamp(12px, 2.4vw, 20px);
+  row-gap: clamp(13px, 2.6vw, 21px);
   align-items: center;
 }
 
@@ -22,9 +22,9 @@
   align-items: center;
   justify-content: center;
   gap: 8px;
-  min-height: 34px;
+  min-height: 36px;
   color: var(--limit-muted);
-  font-size: clamp(0.84rem, 1.35vw, 1.02rem);
+  font-size: clamp(0.86rem, 1.38vw, 1.04rem);
   font-weight: 950;
   letter-spacing: 0.06em;
   text-transform: uppercase;
@@ -42,14 +42,14 @@
 
 .limit-unit-title b {
   display: inline-grid;
-  min-width: 42px;
-  height: 32px;
+  min-width: 44px;
+  height: 34px;
   place-items: center;
   border: 1px solid rgba(98, 199, 216, 0.36);
   border-radius: 999px;
   color: var(--limit-accent);
   background: rgba(14, 165, 233, 0.08);
-  font-size: 0.95em;
+  font-size: 0.98em;
 }
 
 .limit-swap-button {
@@ -63,7 +63,7 @@
   position: relative;
   grid-column: 1 / 4;
   grid-row: 2;
-  min-height: clamp(198px, 25vw, 244px);
+  min-height: clamp(224px, 29vw, 276px);
   overflow: visible;
 }
 
@@ -95,15 +95,15 @@
   position: absolute;
   inset: 0;
   display: grid;
-  grid-template-columns: minmax(0, 1fr) clamp(34px, 6vw, 64px) minmax(0, 1fr);
+  grid-template-columns: minmax(0, 1fr) clamp(42px, 7vw, 76px) minmax(0, 1fr);
   align-items: center;
-  gap: clamp(6px, 1.4vw, 16px);
-  padding: clamp(28px, 4.2vw, 40px) clamp(22px, 4vw, 48px);
+  gap: clamp(8px, 1.6vw, 18px);
+  padding: clamp(30px, 4.5vw, 44px) clamp(24px, 4.3vw, 52px);
 }
 
 .limit-side-panel {
   display: grid;
-  gap: clamp(14px, 2.4vw, 20px);
+  gap: clamp(16px, 2.6vw, 22px);
   min-width: 0;
 }
 
@@ -119,21 +119,21 @@
   grid-column: 2;
   display: grid;
   place-items: center;
-  gap: 8px;
-  color: rgba(103, 232, 249, 0.46);
-  font-size: clamp(0.56rem, 1vw, 0.7rem);
+  gap: 10px;
+  color: rgba(103, 232, 249, 0.54);
+  font-size: clamp(0.62rem, 1.1vw, 0.76rem);
   font-weight: 950;
   letter-spacing: 0.08em;
 }
 
 .limit-center-divider span {
   display: grid;
-  width: clamp(24px, 4.5vw, 38px);
-  height: clamp(24px, 4.5vw, 38px);
+  width: clamp(34px, 5.4vw, 48px);
+  height: clamp(34px, 5.4vw, 48px);
   place-items: center;
-  border: 1px solid rgba(103, 232, 249, 0.12);
+  border: 1px solid rgba(103, 232, 249, 0.18);
   border-radius: 999px;
-  background: rgba(2, 6, 23, 0.16);
+  background: rgba(2, 6, 23, 0.20);
 }
 
 .limit-row-card {
@@ -148,15 +148,15 @@
 
 .limit-value-frame {
   width: 100%;
-  height: clamp(50px, 6vw, 58px);
+  height: clamp(62px, 7.6vw, 74px);
   min-width: 0;
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto;
   align-items: center;
-  gap: 8px;
-  padding: 0 13px;
+  gap: 10px;
+  padding: 0 16px;
   border: 1px solid var(--limit-field-border);
-  border-radius: 16px;
+  border-radius: 18px;
   background: var(--limit-field);
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.035);
   overflow: hidden;
@@ -176,7 +176,7 @@
   background: transparent;
   direction: ltr;
   text-align: left;
-  font-size: clamp(1.02rem, 1.7vw, 1.22rem);
+  font-size: clamp(1.28rem, 2.65vw, 1.82rem);
   font-weight: 950;
   line-height: 1;
   overflow: hidden;
@@ -190,6 +190,7 @@
 .limit-value-frame input::placeholder {
   color: rgba(148, 163, 184, 0.70);
   opacity: 1;
+  font-size: clamp(0.92rem, 1.8vw, 1.08rem);
   font-weight: 900;
 }
 
@@ -202,7 +203,7 @@
 .limit-value-frame em {
   color: var(--limit-accent);
   font-style: normal;
-  font-size: clamp(0.78rem, 1.12vw, 0.9rem);
+  font-size: clamp(1rem, 1.9vw, 1.34rem);
   font-weight: 950;
   white-space: nowrap;
 }
@@ -262,8 +263,8 @@
 
 @media (max-width: 760px) {
   .limit-bridge {
-    grid-template-columns: minmax(112px, 1fr) minmax(32px, 42px) minmax(112px, 1fr);
-    row-gap: 9px;
+    grid-template-columns: minmax(118px, 1fr) minmax(36px, 48px) minmax(118px, 1fr);
+    row-gap: 10px;
   }
 
   .limit-unit-title span {
@@ -271,19 +272,67 @@
   }
 
   .limit-unit-title b {
-    min-width: 31px;
-    height: 25px;
-    font-size: 0.72rem;
+    min-width: 35px;
+    height: 29px;
+    font-size: 0.78rem;
   }
 
   .limit-bridge-shell {
-    min-height: 178px;
+    min-height: 214px;
   }
 
   .limit-bridge-content {
-    grid-template-columns: minmax(0, 1fr) 24px minmax(0, 1fr);
-    gap: 5px;
-    padding: 24px 8px;
+    grid-template-columns: minmax(0, 1fr) 34px minmax(0, 1fr);
+    gap: 7px;
+    padding: 27px 9px;
+  }
+
+  .limit-side-panel {
+    gap: 14px;
+  }
+
+  .limit-value-frame {
+    height: 58px;
+    padding: 0 11px;
+    gap: 6px;
+    border-radius: 16px;
+  }
+
+  .limit-value-frame input {
+    font-size: 1.34rem;
+  }
+
+  .limit-value-frame input::placeholder {
+    font-size: 0.9rem;
+  }
+
+  .limit-value-frame em {
+    font-size: 1.05rem;
+  }
+
+  .limit-center-divider {
+    gap: 9px;
+    font-size: 0.58rem;
+  }
+
+  .limit-center-divider span {
+    width: 31px;
+    height: 31px;
+  }
+}
+
+@media (max-width: 430px) {
+  .limit-bridge {
+    grid-template-columns: minmax(110px, 1fr) minmax(32px, 38px) minmax(110px, 1fr);
+  }
+
+  .limit-bridge-shell {
+    min-height: 198px;
+  }
+
+  .limit-bridge-content {
+    grid-template-columns: minmax(0, 1fr) 32px minmax(0, 1fr);
+    padding: 25px 5px;
   }
 
   .limit-side-panel {
@@ -291,69 +340,26 @@
   }
 
   .limit-value-frame {
-    height: 48px;
-    padding: 0 8px;
+    height: 56px;
+    padding: 0 10px;
     gap: 5px;
-    border-radius: 14px;
+    border-radius: 15px;
   }
 
   .limit-value-frame input {
-    font-size: 1.02rem;
+    font-size: 1.28rem;
   }
 
   .limit-value-frame input::placeholder {
-    font-size: 0.86rem;
+    font-size: 0.82rem;
   }
 
   .limit-value-frame em {
-    font-size: 0.84rem;
-  }
-
-  .limit-center-divider {
-    gap: 7px;
-    font-size: 0.48rem;
+    font-size: 0.98rem;
   }
 
   .limit-center-divider span {
-    width: 22px;
-    height: 22px;
-  }
-}
-
-@media (max-width: 430px) {
-  .limit-bridge {
-    grid-template-columns: minmax(102px, 1fr) minmax(24px, 30px) minmax(102px, 1fr);
-  }
-
-  .limit-bridge-shell {
-    min-height: 166px;
-  }
-
-  .limit-bridge-content {
-    grid-template-columns: minmax(0, 1fr) 22px minmax(0, 1fr);
-    padding: 22px 5px;
-  }
-
-  .limit-side-panel {
-    gap: 10px;
-  }
-
-  .limit-value-frame {
-    height: 46px;
-    padding: 0 7px;
-    gap: 4px;
-    border-radius: 13px;
-  }
-
-  .limit-value-frame input {
-    font-size: 0.96rem;
-  }
-
-  .limit-value-frame input::placeholder {
-    font-size: 0.76rem;
-  }
-
-  .limit-value-frame em {
-    font-size: 0.78rem;
+    width: 30px;
+    height: 30px;
   }
 }
