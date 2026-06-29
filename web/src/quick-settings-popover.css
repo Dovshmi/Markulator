@@ -16,12 +16,13 @@
   width: auto !important;
   max-width: calc(100vw - 24px) !important;
   min-width: 0 !important;
-  padding: 0 !important;
-  gap: 10px !important;
-  border: 0 !important;
-  border-radius: 0 !important;
-  background: transparent !important;
-  box-shadow: none !important;
+  padding: 5px !important;
+  gap: 8px !important;
+  border: 1px solid rgba(103, 232, 249, 0.12) !important;
+  border-radius: 24px !important;
+  background: rgba(2, 6, 23, 0.18) !important;
+  box-shadow: 0 12px 30px rgba(2, 6, 23, 0.18) !important;
+  backdrop-filter: blur(8px);
   overflow: visible !important;
   transform: translateY(6px) scale(0.96) !important;
   opacity: 0 !important;
@@ -73,10 +74,19 @@
     radial-gradient(circle at 30% 20%, rgba(103, 232, 249, 0.34), transparent 52%),
     linear-gradient(135deg, rgba(14, 165, 233, 0.88), rgba(20, 184, 166, 0.62)) !important;
   box-shadow:
-    0 16px 38px rgba(14, 165, 233, 0.28),
-    0 0 0 5px rgba(14, 165, 233, 0.08),
+    0 14px 30px rgba(14, 165, 233, 0.22),
     inset 0 1px 0 rgba(255, 255, 255, 0.22) !important;
-  overflow: visible !important;
+  overflow: hidden !important;
+  isolation: isolate;
+}
+
+.settings-drawer > .drawer-section::after {
+  display: none !important;
+  content: none !important;
+}
+
+.settings-drawer > .drawer-section:active {
+  transform: scale(0.96);
 }
 
 .settings-drawer > .drawer-section.drawer-status,
@@ -93,9 +103,8 @@
 .settings-drawer .unit-switch,
 .settings-drawer .theme-switch,
 .settings-drawer .language-switch {
-  display: flex !important;
-  align-items: center !important;
-  justify-content: center !important;
+  display: grid !important;
+  place-items: center !important;
   width: 100% !important;
   height: 100% !important;
   padding: 0 !important;
@@ -111,6 +120,8 @@
 .settings-drawer .unit-switch button.active,
 .settings-drawer .theme-switch button.active,
 .settings-drawer .language-switch button.active {
+  position: absolute !important;
+  inset: 0 !important;
   display: grid !important;
   place-items: center !important;
   width: 100% !important;
@@ -118,12 +129,27 @@
   min-height: 0 !important;
   padding: 0 !important;
   border: 0 !important;
-  border-radius: 17px !important;
+  border-radius: 18px !important;
   color: #ffffff !important;
   background: transparent !important;
   font-size: 0 !important;
   font-weight: 950 !important;
+  line-height: 1 !important;
+  text-align: center !important;
   text-shadow: 0 2px 8px rgba(2, 6, 23, 0.38) !important;
+}
+
+.settings-drawer .language-switch button.active::before,
+.settings-drawer .theme-switch button.active::before,
+.settings-drawer > .drawer-section:nth-of-type(5)::before {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  width: 100%;
+  height: 100%;
+  line-height: 1;
+  text-align: center;
 }
 
 .settings-drawer .language-switch button.active::before {
@@ -138,7 +164,6 @@
 
 .settings-drawer .theme-switch button.active::before {
   font-size: 1.45rem;
-  line-height: 1;
 }
 
 .settings-drawer .theme-switch button:nth-child(1).active::before {
@@ -161,10 +186,6 @@
   content: '0.00';
   direction: ltr;
   unicode-bidi: isolate;
-  display: grid;
-  place-items: center;
-  width: 100%;
-  height: 100%;
   color: #ffffff;
   font-size: 0.95rem;
   font-weight: 950;
@@ -216,6 +237,8 @@
     rgba(15, 23, 42, 0.78);
   font-size: 0.88rem;
   font-weight: 950;
+  line-height: 1;
+  text-align: center;
 }
 
 .precision-mini-picker button.active {
@@ -226,12 +249,19 @@
 @media (max-width: 420px) {
   .settings-drawer {
     gap: 7px !important;
+    padding: 4px !important;
   }
 
   .settings-drawer > .drawer-section {
     width: 48px !important;
     height: 48px !important;
     min-width: 48px !important;
+    border-radius: 16px !important;
+  }
+
+  .settings-drawer .unit-switch button.active,
+  .settings-drawer .theme-switch button.active,
+  .settings-drawer .language-switch button.active {
     border-radius: 16px !important;
   }
 
