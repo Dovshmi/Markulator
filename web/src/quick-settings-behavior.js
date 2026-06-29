@@ -30,7 +30,7 @@ function positionQuickSettings() {
   const isEnglish = getAppShell()?.classList.contains('lang-en');
   const viewportPadding = 8;
   const gap = 10;
-  const y = Math.max(viewportPadding, Math.min(rect.top, window.innerHeight - 72));
+  const y = Math.max(viewportPadding, Math.min(rect.top - 5, window.innerHeight - 72));
   const x = isEnglish
     ? Math.max(viewportPadding, rect.left - gap)
     : Math.min(window.innerWidth - viewportPadding, rect.right + gap);
@@ -167,6 +167,12 @@ function bindQuickButtons() {
   themeSection?.addEventListener('click', (event) => {
     if (themeSection.dataset.quickProgrammatic === 'true') {
       delete themeSection.dataset.quickProgrammatic;
+      return;
+    }
+
+    const clickedThemeButton = event.target.closest('.theme-switch button');
+    if (clickedThemeButton) {
+      closeMiniPicker();
       return;
     }
 
