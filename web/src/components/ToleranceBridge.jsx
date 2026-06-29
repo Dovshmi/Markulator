@@ -208,6 +208,7 @@ export default function ToleranceBridge({ unitMode, tol, setTol, result, digits,
   const previousUnitModeRef = useRef(unitMode);
   const swapValuesRef = useRef(EMPTY_VALUES);
   const conversionTimerRef = useRef(null);
+  const conversionFrameRef = useRef(null);
 
   const sourceUnit = unitMode === UNIT_MODES.IN_TO_MM ? 'in' : 'mm';
   const targetUnit = unitMode === UNIT_MODES.IN_TO_MM ? 'mm' : 'in';
@@ -231,7 +232,10 @@ export default function ToleranceBridge({ unitMode, tol, setTol, result, digits,
     };
   }, []);
 
-  useEffect(() => () => window.clearTimeout(conversionTimerRef.current), []);
+  useEffect(() => () => {
+    window.clearTimeout(conversionTimerRef.current);
+    if (conversionFrameRef.current != null) window.cancelAnimationFrame?.(conversionFrameRef.current);
+  }, []);
 
   useEffect(() => {
     if (previousUnitModeRef.current !== unitMode) {
@@ -263,8 +267,13 @@ export default function ToleranceBridge({ unitMode, tol, setTol, result, digits,
   const handleSwitchDirection = () => {
     setConversionAnimating(false);
     window.clearTimeout(conversionTimerRef.current);
-    window.requestAnimationFrame?.(() => setConversionAnimating(true));
-    conversionTimerRef.current = window.setTimeout(() => setConversionAnimating(false), 220);
+    if (conversionFrameRef.current != null) window.cancelAnimationFrame?.(conversionFrameRef.current);
+
+    const startSwapAnimation = () => setConversionAnimating(true);
+    if (window.requestAnimationFrame) conversionFrameRef.current = window.requestAnimationFrame(startSwapAnimation);
+    else startSwapAnimation();
+
+    conversionTimerRef.current = window.setTimeout(() => setConversionAnimating(false), 280);
     onSwitchUnitMode?.();
   };
 
@@ -290,7 +299,7 @@ export default function ToleranceBridge({ unitMode, tol, setTol, result, digits,
   const nominalLabel = getLabel(text, 'nominal');
 
   return (
-    <section key={`tolerance-bridge-${unitMode}`} className={`tolerance-bridge mode-content ${conversionAnimating ? 'tolerance-conversion-animating' : ''}`} dir="ltr" aria-label="Tolerance calculator">
+    <section className={`tolerance-bridge mode-content ${conversionAnimating ? 'tolerance-conversion-animating' : ''}`} dir="ltr" aria-label="Tolerance calculator">
       <div className="tolerance-unit-title tolerance-unit-left"><span>{getUnitName(sourceUnit)}</span><b>{sourceUnit}</b></div>
       <button type="button" className="tolerance-swap-button" aria-label={text.conversionDirection} onClick={handleSwitchDirection}>⇄</button>
       <div className="tolerance-unit-title tolerance-unit-right"><span>{getUnitName(targetUnit)}</span><b>{targetUnit}</b></div>
