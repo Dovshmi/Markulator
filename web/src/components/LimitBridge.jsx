@@ -5,8 +5,8 @@ const EMPTY_VALUES = { max: '', min: '' };
 const FIELD_ORDER = ['max', 'min'];
 
 const FIELDS = {
-  max: { labelKey: 'maxValue', compactLabelKey: 'mobileMax', helperKey: 'maxHelper', resultKey: 'maxMm' },
-  min: { labelKey: 'minValue', compactLabelKey: 'mobileMin', helperKey: 'minHelper', resultKey: 'minMm' },
+  max: { labelKey: 'maxValue', compactLabelKey: 'mobileMax', resultKey: 'maxMm' },
+  min: { labelKey: 'minValue', compactLabelKey: 'mobileMin', resultKey: 'minMm' },
 };
 
 function getUnitName(unit) {
@@ -118,7 +118,7 @@ function LimitInput({ side, activeSide, onFocusSide, field, unit, value, onChang
   );
 }
 
-export default function LimitBridge({ unitMode, limits, setLimits, result, digits, text, placeholders, onSwitchUnitMode }) {
+export default function LimitBridge({ unitMode, limits, setLimits, result, digits, text, onSwitchUnitMode }) {
   const [editingSide, setEditingSide] = useState('left');
   const [navigationSide, setNavigationSide] = useState('left');
   const [rightDraft, setRightDraft] = useState(EMPTY_VALUES);
@@ -186,16 +186,10 @@ export default function LimitBridge({ unitMode, limits, setLimits, result, digit
     const navSide = isSource ? 'left' : 'right';
     const onChange = isSource ? updateSource : updateTarget;
     const label = getLabel(text, field);
-    const helper = text[FIELDS[field].helperKey];
-    const placeholder = placeholders?.[field] || label;
 
     return (
       <label className={`limit-row-card limit-${field} limit-${side}`} aria-label={`${text[FIELDS[field].labelKey]} ${unit}`}>
-        <span className="limit-row-meta">
-          <strong>{label}</strong>
-          <small>{helper}</small>
-        </span>
-        <LimitInput side={navSide} activeSide={navigationSide} onFocusSide={setNavigationSide} field={field} unit={unit} value={values[field] || ''} onChange={onChange} placeholder={placeholder} hasNextEmptyField={hasEmptyFieldAfterCurrent(values, field)} />
+        <LimitInput side={navSide} activeSide={navigationSide} onFocusSide={setNavigationSide} field={field} unit={unit} value={values[field] || ''} onChange={onChange} placeholder={label} hasNextEmptyField={hasEmptyFieldAfterCurrent(values, field)} />
       </label>
     );
   };
@@ -207,10 +201,10 @@ export default function LimitBridge({ unitMode, limits, setLimits, result, digit
       <div className="limit-unit-title limit-unit-right"><span>{getUnitName(targetUnit)}</span><b>{targetUnit}</b></div>
 
       <section className="limit-bridge-shell" aria-label={text.maxMin}>
-        <svg viewBox="0 0 1000 286" preserveAspectRatio="none" aria-hidden="true">
-          <path className="limit-main-shape" d="M30 18 H382 C432 18 444 70 500 70 C556 70 568 18 618 18 H970 Q994 18 994 42 V244 Q994 268 970 268 H618 C568 268 556 216 500 216 C444 216 432 268 382 268 H30 Q6 268 6 244 V42 Q6 18 30 18 Z" />
-          <path className="limit-soft-line" d="M58 82 H360 C424 82 438 116 500 116 C562 116 576 82 640 82 H942" />
-          <path className="limit-soft-line" d="M58 204 H360 C424 204 438 170 500 170 C562 170 576 204 640 204 H942" />
+        <svg viewBox="0 0 1000 244" preserveAspectRatio="none" aria-hidden="true">
+          <path className="limit-main-shape" d="M28 18 H382 C432 18 444 58 500 58 C556 58 568 18 618 18 H972 Q996 18 996 42 V202 Q996 226 972 226 H618 C568 226 556 186 500 186 C444 186 432 226 382 226 H28 Q4 226 4 202 V42 Q4 18 28 18 Z" />
+          <path className="limit-soft-line" d="M58 76 H360 C424 76 438 102 500 102 C562 102 576 76 640 76 H942" />
+          <path className="limit-soft-line" d="M58 168 H360 C424 168 438 142 500 142 C562 142 576 168 640 168 H942" />
         </svg>
 
         <div className="limit-bridge-content">
