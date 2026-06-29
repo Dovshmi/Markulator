@@ -109,8 +109,13 @@ html.app-booting .logo-image-wrap {
 }
 
 .tolerance-conversion-animating .tolerance-source,
-.tolerance-conversion-animating .tolerance-target {
-  animation: tolerance-side-fade-swap 150ms cubic-bezier(.2, .85, .25, 1) both !important;
+.tolerance-conversion-animating .tolerance-unit-left {
+  animation: tolerance-swap-left-to-center 175ms cubic-bezier(.2, .85, .25, 1) both !important;
+}
+
+.tolerance-conversion-animating .tolerance-target,
+.tolerance-conversion-animating .tolerance-unit-right {
+  animation: tolerance-swap-right-to-center 175ms cubic-bezier(.2, .85, .25, 1) both !important;
 }
 
 .calculator-mode-panel {
@@ -206,15 +211,33 @@ html.app-booting .logo-image-wrap {
   }
 }
 
-@keyframes tolerance-side-fade-swap {
+@keyframes tolerance-swap-left-to-center {
   0% {
     opacity: 1;
+    transform: translate3d(0, 0, 0);
   }
   46% {
-    opacity: 0.58;
+    opacity: 0.62;
+    transform: translate3d(9px, 0, 0);
   }
   100% {
     opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+@keyframes tolerance-swap-right-to-center {
+  0% {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+  46% {
+    opacity: 0.62;
+    transform: translate3d(-9px, 0, 0);
+  }
+  100% {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
   }
 }
 
@@ -270,8 +293,10 @@ html.app-booting .logo-image-wrap {
   .calculator-mode-panel.mode-panel-animated,
   .tolerance-conversion-animating .tolerance-swap-button,
   .tolerance-conversion-animating .tolerance-source,
-  .tolerance-conversion-animating .tolerance-target {
-    animation-duration: 105ms !important;
+  .tolerance-conversion-animating .tolerance-target,
+  .tolerance-conversion-animating .tolerance-unit-left,
+  .tolerance-conversion-animating .tolerance-unit-right {
+    animation-duration: 120ms !important;
   }
 
   .drawer-section,
@@ -314,7 +339,9 @@ html.app-booting .logo-image-wrap {
   .calculator-mode-panel.mode-panel-animated,
   .tolerance-conversion-animating .tolerance-swap-button,
   .tolerance-conversion-animating .tolerance-source,
-  .tolerance-conversion-animating .tolerance-target {
+  .tolerance-conversion-animating .tolerance-target,
+  .tolerance-conversion-animating .tolerance-unit-left,
+  .tolerance-conversion-animating .tolerance-unit-right {
     animation-duration: 1ms !important;
   }
 }
