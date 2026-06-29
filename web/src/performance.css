@@ -213,30 +213,24 @@ html.app-booting .logo-image-wrap {
 
 @keyframes tolerance-swap-left-to-center {
   0% {
-    opacity: 1;
     transform: translate3d(0, 0, 0);
   }
   46% {
-    opacity: 0.62;
     transform: translate3d(9px, 0, 0);
   }
   100% {
-    opacity: 1;
     transform: translate3d(0, 0, 0);
   }
 }
 
 @keyframes tolerance-swap-right-to-center {
   0% {
-    opacity: 1;
     transform: translate3d(0, 0, 0);
   }
   46% {
-    opacity: 0.62;
     transform: translate3d(-9px, 0, 0);
   }
   100% {
-    opacity: 1;
     transform: translate3d(0, 0, 0);
   }
 }
