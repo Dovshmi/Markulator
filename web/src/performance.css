@@ -104,6 +104,18 @@ html.app-booting .logo-image-wrap {
   contain: layout paint;
 }
 
+.tolerance-conversion-animating .tolerance-swap-button {
+  animation: tolerance-swap-spin 190ms cubic-bezier(.2, .85, .25, 1) both !important;
+}
+
+.tolerance-conversion-animating .tolerance-source {
+  animation: tolerance-source-nudge 160ms cubic-bezier(.2, .85, .25, 1) both !important;
+}
+
+.tolerance-conversion-animating .tolerance-target {
+  animation: tolerance-target-nudge 160ms cubic-bezier(.2, .85, .25, 1) both !important;
+}
+
 .calculator-mode-panel {
   min-width: 0;
   contain: layout paint;
@@ -185,6 +197,48 @@ html.app-booting .logo-image-wrap {
   }
 }
 
+@keyframes tolerance-swap-spin {
+  0% {
+    transform: translateZ(0) rotate(0deg) scale(1);
+  }
+  50% {
+    transform: translateZ(0) rotate(90deg) scale(1.04);
+  }
+  100% {
+    transform: translateZ(0) rotate(180deg) scale(1);
+  }
+}
+
+@keyframes tolerance-source-nudge {
+  0% {
+    opacity: 0.92;
+    transform: translate3d(0, 0, 0);
+  }
+  50% {
+    opacity: 1;
+    transform: translate3d(4px, 0, 0);
+  }
+  100% {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+@keyframes tolerance-target-nudge {
+  0% {
+    opacity: 0.92;
+    transform: translate3d(0, 0, 0);
+  }
+  50% {
+    opacity: 1;
+    transform: translate3d(-4px, 0, 0);
+  }
+  100% {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+
 @keyframes history-soft-open {
   from {
     opacity: 0.01;
@@ -234,7 +288,10 @@ html.app-booting .logo-image-wrap {
 
   .history-section.history-drawer.open .history-drawer-inner,
   .result-arrive,
-  .calculator-mode-panel.mode-panel-animated {
+  .calculator-mode-panel.mode-panel-animated,
+  .tolerance-conversion-animating .tolerance-swap-button,
+  .tolerance-conversion-animating .tolerance-source,
+  .tolerance-conversion-animating .tolerance-target {
     animation-duration: 105ms !important;
   }
 
@@ -275,7 +332,10 @@ html.app-booting .logo-image-wrap {
 
   .history-section.history-drawer.open .history-drawer-inner,
   .result-arrive,
-  .calculator-mode-panel.mode-panel-animated {
+  .calculator-mode-panel.mode-panel-animated,
+  .tolerance-conversion-animating .tolerance-swap-button,
+  .tolerance-conversion-animating .tolerance-source,
+  .tolerance-conversion-animating .tolerance-target {
     animation-duration: 1ms !important;
   }
 }
