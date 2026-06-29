@@ -101,7 +101,6 @@
 }
 
 .settings-drawer .unit-switch,
-.settings-drawer .theme-switch,
 .settings-drawer .language-switch {
   display: grid !important;
   place-items: center !important;
@@ -113,12 +112,21 @@
   background: transparent !important;
 }
 
+.settings-drawer .theme-switch {
+  position: relative !important;
+  display: block !important;
+  width: 100% !important;
+  height: 100% !important;
+  padding: 0 !important;
+  border: 0 !important;
+  background: transparent !important;
+}
+
 .settings-drawer .unit-switch button {
   display: none !important;
 }
 
 .settings-drawer .unit-switch button.active,
-.settings-drawer .theme-switch button.active,
 .settings-drawer .language-switch button.active {
   position: absolute !important;
   inset: 0 !important;
@@ -140,7 +148,6 @@
 }
 
 .settings-drawer .language-switch button.active::before,
-.settings-drawer .theme-switch button.active::before,
 .settings-drawer > .drawer-section:nth-of-type(5)::before {
   position: absolute;
   inset: 0;
@@ -162,20 +169,83 @@
   content: 'EN';
 }
 
-.settings-drawer .theme-switch button.active::before {
-  font-size: 1.45rem;
+.settings-drawer .theme-switch button {
+  position: absolute !important;
+  display: grid !important;
+  place-items: center !important;
+  width: 21px !important;
+  height: 21px !important;
+  min-height: 0 !important;
+  padding: 0 !important;
+  border: 1px solid rgba(255, 255, 255, 0.18) !important;
+  border-radius: 999px !important;
+  color: rgba(255, 255, 255, 0.62) !important;
+  background: rgba(2, 6, 23, 0.18) !important;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08) !important;
+  font-size: 0 !important;
+  line-height: 1 !important;
+  opacity: 0.68;
 }
 
-.settings-drawer .theme-switch button:nth-child(1).active::before {
+.settings-drawer .theme-switch button:nth-child(1) {
+  top: 6px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.settings-drawer .theme-switch button:nth-child(2) {
+  bottom: 7px;
+  left: 7px;
+}
+
+.settings-drawer .theme-switch button:nth-child(3) {
+  right: 7px;
+  bottom: 7px;
+}
+
+.settings-drawer .theme-switch button::before {
+  display: grid;
+  place-items: center;
+  width: 100%;
+  height: 100%;
+  font-size: 0.78rem;
+  line-height: 1;
+}
+
+.settings-drawer .theme-switch button:nth-child(1)::before {
   content: '◎';
 }
 
-.settings-drawer .theme-switch button:nth-child(2).active::before {
+.settings-drawer .theme-switch button:nth-child(2)::before {
   content: '☀';
 }
 
-.settings-drawer .theme-switch button:nth-child(3).active::before {
+.settings-drawer .theme-switch button:nth-child(3)::before {
   content: '☾';
+}
+
+.settings-drawer .theme-switch button.active {
+  z-index: 2;
+  color: #ffffff !important;
+  border-color: rgba(255, 255, 255, 0.54) !important;
+  background: rgba(255, 255, 255, 0.18) !important;
+  box-shadow:
+    0 0 0 3px rgba(255, 255, 255, 0.08),
+    0 6px 14px rgba(2, 6, 23, 0.26) !important;
+  opacity: 1;
+}
+
+.settings-drawer .theme-switch button:nth-child(1).active {
+  transform: translateX(-50%) scale(1.16);
+}
+
+.settings-drawer .theme-switch button:nth-child(2).active,
+.settings-drawer .theme-switch button:nth-child(3).active {
+  transform: scale(1.16);
+}
+
+.settings-drawer .theme-switch button.active::before {
+  font-size: 0.86rem;
 }
 
 .settings-drawer > .drawer-section:nth-of-type(5) {
@@ -260,7 +330,6 @@
   }
 
   .settings-drawer .unit-switch button.active,
-  .settings-drawer .theme-switch button.active,
   .settings-drawer .language-switch button.active {
     border-radius: 16px !important;
   }
@@ -269,8 +338,31 @@
     font-size: 0.96rem;
   }
 
+  .settings-drawer .theme-switch button {
+    width: 19px !important;
+    height: 19px !important;
+  }
+
+  .settings-drawer .theme-switch button:nth-child(1) {
+    top: 5px;
+  }
+
+  .settings-drawer .theme-switch button:nth-child(2) {
+    bottom: 6px;
+    left: 6px;
+  }
+
+  .settings-drawer .theme-switch button:nth-child(3) {
+    right: 6px;
+    bottom: 6px;
+  }
+
+  .settings-drawer .theme-switch button::before {
+    font-size: 0.70rem;
+  }
+
   .settings-drawer .theme-switch button.active::before {
-    font-size: 1.32rem;
+    font-size: 0.78rem;
   }
 
   .settings-drawer > .drawer-section:nth-of-type(5)::before {
