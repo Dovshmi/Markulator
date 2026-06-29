@@ -1,4 +1,4 @@
-export const WEB_VERSION = 'Web v0.9.6';
+export const WEB_VERSION = 'Web v0.9.7';
 
 export const UNIT_MODES = {
   IN_TO_MM: 'in-to-mm',
@@ -127,7 +127,7 @@ export function buildCopyText(mode, result, digits, unitLabel = 'mm', language =
 export function buildShortCopyText(mode, result, digits, unitLabel = 'mm', language = 'he') {
   if (!result) return '';
   const labels = COPY_LABELS[getLanguage(language)];
-
+  
   if (mode === 'plus-minus') {
     return `${labels.nominal} ${formatNumber(result.nominalMm, digits)} ${unitLabel} | ${labels.upper} ${formatNumber(result.maxLimitMm, digits)} ${unitLabel} | ${labels.lower} ${formatNumber(result.minLimitMm, digits)} ${unitLabel}`;
   }
