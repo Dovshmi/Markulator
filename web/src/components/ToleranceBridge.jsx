@@ -273,7 +273,7 @@ export default function ToleranceBridge({ unitMode, tol, setTol, result, digits,
     if (window.requestAnimationFrame) conversionFrameRef.current = window.requestAnimationFrame(startSwapAnimation);
     else startSwapAnimation();
 
-    conversionTimerRef.current = window.setTimeout(() => setConversionAnimating(false), 280);
+    conversionTimerRef.current = window.setTimeout(() => setConversionAnimating(false), 760);
     onSwitchUnitMode?.();
   };
 
