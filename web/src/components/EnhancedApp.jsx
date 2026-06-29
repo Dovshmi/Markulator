@@ -18,6 +18,8 @@ const emptyLimits = { max: '', min: '' };
 const HISTORY_KEY = 'markulator-history-v1';
 const LANGUAGE_KEY = 'markulator-language-v1';
 const THEME_KEY = 'markulator-theme-v1';
+const MAX_HISTORY_PER_MODE = 6;
+const MAX_STORED_HISTORY = 12;
 
 const TEXT = {
   he: {
@@ -255,6 +257,7 @@ export default function EnhancedApp() {
 
   const currentText = useMemo(() => buildCopyText(mode, result, digits, units.outputLabel, language), [mode, result, digits, units.outputLabel, language]);
   const shortText = useMemo(() => buildShortCopyText(mode, result, digits, units.outputLabel, language), [mode, result, digits, units.outputLabel, language]);
+  const filteredHistory = useMemo(() => history.filter((item) => item.mode === mode).slice(0, MAX_HISTORY_PER_MODE), [history, mode]);
 
   useEffect(() => {
     document.documentElement.lang = language === 'he' ? 'he' : 'en';
@@ -290,14 +293,14 @@ export default function EnhancedApp() {
   useEffect(() => scheduleIdleTask(() => {
     try {
       const saved = JSON.parse(localStorage.getItem(HISTORY_KEY) || '[]');
-      if (Array.isArray(saved)) setHistory(saved.slice(0, 6));
+      if (Array.isArray(saved)) setHistory(saved.slice(0, MAX_STORED_HISTORY));
     } catch { setHistory([]); }
     historyReadyRef.current = true;
   }), []);
 
   useEffect(() => {
     if (!historyReadyRef.current) return;
-    try { localStorage.setItem(HISTORY_KEY, JSON.stringify(history.slice(0, 6))); } catch { return; }
+    try { localStorage.setItem(HISTORY_KEY, JSON.stringify(history.slice(0, MAX_STORED_HISTORY))); } catch { return; }
   }, [history]);
 
   useEffect(() => {
@@ -356,13 +359,18 @@ export default function EnhancedApp() {
     if (!result) return;
     historyReadyRef.current = true;
     const item = { id: Date.now(), mode, unitMode, unitLabel: units.outputLabel, text: shortText, fullText: currentText };
-    setHistory((items) => [item, ...items.filter((x) => x.text !== item.text)].slice(0, 6));
+    setHistory((items) => {
+      const withoutDuplicate = items.filter((x) => !(x.mode === mode && x.text === item.text));
+      const currentModeItems = withoutDuplicate.filter((x) => x.mode === mode);
+      const otherModeItems = withoutDuplicate.filter((x) => x.mode !== mode);
+      return [item, ...currentModeItems].slice(0, MAX_HISTORY_PER_MODE).concat(otherModeItems).slice(0, MAX_STORED_HISTORY);
+    });
     setCopyStatus(text.saved);
   };
 
   const clearHistory = () => {
     historyReadyRef.current = true;
-    setHistory([]);
+    setHistory((items) => items.filter((item) => item.mode !== mode));
   };
 
   const tolerancePlaceholders = useMemo(() => ({
@@ -448,7 +456,7 @@ export default function EnhancedApp() {
         <section id="history-drawer" className={`history-section history-drawer ${resultOpen ? 'open' : ''}`} aria-hidden={!resultOpen}>
           {resultOpen && (
             <div className="history-drawer-inner">
-              <div className="section-title-row history-title"><div><p className="section-label">v0.9.7</p><h2>{text.historyTitle}</h2></div>{history.length > 0 && <button className="clear-button" type="button" onClick={clearHistory}>{text.clearHistory}</button>}</div>{history.length === 0 ? <p className="history-empty">{text.emptyHistory}</p> : <div className="history-list">{history.map((item) => <button key={item.id} type="button" onClick={() => copyText(item.fullText, text.historyCopied)}><span>{item.unitMode === UNIT_MODES.IN_TO_MM ? 'inch → mm' : 'mm → inch'}</span><strong>{item.text}</strong></button>)}</div>}
+              <div className="section-title-row history-title"><div><p className="section-label">v0.9.7</p><h2>{text.historyTitle}</h2></div>{filteredHistory.length > 0 && <button className="clear-button" type="button" onClick={clearHistory}>{text.clearHistory}</button>}</div>{filteredHistory.length === 0 ? <p className="history-empty">{text.emptyHistory}</p> : <div className="history-list">{filteredHistory.map((item) => <button key={item.id} type="button" onClick={() => copyText(item.fullText, text.historyCopied)}><span>{item.unitMode === UNIT_MODES.IN_TO_MM ? 'inch → mm' : 'mm → inch'}</span><strong>{item.text}</strong></button>)}</div>}
             </div>
           )}
         </section>
