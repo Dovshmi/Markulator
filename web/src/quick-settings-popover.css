@@ -1,0 +1,215 @@
+/* Convert the old settings drawer into a compact settings popover near the gear button. */
+.drawer-backdrop {
+  background: transparent !important;
+}
+
+.settings-drawer {
+  position: fixed !important;
+  top: var(--quick-settings-top, 0px) !important;
+  right: auto !important;
+  bottom: auto !important;
+  left: var(--quick-settings-x, 76px) !important;
+  z-index: 120 !important;
+  display: flex !important;
+  flex-direction: row !important;
+  align-items: center !important;
+  width: auto !important;
+  max-width: calc(100vw - 24px) !important;
+  min-width: 0 !important;
+  padding: 6px !important;
+  gap: 8px !important;
+  border: 1px solid rgba(103, 232, 249, 0.30) !important;
+  border-radius: 24px !important;
+  background:
+    radial-gradient(circle at 20% 0%, rgba(103, 232, 249, 0.18), transparent 9rem),
+    linear-gradient(135deg, rgba(15, 23, 42, 0.94), rgba(2, 6, 23, 0.90)) !important;
+  box-shadow:
+    0 18px 42px rgba(2, 6, 23, 0.46),
+    inset 0 1px 0 rgba(255, 255, 255, 0.12) !important;
+  overflow: visible !important;
+  transform: translateY(6px) scale(0.96) !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+  transition: transform 180ms ease, opacity 180ms ease !important;
+}
+
+.settings-drawer.open {
+  transform: translateY(0) scale(1) !important;
+  opacity: 1 !important;
+  pointer-events: auto !important;
+}
+
+.app-shell.lang-en .settings-drawer {
+  transform: translate(-100%, 6px) scale(0.96) !important;
+}
+
+.app-shell.lang-en .settings-drawer.open {
+  transform: translate(-100%, 0) scale(1) !important;
+}
+
+.settings-drawer .drawer-header,
+.settings-drawer .drawer-status,
+.settings-drawer > .drawer-section:nth-of-type(4) {
+  display: none !important;
+}
+
+.settings-drawer > .drawer-section {
+  position: relative !important;
+  display: grid !important;
+  place-items: center !important;
+  width: 54px !important;
+  height: 54px !important;
+  min-width: 54px !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  border: 1px solid rgba(103, 232, 249, 0.28) !important;
+  border-radius: 18px !important;
+  background:
+    radial-gradient(circle at 35% 20%, rgba(103, 232, 249, 0.22), transparent 54%),
+    rgba(15, 23, 42, 0.72) !important;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08) !important;
+  overflow: visible !important;
+}
+
+.settings-drawer > .drawer-section > strong,
+.settings-drawer > .drawer-section > small,
+.settings-drawer .settings-select {
+  display: none !important;
+}
+
+.settings-drawer .unit-switch,
+.settings-drawer .theme-switch,
+.settings-drawer .language-switch {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: 100% !important;
+  height: 100% !important;
+  padding: 0 !important;
+  gap: 0 !important;
+  border: 0 !important;
+  background: transparent !important;
+}
+
+.settings-drawer .unit-switch button {
+  display: none !important;
+}
+
+.settings-drawer .unit-switch button.active,
+.settings-drawer .theme-switch button.active,
+.settings-drawer .language-switch button.active {
+  display: grid !important;
+  place-items: center !important;
+  width: 100% !important;
+  height: 100% !important;
+  min-height: 0 !important;
+  padding: 0 !important;
+  border: 0 !important;
+  border-radius: 17px !important;
+  color: #ecfeff !important;
+  background: transparent !important;
+  font-size: 0 !important;
+  font-weight: 950 !important;
+}
+
+.settings-drawer .language-switch button.active::before {
+  content: 'HE';
+  font-size: 0.96rem;
+  letter-spacing: 0.03em;
+}
+
+.app-shell.lang-en .settings-drawer .language-switch button.active::before {
+  content: 'EN';
+}
+
+.settings-drawer .theme-switch button.active::before {
+  font-size: 1.25rem;
+  line-height: 1;
+}
+
+.settings-drawer .theme-switch button:nth-child(1).active::before {
+  content: '◎';
+}
+
+.settings-drawer .theme-switch button:nth-child(2).active::before {
+  content: '☀';
+}
+
+.settings-drawer .theme-switch button:nth-child(3).active::before {
+  content: '☾';
+}
+
+.settings-drawer > .drawer-section:nth-of-type(5) {
+  cursor: pointer;
+}
+
+.settings-drawer > .drawer-section:nth-of-type(5)::before {
+  content: '.00';
+  display: grid;
+  place-items: center;
+  width: 100%;
+  height: 100%;
+  color: #ecfeff;
+  font-size: 0.95rem;
+  font-weight: 950;
+  letter-spacing: 0.02em;
+}
+
+.settings-drawer > .drawer-section:nth-of-type(5)[data-digits='3']::before {
+  content: '.000';
+  font-size: 0.82rem;
+}
+
+.settings-drawer > .drawer-section:nth-of-type(5)[data-digits='4']::before {
+  content: '.0000';
+  font-size: 0.72rem;
+}
+
+.precision-mini-picker {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 50%;
+  z-index: 130;
+  display: flex;
+  gap: 6px;
+  padding: 6px;
+  border: 1px solid rgba(103, 232, 249, 0.30);
+  border-radius: 16px;
+  background: rgba(2, 6, 23, 0.96);
+  box-shadow: 0 16px 34px rgba(2, 6, 23, 0.42);
+  transform: translateX(-50%);
+}
+
+.precision-mini-picker button {
+  display: grid;
+  place-items: center;
+  width: 38px;
+  height: 34px;
+  min-height: 0;
+  padding: 0;
+  border: 1px solid rgba(103, 232, 249, 0.22);
+  border-radius: 12px;
+  color: #cbd5e1;
+  background: rgba(15, 23, 42, 0.78);
+  font-size: 0.86rem;
+  font-weight: 950;
+}
+
+.precision-mini-picker button.active {
+  color: #07111f;
+  background: linear-gradient(135deg, #67e8f9, #14b8a6);
+}
+
+@media (max-width: 420px) {
+  .settings-drawer {
+    gap: 6px !important;
+    padding: 5px !important;
+  }
+
+  .settings-drawer > .drawer-section {
+    width: 48px !important;
+    height: 48px !important;
+    min-width: 48px !important;
+    border-radius: 16px !important;
+  }
+}
