@@ -136,6 +136,12 @@ function bindPrecisionSection() {
   select.addEventListener('change', syncPrecisionDigits);
 }
 
+function clickWithReact(button, section) {
+  if (!button || !section) return;
+  section.dataset.quickProgrammatic = 'true';
+  button.click();
+}
+
 function bindQuickButtons() {
   const drawer = getDrawer();
   if (!drawer || drawer.dataset.quickButtonsBound === 'true') return;
@@ -145,21 +151,33 @@ function bindQuickButtons() {
   const themeSection = drawer.querySelector('.drawer-section:nth-of-type(3)');
 
   languageSection?.addEventListener('click', (event) => {
-    const button = event.target.closest('button');
-    if (button) return;
-    const next = getAppShell()?.classList.contains('lang-en') ? 'he' : 'en';
-    drawer.querySelector(`.language-switch button:not(.active)`)?.click();
+    if (languageSection.dataset.quickProgrammatic === 'true') {
+      delete languageSection.dataset.quickProgrammatic;
+      return;
+    }
+
+    event.preventDefault();
+    event.stopPropagation();
+    closeMiniPicker();
+    const inactiveLanguage = drawer.querySelector('.language-switch button:not(.active)');
+    clickWithReact(inactiveLanguage, languageSection);
     window.setTimeout(positionQuickSettings, 0);
-  });
+  }, true);
 
   themeSection?.addEventListener('click', (event) => {
-    const button = event.target.closest('button');
-    if (button) return;
+    if (themeSection.dataset.quickProgrammatic === 'true') {
+      delete themeSection.dataset.quickProgrammatic;
+      return;
+    }
+
+    event.preventDefault();
+    event.stopPropagation();
+    closeMiniPicker();
     const active = drawer.querySelector('.theme-switch button.active');
     const buttons = Array.from(drawer.querySelectorAll('.theme-switch button'));
     const index = Math.max(0, buttons.indexOf(active));
-    buttons[(index + 1) % buttons.length]?.click();
-  });
+    clickWithReact(buttons[(index + 1) % buttons.length], themeSection);
+  }, true);
 }
 
 function bindOutsideClose() {
