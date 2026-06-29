@@ -108,6 +108,14 @@ function moveToNextField(event, side, field, phase = 'down') {
   event.currentTarget.blur();
 }
 
+function switchConversionDirection(unitMode) {
+  if (typeof document === 'undefined') return;
+  const nextLabel = unitMode === UNIT_MODES.IN_TO_MM ? 'mm → inch' : 'inch → mm';
+  const buttons = Array.from(document.querySelectorAll('.settings-drawer .unit-switch button'));
+  const targetButton = buttons.find((button) => button.textContent?.trim() === nextLabel);
+  targetButton?.click();
+}
+
 function ValueInput({ side, activeSide, onFocusSide, field, unit, value, onChange, placeholderLabel, isMiddle = false }) {
   const isLastField = field === FIELD_ORDER[FIELD_ORDER.length - 1];
 
@@ -199,6 +207,7 @@ export default function ToleranceBridge({ unitMode, tol, setTol, result, digits,
   return (
     <section key={`tolerance-bridge-${unitMode}`} className="tolerance-bridge mode-content" dir="ltr" aria-label="Tolerance calculator">
       <div className="tolerance-unit-title tolerance-unit-left"><span>{getUnitName(sourceUnit)}</span><b>{sourceUnit}</b></div>
+      <button type="button" className="tolerance-swap-button" aria-label={text.conversionDirection} onClick={() => switchConversionDirection(unitMode)}>⇄</button>
       <div className="tolerance-unit-title tolerance-unit-right"><span>{getUnitName(targetUnit)}</span><b>{targetUnit}</b></div>
 
       {renderMiniCard('source', 'positive', 'upper-left')}
