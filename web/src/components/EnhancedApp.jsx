@@ -222,6 +222,7 @@ function buildConvertedResult(mode, tol, limits, unitMode) {
 
 export default function EnhancedApp() {
   const [mode, setMode] = useState('plus-minus');
+  const [modeHasSwitched, setModeHasSwitched] = useState(false);
   const [unitMode, setUnitMode] = useState(UNIT_MODES.IN_TO_MM);
   const [tol, setTol] = useState(emptyTol);
   const [limits, setLimits] = useState(emptyLimits);
@@ -311,6 +312,7 @@ export default function EnhancedApp() {
 
   const switchMode = (nextMode) => {
     if (nextMode === mode) return;
+    setModeHasSwitched(true);
     setMode(nextMode);
     setCopyStatus('');
   };
@@ -420,11 +422,13 @@ export default function EnhancedApp() {
         <section className="form-section" ref={inputSectionRef}>
           <button className="app-menu-button form-settings-button" type="button" aria-label={text.openSettings} onClick={openDrawer}><span></span><span></span><span></span></button>
           <div className="section-title-row"><div><p className="section-label">{text.step2}</p><h2>{text.enterValues}{units.input}</h2></div></div>
-          {mode === 'plus-minus' ? (
-            <ToleranceBridge unitMode={unitMode} tol={tol} setTol={setTol} result={result} digits={digits} text={text} placeholders={tolerancePlaceholders} />
-          ) : (
-            <div key={`max-min-form-${unitMode}`} className="input-grid two mode-content"><InputField label={text.maxValue} helper={text.maxHelper} suffix={inputSuffix} value={limits.max} placeholder={maxPlaceholder} onChange={(max) => setLimits((x) => ({ ...x, max }))} /><InputField label={text.minValue} helper={text.minHelper} suffix={inputSuffix} value={limits.min} placeholder={minPlaceholder} onChange={(min) => setLimits((x) => ({ ...x, min }))} /></div>
-          )}
+          <div key={mode} className={`calculator-mode-panel ${modeHasSwitched ? 'mode-panel-animated' : ''}`}>
+            {mode === 'plus-minus' ? (
+              <ToleranceBridge unitMode={unitMode} tol={tol} setTol={setTol} result={result} digits={digits} text={text} placeholders={tolerancePlaceholders} />
+            ) : (
+              <div key={`max-min-form-${unitMode}`} className="input-grid two mode-content"><InputField label={text.maxValue} helper={text.maxHelper} suffix={inputSuffix} value={limits.max} placeholder={maxPlaceholder} onChange={(max) => setLimits((x) => ({ ...x, max }))} /><InputField label={text.minValue} helper={text.minHelper} suffix={inputSuffix} value={limits.min} placeholder={minPlaceholder} onChange={(min) => setLimits((x) => ({ ...x, min }))} /></div>
+            )}
+          </div>
           {copyStatus && <div className="form-status">{copyStatus}</div>}
           {validation.errors.length > 0 && <div className="validation-box">{validation.errors.map((msg) => <p key={msg}>{msg}</p>)}</div>}
         </section>
@@ -450,7 +454,7 @@ export default function EnhancedApp() {
       </section>
 
       {result && (
-        <aside className="sticky-action-bar visible" aria-live="polite">
+        <aside key={`${mode}-${shortText}`} className="sticky-action-bar visible result-arrive" aria-live="polite">
           <button type="button" onClick={() => copyText(shortText, text.shortCopied)}>{text.shortCopy}</button>
           <button type="button" onClick={() => copyText(currentText, text.fullCopied)}>{text.fullCopy}</button>
           <button type="button" onClick={saveHistory}>{text.save}</button>
