@@ -1,4 +1,4 @@
-export const WEB_VERSION = 'Web v0.9.7';
+export const WEB_VERSION = 'Web v0.9.8';
 
 export const UNIT_MODES = {
   IN_TO_MM: 'in-to-mm',
@@ -24,14 +24,14 @@ const MESSAGES = {
 
 const COPY_LABELS = {
   he: {
-    tolPlus: 'Tol+',
-    nominal: 'Nominal',
-    tolMinus: 'Tol-',
-    upper: 'Upper limit',
-    lower: 'Lower limit',
-    max: 'Max',
-    min: 'Min',
-    range: 'Range',
+    tolPlus: 'סבולת +',
+    nominal: 'נומינלי',
+    tolMinus: 'סבולת -',
+    upper: 'גבול עליון',
+    lower: 'גבול תחתון',
+    max: 'מקסימום',
+    min: 'מינימום',
+    range: 'טווח',
   },
   en: {
     tolPlus: 'Tol+',
@@ -57,8 +57,7 @@ export function getUnits(unitMode) {
 }
 
 export function convertValue(value, unitMode) {
-  if (unitMode === UNIT_MODES.MM_TO_IN) return value / 25.4;
-  return value * 25.4;
+  return unitMode === UNIT_MODES.MM_TO_IN ? value / 25.4 : value * 25.4;
 }
 
 export function toNumber(value) {
@@ -85,7 +84,6 @@ export function validateInputs(mode, tol, limits, language = 'he') {
     if (parsed.some((value) => Number.isNaN(value))) errors.push(msg.invalidNumbers);
     if (parsed.some((value) => value != null && value < 0)) errors.push(msg.negativeValues);
     if (!tol.nominal) errors.push(msg.missingNominal);
-
     return { ready, errors };
   }
 
@@ -96,10 +94,7 @@ export function validateInputs(mode, tol, limits, language = 'he') {
 
   if (Number.isNaN(max) || Number.isNaN(min)) errors.push(msg.invalidNumbers);
   if (!limits.max || !limits.min) errors.push(msg.missingLimits);
-  if (max != null && min != null && !Number.isNaN(max) && !Number.isNaN(min) && max < min) {
-    errors.push(msg.maxLowerThanMin);
-  }
-
+  if (max != null && min != null && !Number.isNaN(max) && !Number.isNaN(min) && max < min) errors.push(msg.maxLowerThanMin);
   return { ready, errors };
 }
 
@@ -109,27 +104,28 @@ export function buildCopyText(mode, result, digits, unitLabel = 'mm', language =
 
   if (mode === 'plus-minus') {
     return [
-      `${labels.tolPlus} ${formatNumber(result.posTolMm, digits)} ${unitLabel}`,
-      `${labels.nominal} ${formatNumber(result.nominalMm, digits)} ${unitLabel}`,
-      `${labels.tolMinus} ${formatNumber(result.negTolMm, digits)} ${unitLabel}`,
-      `${labels.upper} ${formatNumber(result.maxLimitMm, digits)} ${unitLabel}`,
-      `${labels.lower} ${formatNumber(result.minLimitMm, digits)} ${unitLabel}`,
+      labels.tolPlus + ' ' + formatNumber(result.posTolMm, digits) + ' ' + unitLabel,
+      labels.nominal + ' ' + formatNumber(result.nominalMm, digits) + ' ' + unitLabel,
+      labels.tolMinus + ' ' + formatNumber(result.negTolMm, digits) + ' ' + unitLabel,
+      labels.upper + ' ' + formatNumber(result.maxLimitMm, digits) + ' ' + unitLabel,
+      labels.lower + ' ' + formatNumber(result.minLimitMm, digits) + ' ' + unitLabel,
     ].join('\n');
   }
 
   return [
-    `${labels.max} ${formatNumber(result.maxMm, digits)} ${unitLabel}`,
-    `${labels.min} ${formatNumber(result.minMm, digits)} ${unitLabel}`,
-    `${labels.range} ${formatNumber(result.rangeMm, digits)} ${unitLabel}`,
+    labels.max + ' ' + formatNumber(result.maxMm, digits) + ' ' + unitLabel,
+    labels.min + ' ' + formatNumber(result.minMm, digits) + ' ' + unitLabel,
+    labels.range + ' ' + formatNumber(result.rangeMm, digits) + ' ' + unitLabel,
   ].join('\n');
 }
 
 export function buildShortCopyText(mode, result, digits, unitLabel = 'mm', language = 'he') {
   if (!result) return '';
   const labels = COPY_LABELS[getLanguage(language)];
-  
+
   if (mode === 'plus-minus') {
-    return `${labels.nominal} ${formatNumber(result.nominalMm, digits)} ${unitLabel} | ${labels.upper} ${formatNumber(result.maxLimitMm, digits)} ${unitLabel} | ${labels.lower} ${formatNumber(result.minLimitMm, digits)} ${unitLabel}`;
+    return labels.nominal + ' ' + formatNumber(result.nominalMm, digits) + ' ' + unitLabel + ' | ' + labels.upper + ' ' + formatNumber(result.maxLimitMm, digits) + ' ' + unitLabel + ' | ' + labels.lower + ' ' + formatNumber(result.minLimitMm, digits) + ' ' + unitLabel;
   }
-  return `${labels.max} ${formatNumber(result.maxMm, digits)} ${unitLabel} | ${labels.min} ${formatNumber(result.minMm, digits)} ${unitLabel} | ${labels.range} ${formatNumber(result.rangeMm, digits)} ${unitLabel}`;
+
+  return labels.max + ' ' + formatNumber(result.maxMm, digits) + ' ' + unitLabel + ' | ' + labels.min + ' ' + formatNumber(result.minMm, digits) + ' ' + unitLabel + ' | ' + labels.range + ' ' + formatNumber(result.rangeMm, digits) + ' ' + unitLabel;
 }

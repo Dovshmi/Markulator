@@ -1,0 +1,195 @@
+/* Manus Test classic polish layer.
+   This file intentionally avoids changing calculator layout, grid order, widths,
+   mobile breakpoints, or the tolerance bridge structure. */
+
+:root {
+  --classic-cyan: #67e8f9;
+  --classic-teal: #2dd4bf;
+  --classic-blue: #38bdf8;
+  --classic-bg: #07111f;
+  --classic-panel: rgba(15, 23, 42, 0.78);
+  --classic-panel-soft: rgba(2, 6, 23, 0.42);
+  --classic-border: rgba(148, 163, 184, 0.18);
+  --classic-border-active: rgba(103, 232, 249, 0.44);
+  --classic-shadow: 0 24px 72px rgba(0, 0, 0, 0.34);
+}
+
+body {
+  background:
+    radial-gradient(circle at 16% 10%, rgba(56, 189, 248, 0.18), transparent 24rem),
+    radial-gradient(circle at 84% 6%, rgba(45, 212, 191, 0.14), transparent 26rem),
+    radial-gradient(circle at 50% 105%, rgba(59, 130, 246, 0.12), transparent 32rem),
+    linear-gradient(135deg, #020617 0%, var(--classic-bg) 48%, #0f172a 100%);
+}
+
+body::before {
+  background-image:
+    linear-gradient(rgba(255,255,255,0.032) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.032) 1px, transparent 1px);
+  background-size: 44px 44px;
+  mask-image: linear-gradient(to bottom, black, transparent 78%);
+}
+
+.hero-card,
+.calculator-card {
+  border-color: var(--classic-border);
+  background:
+    linear-gradient(145deg, rgba(15, 23, 42, 0.90), rgba(15, 23, 42, 0.58)),
+    rgba(2, 6, 23, 0.74);
+  box-shadow:
+    var(--classic-shadow),
+    inset 0 1px 0 rgba(255, 255, 255, 0.07);
+}
+
+.hero-card::after {
+  background: rgba(56, 189, 248, 0.16);
+}
+
+.logo-image-wrap {
+  border-color: rgba(103, 232, 249, 0.24);
+  background:
+    linear-gradient(145deg, rgba(103, 232, 249, 0.10), rgba(45, 212, 191, 0.06)),
+    rgba(255, 255, 255, 0.04);
+  box-shadow:
+    0 18px 42px rgba(14, 165, 233, 0.20),
+    inset 0 1px 0 rgba(255,255,255,0.18);
+}
+
+.eyebrow,
+.section-label {
+  color: var(--classic-cyan);
+}
+
+.mode-switch {
+  background: rgba(2, 6, 23, 0.34);
+}
+
+.mode-switch button {
+  border-color: rgba(148, 163, 184, 0.16);
+  background: rgba(2, 6, 23, 0.34);
+}
+
+.mode-switch button:hover {
+  border-color: rgba(103, 232, 249, 0.34);
+  background: rgba(15, 23, 42, 0.56);
+}
+
+.mode-switch button.active {
+  border-color: var(--classic-border-active);
+  background:
+    radial-gradient(circle at top left, rgba(103, 232, 249, 0.18), transparent 8rem),
+    linear-gradient(135deg, rgba(14, 165, 233, 0.74), rgba(20, 184, 166, 0.56));
+  box-shadow: 0 16px 34px rgba(14, 165, 233, 0.16);
+}
+
+.form-section {
+  border-top-color: rgba(148, 163, 184, 0.14);
+}
+
+.app-menu-button,
+.form-section > .form-settings-button {
+  border-color: rgba(103, 232, 249, 0.44);
+  background:
+    radial-gradient(circle at 30% 20%, rgba(103, 232, 249, 0.30), transparent 52%),
+    linear-gradient(135deg, rgba(14, 165, 233, 0.86), rgba(20, 184, 166, 0.64));
+  box-shadow:
+    0 14px 34px rgba(14, 165, 233, 0.22),
+    0 0 0 5px rgba(14, 165, 233, 0.06),
+    inset 0 1px 0 rgba(255, 255, 255, 0.20);
+}
+
+.settings-drawer {
+  border-left-color: rgba(103, 232, 249, 0.20);
+  background:
+    radial-gradient(circle at 80% 0%, rgba(14, 165, 233, 0.16), transparent 16rem),
+    linear-gradient(180deg, rgba(15, 23, 42, 0.98), rgba(2, 6, 23, 0.98));
+}
+
+.drawer-section {
+  border-color: rgba(148, 163, 184, 0.15);
+  background: rgba(2, 6, 23, 0.34);
+}
+
+.unit-switch button.active {
+  background: linear-gradient(135deg, rgba(14, 165, 233, 0.72), rgba(20, 184, 166, 0.54));
+}
+
+.history-empty,
+.history-list button {
+  border-color: rgba(148, 163, 184, 0.16);
+  background: rgba(2, 6, 23, 0.36);
+}
+
+.history-list button strong {
+  white-space: pre-line;
+}
+
+.history-item-date {
+  display: block;
+  color: rgba(148, 163, 184, 0.72);
+  font-size: 0.78rem;
+  font-weight: 800;
+  line-height: 1.2;
+}
+
+.app-shell.lang-he .history-list button {
+  direction: rtl;
+  text-align: right;
+}
+
+.app-shell.lang-he .history-list button span {
+  direction: ltr;
+  text-align: left;
+  unicode-bidi: isolate;
+  justify-self: end;
+}
+
+.app-shell.lang-he .history-item-date {
+  direction: rtl;
+  text-align: right;
+  justify-self: end;
+}
+
+.app-shell.lang-he .history-list button strong {
+  direction: rtl;
+  text-align: right;
+  unicode-bidi: plaintext;
+}
+
+.app-shell.lang-en .history-list button {
+  direction: ltr;
+  text-align: left;
+}
+
+.app-shell.lang-en .history-list button span,
+.app-shell.lang-en .history-list button strong,
+.app-shell.lang-en .history-item-date {
+  direction: ltr;
+  text-align: left;
+  unicode-bidi: plaintext;
+}
+
+.sticky-action-bar {
+  border-color: rgba(103, 232, 249, 0.20);
+  background:
+    linear-gradient(135deg, rgba(15, 23, 42, 0.94), rgba(2, 6, 23, 0.90)),
+    rgba(2, 6, 23, 0.88);
+  box-shadow:
+    0 18px 48px rgba(2, 6, 23, 0.42),
+    inset 0 1px 0 rgba(255, 255, 255, 0.08);
+}
+
+.sticky-action-bar button:first-child {
+  background: linear-gradient(135deg, rgba(14, 165, 233, 0.88), rgba(20, 184, 166, 0.66));
+}
+
+.theme-light .hero-card,
+.theme-light .calculator-card {
+  border-color: rgba(14, 116, 144, 0.16);
+  background:
+    linear-gradient(145deg, rgba(255, 255, 255, 0.90), rgba(241, 245, 249, 0.72)),
+    rgba(255, 255, 255, 0.74);
+  box-shadow:
+    0 22px 58px rgba(15, 23, 42, 0.10),
+    inset 0 1px 0 rgba(255, 255, 255, 0.78);
+}
