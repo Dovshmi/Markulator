@@ -46,6 +46,18 @@ function syncPrecisionDigits() {
   section.dataset.digits = select.value || '2';
 }
 
+function syncThemeMode() {
+  const drawer = getDrawer();
+  const themeSection = drawer?.querySelector('.drawer-section:nth-of-type(3)');
+  const activeButton = drawer?.querySelector('.theme-switch button.active');
+  if (!themeSection || !activeButton) return;
+
+  const buttons = Array.from(drawer.querySelectorAll('.theme-switch button'));
+  const activeIndex = buttons.indexOf(activeButton);
+  const modes = ['auto', 'light', 'dark'];
+  themeSection.dataset.themeMode = modes[Math.max(0, activeIndex)] || 'auto';
+}
+
 function dispatchSelectValue(select, value) {
   select.value = value;
   select.dispatchEvent(new Event('change', { bubbles: true }));
@@ -167,22 +179,22 @@ function bindQuickButtons() {
   themeSection?.addEventListener('click', (event) => {
     if (themeSection.dataset.quickProgrammatic === 'true') {
       delete themeSection.dataset.quickProgrammatic;
-      return;
-    }
-
-    const clickedThemeButton = event.target.closest('.theme-switch button');
-    if (clickedThemeButton) {
-      closeMiniPicker();
+      window.setTimeout(syncThemeMode, 0);
       return;
     }
 
     event.preventDefault();
     event.stopPropagation();
     closeMiniPicker();
-    const active = drawer.querySelector('.theme-switch button.active');
+
+    const bounds = themeSection.getBoundingClientRect();
+    const x = event.clientX - bounds.left;
+    const y = event.clientY - bounds.top;
+    const topHalf = y < bounds.height * 0.46;
+    const nextIndex = topHalf ? 0 : x < bounds.width / 2 ? 1 : 2;
     const buttons = Array.from(drawer.querySelectorAll('.theme-switch button'));
-    const index = Math.max(0, buttons.indexOf(active));
-    clickWithReact(buttons[(index + 1) % buttons.length], themeSection);
+    clickWithReact(buttons[nextIndex], themeSection);
+    window.setTimeout(syncThemeMode, 0);
   }, true);
 }
 
@@ -202,6 +214,7 @@ function bindOutsideClose() {
 function enhanceQuickSettings() {
   positionQuickSettings();
   syncPrecisionDigits();
+  syncThemeMode();
   bindPrecisionSection();
   bindQuickButtons();
   bindOutsideClose();
