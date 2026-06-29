@@ -5,3 +5,25 @@
 .calculator-card > .card-header .conversion-pill {
   display: none !important;
 }
+
+.app-shell.lang-he > .app-menu-button {
+  right: auto;
+  left: max(14px, env(safe-area-inset-left));
+}
+
+.app-shell.lang-en > .app-menu-button {
+  left: auto;
+  right: max(14px, env(safe-area-inset-right));
+}
+
+@media (max-width: 640px) {
+  .app-shell.lang-he > .app-menu-button {
+    right: auto;
+    left: max(10px, env(safe-area-inset-left));
+  }
+
+  .app-shell.lang-en > .app-menu-button {
+    left: auto;
+    right: max(10px, env(safe-area-inset-right));
+  }
+}
