@@ -16,14 +16,14 @@
   z-index: 2;
   display: grid !important;
   place-items: center;
-  width: 20px;
-  height: 20px;
+  width: 22px;
+  height: 22px;
   border: 0;
   border-radius: 0;
   color: rgba(255, 255, 255, 0.56);
   background: transparent;
   box-shadow: none !important;
-  font-size: 0.82rem;
+  font-size: 0.94rem;
   font-weight: 950;
   line-height: 1;
   text-align: center;
@@ -34,33 +34,33 @@
 
 .settings-drawer > .drawer-section:nth-of-type(3)::before {
   content: '◎' !important;
-  top: 5px;
+  top: 4px;
   left: 50%;
   transform: translateX(-50%);
 }
 
 .settings-drawer > .drawer-section:nth-of-type(3)::after {
   content: '☀' !important;
-  bottom: 6px;
-  left: 7px;
+  bottom: 5px;
+  left: 6px;
 }
 
 .settings-drawer > .drawer-section:nth-of-type(3) .theme-switch::before {
   content: '☾';
-  right: 7px;
-  bottom: 6px;
+  right: 6px;
+  bottom: 5px;
 }
 
 .settings-drawer > .drawer-section:nth-of-type(3)[data-theme-mode='auto']::before,
 .settings-drawer > .drawer-section:nth-of-type(3)[data-theme-mode='light']::after,
 .settings-drawer > .drawer-section:nth-of-type(3)[data-theme-mode='dark'] .theme-switch::before {
   z-index: 3;
-  width: 22px;
-  height: 22px;
+  width: 24px;
+  height: 24px;
   color: #ffffff;
   background: transparent;
   box-shadow: none !important;
-  font-size: 1rem;
+  font-size: 1.12rem;
   opacity: 1;
   text-shadow:
     0 0 7px rgba(255, 255, 255, 0.54),
@@ -82,30 +82,30 @@
   .settings-drawer > .drawer-section:nth-of-type(3)::before,
   .settings-drawer > .drawer-section:nth-of-type(3)::after,
   .settings-drawer > .drawer-section:nth-of-type(3) .theme-switch::before {
-    width: 18px;
-    height: 18px;
-    font-size: 0.74rem;
+    width: 20px;
+    height: 20px;
+    font-size: 0.86rem;
   }
 
   .settings-drawer > .drawer-section:nth-of-type(3)::before {
-    top: 5px;
+    top: 4px;
   }
 
   .settings-drawer > .drawer-section:nth-of-type(3)::after {
-    bottom: 6px;
-    left: 6px;
+    bottom: 5px;
+    left: 5px;
   }
 
   .settings-drawer > .drawer-section:nth-of-type(3) .theme-switch::before {
-    right: 6px;
-    bottom: 6px;
+    right: 5px;
+    bottom: 5px;
   }
 
   .settings-drawer > .drawer-section:nth-of-type(3)[data-theme-mode='auto']::before,
   .settings-drawer > .drawer-section:nth-of-type(3)[data-theme-mode='light']::after,
   .settings-drawer > .drawer-section:nth-of-type(3)[data-theme-mode='dark'] .theme-switch::before {
-    width: 20px;
-    height: 20px;
-    font-size: 0.90rem;
+    width: 22px;
+    height: 22px;
+    font-size: 1rem;
   }
 }
