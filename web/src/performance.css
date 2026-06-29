@@ -220,7 +220,7 @@ html.app-booting .logo-image-wrap {
     transform: translate3d(0, 0, 0);
   }
   50% {
-    opacity: 0.6;
+    opacity: 0.68;
     transform: translate3d(9px, 0, 0);
   }
   100% {
@@ -235,7 +235,7 @@ html.app-booting .logo-image-wrap {
     transform: translate3d(0, 0, 0);
   }
   50% {
-    opacity: 0.6;
+    opacity: 0.68;
     transform: translate3d(-9px, 0, 0);
   }
   100% {
