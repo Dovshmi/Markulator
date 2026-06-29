@@ -120,6 +120,18 @@ body::before {
   background: rgba(2, 6, 23, 0.36);
 }
 
+.history-list button strong {
+  white-space: pre-line;
+}
+
+.history-item-date {
+  display: block;
+  color: rgba(148, 163, 184, 0.72);
+  font-size: 0.78rem;
+  font-weight: 800;
+  line-height: 1.2;
+}
+
 .app-shell.lang-he .history-list button {
   direction: rtl;
   text-align: right;
@@ -129,6 +141,12 @@ body::before {
   direction: ltr;
   text-align: left;
   unicode-bidi: isolate;
+  justify-self: end;
+}
+
+.app-shell.lang-he .history-item-date {
+  direction: rtl;
+  text-align: right;
   justify-self: end;
 }
 
@@ -144,7 +162,8 @@ body::before {
 }
 
 .app-shell.lang-en .history-list button span,
-.app-shell.lang-en .history-list button strong {
+.app-shell.lang-en .history-list button strong,
+.app-shell.lang-en .history-item-date {
   direction: ltr;
   text-align: left;
   unicode-bidi: plaintext;
