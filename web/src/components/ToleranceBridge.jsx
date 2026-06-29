@@ -2,6 +2,7 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import { UNIT_MODES, formatNumber } from './calcTools.js';
 
 const EMPTY_VALUES = { positive: '', nominal: '', negative: '' };
+const FIELD_ORDER = ['positive', 'nominal', 'negative'];
 
 const FIELDS = {
   positive: { labelKey: 'positiveTolerance', compactLabelKey: 'mobileUpper', sign: '+', resultKey: 'posTolMm' },
@@ -65,16 +66,45 @@ function buildRightValuesFromResult(result, fallbackValues, digits) {
   };
 }
 
-function ValueInput({ field, unit, value, onChange, placeholderLabel, isMiddle = false }) {
+function moveToNextField(event, side, field) {
+  if (event.key !== 'Enter') return;
+
+  event.preventDefault();
+  const nextField = FIELD_ORDER[FIELD_ORDER.indexOf(field) + 1];
+
+  if (!nextField) {
+    event.currentTarget.blur();
+    return;
+  }
+
+  const bridge = event.currentTarget.closest('.tolerance-bridge');
+  const nextInput = bridge?.querySelector(`input[data-tolerance-side="${side}"][data-tolerance-field="${nextField}"]`);
+
+  if (nextInput) {
+    nextInput.focus();
+    nextInput.select?.();
+    return;
+  }
+
+  event.currentTarget.blur();
+}
+
+function ValueInput({ side, field, unit, value, onChange, placeholderLabel, isMiddle = false }) {
+  const isLastField = field === FIELD_ORDER[FIELD_ORDER.length - 1];
+
   return (
     <span className="tolerance-value-frame tolerance-input-frame">
       <input
         type="number"
         inputMode="decimal"
+        enterKeyHint={isLastField ? 'done' : 'next'}
         step="0.0001"
         value={value}
         placeholder={placeholderLabel}
         style={getIdleInputStyle(value, isMiddle)}
+        data-tolerance-side={side}
+        data-tolerance-field={field}
+        onKeyDown={(event) => moveToNextField(event, side, field)}
         onChange={(event) => onChange(field, event.currentTarget.value)}
       />
       <em>{getInputSuffix(field, unit)}</em>
@@ -125,11 +155,12 @@ export default function ToleranceBridge({ unitMode, tol, setTol, result, digits,
     const label = getLabel(text, field);
     const value = isSource ? tol[field] : rightValues[field];
     const onChange = isSource ? updateSource : updateTarget;
+    const navSide = isSource ? 'left' : 'right';
 
     return (
       <label className={`tolerance-mini-card tolerance-${position} tolerance-${side}`} aria-label={`${fullLabel} ${unit}`}>
         <span className="tolerance-box-content">
-          <ValueInput field={field} unit={unit} value={value || ''} onChange={onChange} placeholderLabel={label} />
+          <ValueInput side={navSide} field={field} unit={unit} value={value || ''} onChange={onChange} placeholderLabel={label} />
         </span>
       </label>
     );
@@ -157,10 +188,10 @@ export default function ToleranceBridge({ unitMode, tol, setTol, result, digits,
 
         <div className="tolerance-middle-content">
           <label className="tolerance-middle-panel tolerance-source" aria-label={`${text.nominal} ${sourceUnit}`}>
-            <ValueInput field="nominal" unit={sourceUnit} value={tol.nominal || ''} onChange={updateSource} placeholderLabel={nominalLabel} isMiddle />
+            <ValueInput side="left" field="nominal" unit={sourceUnit} value={tol.nominal || ''} onChange={updateSource} placeholderLabel={nominalLabel} isMiddle />
           </label>
           <label className="tolerance-middle-panel tolerance-target" aria-label={`${text.nominal} ${targetUnit}`}>
-            <ValueInput field="nominal" unit={targetUnit} value={rightValues.nominal || ''} onChange={updateTarget} placeholderLabel={nominalLabel} isMiddle />
+            <ValueInput side="right" field="nominal" unit={targetUnit} value={rightValues.nominal || ''} onChange={updateTarget} placeholderLabel={nominalLabel} isMiddle />
           </label>
         </div>
       </section>
