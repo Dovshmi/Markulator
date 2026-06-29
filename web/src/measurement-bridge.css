@@ -313,6 +313,18 @@
     padding: 0;
   }
 
+  .tolerance-upper-left,
+  .tolerance-lower-left {
+    width: calc(100% - 10px);
+    justify-self: start;
+  }
+
+  .tolerance-upper-right,
+  .tolerance-lower-right {
+    width: calc(100% - 10px);
+    justify-self: end;
+  }
+
   .tolerance-mini-card .tolerance-box-content {
     height: 100%;
   }
@@ -354,7 +366,7 @@
   }
 
   .tolerance-middle-content {
-    grid-template-columns: minmax(0, 1fr) 24px minmax(0, 1fr);
+    grid-template-columns: minmax(0, 1fr) 32px minmax(0, 1fr);
     padding: 14px 4px;
   }
 
@@ -432,7 +444,7 @@
   }
 
   .tolerance-middle-content {
-    grid-template-columns: minmax(0, 1fr) 22px minmax(0, 1fr);
+    grid-template-columns: minmax(0, 1fr) 30px minmax(0, 1fr);
     padding: 11px 4px;
   }
 
