@@ -1,0 +1,60 @@
+/* Lightweight performance layer for smoother mobile interactions. */
+.settings-drawer {
+  transform: translate3d(105%, 0, 0);
+  will-change: transform;
+  contain: layout paint style;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  overscroll-behavior: contain;
+}
+
+.settings-drawer.open {
+  transform: translate3d(0, 0, 0);
+}
+
+.drawer-backdrop {
+  contain: strict;
+  will-change: opacity;
+  transform: translateZ(0);
+}
+
+.theme-animating .hero-card,
+.theme-animating .calculator-card,
+.theme-animating .app-menu-button::before {
+  animation: none;
+}
+
+.tolerance-bridge,
+.tolerance-middle-shell,
+.tolerance-mini-card,
+.tolerance-middle-panel {
+  contain: layout paint;
+}
+
+@media (max-width: 640px) {
+  .settings-drawer {
+    transition-duration: 180ms;
+  }
+
+  .drawer-section,
+  .unit-switch,
+  .settings-drawer,
+  .drawer-backdrop {
+    box-shadow: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+  }
+
+  .settings-drawer,
+  .history-section.history-drawer,
+  .result-drawer,
+  .drawer-icon-handle span {
+    transition-duration: 1ms !important;
+  }
+}
