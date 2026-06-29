@@ -280,10 +280,10 @@
 
 @media (max-width: 760px) {
   .tolerance-bridge {
-    --tolerance-side-width: clamp(108px, 31vw, 148px);
+    --tolerance-side-width: clamp(132px, 40vw, 176px);
     --tolerance-middle-height: clamp(176px, 36vw, 212px);
-    --tolerance-side-shift: 21px;
-    grid-template-columns: var(--tolerance-side-width) minmax(18px, 1fr) var(--tolerance-side-width);
+    --tolerance-side-shift: 14px;
+    grid-template-columns: var(--tolerance-side-width) minmax(8px, 1fr) var(--tolerance-side-width);
     row-gap: 14px;
   }
 
@@ -309,7 +309,7 @@
     min-height: 91px;
     border-width: 2.5px;
     border-radius: 20px;
-    padding: 9px 8px;
+    padding: 9px 6px;
   }
 
   .tolerance-box-content,
@@ -323,14 +323,16 @@
 
   .tolerance-value-frame {
     height: 58px;
-    padding: 0 14px;
-    gap: 8px;
+    padding: 0 10px;
+    gap: 6px;
     border-radius: 16px;
   }
 
   .tolerance-value-frame input,
   .tolerance-output-frame strong {
     font-size: 1.20rem;
+    font-variant-numeric: tabular-nums;
+    text-overflow: clip;
   }
 
   .tolerance-value-frame input::placeholder {
@@ -342,8 +344,8 @@
   }
 
   .tolerance-middle-content {
-    grid-template-columns: minmax(0, 1fr) 64px minmax(0, 1fr);
-    padding: 26px 18px;
+    grid-template-columns: minmax(0, 1fr) 36px minmax(0, 1fr);
+    padding: 26px 10px;
   }
 
   .tolerance-middle-panel .tolerance-field-label {
@@ -372,6 +374,9 @@
 
 @media (max-width: 430px) {
   .tolerance-bridge {
+    --tolerance-side-width: clamp(132px, 43vw, 166px);
+    --tolerance-side-shift: 12px;
+    grid-template-columns: var(--tolerance-side-width) minmax(4px, 1fr) var(--tolerance-side-width);
     row-gap: 9px;
   }
 
@@ -385,7 +390,8 @@
 
   .tolerance-value-frame {
     height: 54px;
-    padding: 0 12px;
+    padding: 0 9px;
+    gap: 5px;
   }
 
   .tolerance-value-frame input,
@@ -399,6 +405,11 @@
 
   .tolerance-value-frame em {
     font-size: 0.88rem;
+  }
+
+  .tolerance-middle-content {
+    grid-template-columns: minmax(0, 1fr) 28px minmax(0, 1fr);
+    padding: 24px 8px;
   }
 
   .tolerance-middle-panel .tolerance-value-frame {
