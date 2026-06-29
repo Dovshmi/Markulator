@@ -365,12 +365,6 @@ export default function EnhancedApp() {
     setHistory([]);
   };
 
-  const maxPlaceholder = unitMode === UNIT_MODES.IN_TO_MM ? text.maxPlaceholderIn : text.maxPlaceholderMm;
-  const minPlaceholder = unitMode === UNIT_MODES.IN_TO_MM ? text.minPlaceholderIn : text.minPlaceholderMm;
-  const limitPlaceholders = useMemo(() => ({
-    max: unitMode === UNIT_MODES.IN_TO_MM ? text.maxPlaceholderIn : text.maxPlaceholderMm,
-    min: unitMode === UNIT_MODES.IN_TO_MM ? text.minPlaceholderIn : text.minPlaceholderMm,
-  }), [unitMode, text]);
   const tolerancePlaceholders = useMemo(() => ({
     positive: unitMode === UNIT_MODES.IN_TO_MM ? text.positivePlaceholderIn : text.positivePlaceholderMm,
     nominal: unitMode === UNIT_MODES.IN_TO_MM ? text.nominalPlaceholderIn : text.nominalPlaceholderMm,
@@ -433,7 +427,7 @@ export default function EnhancedApp() {
             {mode === 'plus-minus' ? (
               <ToleranceBridge unitMode={unitMode} tol={tol} setTol={setTol} result={result} digits={digits} text={text} placeholders={tolerancePlaceholders} onSwitchUnitMode={switchUnitMode} />
             ) : (
-              <LimitBridge key={`max-min-bridge-${unitMode}`} unitMode={unitMode} limits={limits} setLimits={setLimits} result={result} digits={digits} text={text} placeholders={limitPlaceholders} onSwitchUnitMode={switchUnitMode} />
+              <LimitBridge unitMode={unitMode} limits={limits} setLimits={setLimits} result={result} digits={digits} text={text} onSwitchUnitMode={switchUnitMode} />
             )}
           </div>
           {copyStatus && <div className="form-status">{copyStatus}</div>}
