@@ -1,3 +1,5 @@
+const WEB_VERSION_LABEL = 'v0.9.7';
+
 function getUiLanguage() {
   return document.documentElement.lang === 'en' ? 'en' : 'he';
 }
@@ -78,9 +80,17 @@ function applySingleStickyCopyAction() {
   setClass(fullCopyButton, 'sticky-copy-action', true);
 }
 
+function applyHistoryVersionLabel() {
+  const versionLabel = document.querySelector('.history-title .section-label');
+  if (versionLabel?.textContent?.trim()?.startsWith('v0.')) {
+    setText(versionLabel, WEB_VERSION_LABEL);
+  }
+}
+
 function applyUiLabels() {
   applyCalculateButtonLabel();
   applySingleStickyCopyAction();
+  applyHistoryVersionLabel();
 }
 
 function scheduleApply() {
