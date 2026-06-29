@@ -3,7 +3,7 @@
 <div align="center">
   <img src="https://img.shields.io/badge/React-Web_App-61DAFB?style=for-the-badge&logo=react&logoColor=black" alt="React" />
   <img src="https://img.shields.io/badge/Vite-Build_Tool-646CFF?style=for-the-badge&logo=vite&logoColor=white" alt="Vite" />
-  <img src="https://img.shields.io/badge/Web-v0.9.7-14B8A6?style=for-the-badge" alt="Web v0.9.7" />
+  <img src="https://img.shields.io/badge/Web-v0.9.9-14B8A6?style=for-the-badge" alt="Web v0.9.9" />
   <img src="https://img.shields.io/badge/Hebrew_%2F_English-UI-0F172A?style=for-the-badge" alt="Hebrew and English UI" />
   <img src="https://img.shields.io/badge/PWA-ready-0EA5E9?style=for-the-badge" alt="PWA ready" />
   <img src="https://img.shields.io/badge/License-GPL--3.0-4B5563?style=for-the-badge" alt="GPL-3.0 License" />
@@ -159,6 +159,7 @@ pyinstaller --onefile --noconsole --icon=pictures/calc.ico .\Marlulator_app.py
 | Branch | Purpose | Deployment |
 | :--- | :--- | :--- |
 | `main` | Production branch | https://markulator-zeta.vercel.app/ |
+| `manus-test` | Working branch for version 0.9.9 UI/code changes | Automatic Vercel deployments are disabled |
 | `test` | Test/staging branch | https://markulator-git-test-sushiteimushi.vercel.app/ |
 
 ---
@@ -167,6 +168,7 @@ pyinstaller --onefile --noconsole --icon=pictures/calc.ico .\Marlulator_app.py
 
 | Version | Type | Main update |
 | :--- | :--- | :--- |
+| Web v0.9.9 | Web | Prepared the `manus-test` working branch for the next UI/code change set. |
 | Web v0.9.7 | Web | Compact app-style settings drawer, centered unit-swap button, cleaner mobile layout, and refined tolerance bridge controls. |
 | Web v0.9.6 | Web | Bidirectional tolerance bridge, mobile Enter/Next navigation, refined sticky action bar, and performance fix for label updates. |
 | Web v0.9.5 | Web | Mobile tolerance bridge refinement with larger readable fields and clearer placeholders. |
@@ -187,18 +189,3 @@ pyinstaller --onefile --noconsole --icon=pictures/calc.ico .\Marlulator_app.py
 ---
 
 ## Precision Notes
-
-Markulator is a convenience calculator. For production-critical engineering, machining, inspection, or safety-sensitive work, verify results against the approved drawing, measurement standard, or certified calculation process.
-
----
-
-## License
-
-This project is licensed under the **GNU General Public License v3.0**. See [`LICENSE`](LICENSE) for details.
-
----
-
-<div align="center">
-  Built by <strong>Rony Shmidov</strong><br />
-  Practical tolerance conversion for web and desktop.
-</div>
