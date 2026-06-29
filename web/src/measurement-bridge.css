@@ -306,10 +306,20 @@
   }
 
   .tolerance-mini-card {
+    height: 76px;
     min-height: 76px;
     border-width: 2.5px;
     border-radius: 19px;
-    padding: 3px;
+    padding: 0;
+  }
+
+  .tolerance-mini-card .tolerance-box-content {
+    height: 100%;
+  }
+
+  .tolerance-mini-card .tolerance-value-frame {
+    height: 100%;
+    border-radius: 15px;
   }
 
   .tolerance-box-content,
@@ -344,7 +354,7 @@
   }
 
   .tolerance-middle-content {
-    grid-template-columns: minmax(0, 1fr) 0 minmax(0, 1fr);
+    grid-template-columns: minmax(0, 1fr) 24px minmax(0, 1fr);
     padding: 14px 4px;
   }
 
@@ -358,14 +368,9 @@
     max-width: 100%;
   }
 
-  .tolerance-middle-panel.tolerance-source .tolerance-value-frame {
-    border-top-right-radius: 5px;
-    border-bottom-right-radius: 5px;
-  }
-
+  .tolerance-middle-panel.tolerance-source .tolerance-value-frame,
   .tolerance-middle-panel.tolerance-target .tolerance-value-frame {
-    border-top-left-radius: 5px;
-    border-bottom-left-radius: 5px;
+    border-radius: 18px;
   }
 
   .tolerance-middle-panel .tolerance-value-frame input,
@@ -392,9 +397,15 @@
   }
 
   .tolerance-mini-card {
+    height: 72px;
     min-height: 72px;
-    padding: 3px;
+    padding: 0;
     border-radius: 17px;
+  }
+
+  .tolerance-mini-card .tolerance-value-frame {
+    height: 100%;
+    border-radius: 13px;
   }
 
   .tolerance-field-label {
@@ -421,7 +432,7 @@
   }
 
   .tolerance-middle-content {
-    grid-template-columns: minmax(0, 1fr) 0 minmax(0, 1fr);
+    grid-template-columns: minmax(0, 1fr) 22px minmax(0, 1fr);
     padding: 11px 4px;
   }
 
