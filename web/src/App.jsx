@@ -15,6 +15,7 @@ import './light-mode-limit-label-fix.css';
 import './quick-settings-behavior.js';
 import EnhancedApp from './components/EnhancedApp.jsx';
 
+// Production redeploy trigger. No runtime behavior change.
 export default function App() {
   return <EnhancedApp />;
 }
