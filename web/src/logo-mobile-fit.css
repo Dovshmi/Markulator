@@ -1,12 +1,12 @@
 /* Fine-tune the Markulator hero logo after the no-padding icon update. */
 .logo-image-wrap .logo-image {
   object-fit: contain !important;
-  transform: scale(1.14) !important;
+  transform: scale(1.20) !important;
   transform-origin: center;
 }
 
 @media (max-width: 640px) {
   .logo-image-wrap .logo-image {
-    transform: scale(1.10) !important;
+    transform: scale(1.18) !important;
   }
 }
