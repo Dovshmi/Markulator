@@ -8,6 +8,8 @@ import './limit-bridge.css';
 import './performance.css';
 import './manus-test-style.css';
 import './logo-mobile-fit.css';
+import './quick-settings-popover.css';
+import './quick-settings-behavior.js';
 import EnhancedApp from './components/EnhancedApp.jsx';
 
 export default function App() {
