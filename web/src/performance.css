@@ -31,16 +31,66 @@
   contain: layout paint;
 }
 
+.history-section.history-drawer,
+.result-drawer {
+  contain: layout paint;
+  will-change: opacity, transform;
+  transform: translate3d(0, -4px, 0);
+  transition:
+    opacity 120ms ease,
+    transform 140ms ease,
+    border-color 120ms ease !important;
+}
+
+.history-section.history-drawer.open,
+.result-drawer.open {
+  max-height: none !important;
+  transform: translate3d(0, 0, 0);
+}
+
+.history-drawer-inner,
+.result-drawer-inner {
+  animation: none !important;
+  transform: translateZ(0);
+}
+
+.history-list,
+.history-list button,
+.history-empty,
+.sticky-action-bar,
+.form-status,
+.validation-box {
+  contain: layout paint;
+}
+
 @media (max-width: 640px) {
   .settings-drawer {
     transition-duration: 180ms;
   }
 
+  .history-section.history-drawer,
+  .result-drawer {
+    transition-duration: 95ms, 110ms, 95ms !important;
+  }
+
   .drawer-section,
   .unit-switch,
   .settings-drawer,
-  .drawer-backdrop {
-    box-shadow: none;
+  .drawer-backdrop,
+  .history-list button,
+  .history-empty,
+  .form-status,
+  .validation-box {
+    box-shadow: none !important;
+  }
+
+  .hero-card,
+  .calculator-card {
+    box-shadow: 0 14px 34px rgba(0, 0, 0, 0.22) !important;
+  }
+
+  body::before {
+    opacity: 0.42 !important;
   }
 }
 
