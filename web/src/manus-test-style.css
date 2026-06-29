@@ -120,6 +120,36 @@ body::before {
   background: rgba(2, 6, 23, 0.36);
 }
 
+.app-shell.lang-he .history-list button {
+  direction: rtl;
+  text-align: right;
+}
+
+.app-shell.lang-he .history-list button span {
+  direction: ltr;
+  text-align: left;
+  unicode-bidi: isolate;
+  justify-self: end;
+}
+
+.app-shell.lang-he .history-list button strong {
+  direction: rtl;
+  text-align: right;
+  unicode-bidi: plaintext;
+}
+
+.app-shell.lang-en .history-list button {
+  direction: ltr;
+  text-align: left;
+}
+
+.app-shell.lang-en .history-list button span,
+.app-shell.lang-en .history-list button strong {
+  direction: ltr;
+  text-align: left;
+  unicode-bidi: plaintext;
+}
+
 .sticky-action-bar {
   border-color: rgba(103, 232, 249, 0.20);
   background:
