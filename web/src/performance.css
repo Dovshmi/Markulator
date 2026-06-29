@@ -1,4 +1,59 @@
 /* Lightweight performance layer for smoother mobile interactions. */
+html.app-booting *,
+html.app-booting *::before,
+html.app-booting *::after {
+  animation: none !important;
+  transition: none !important;
+  scroll-behavior: auto !important;
+}
+
+html.app-booting body::before {
+  opacity: 0.24 !important;
+}
+
+html.app-booting .hero-card,
+html.app-booting .calculator-card,
+html.app-booting .app-menu-button,
+html.app-booting .logo-image-wrap {
+  box-shadow: none !important;
+}
+
+/* Disable the first-load pop-in effects that feel like a refresh freeze on mobile. */
+.hero-card,
+.calculator-card,
+.mode-content,
+.mode-content .input-field,
+.result-layout,
+.result-transition,
+.validation-box,
+.result-actions span {
+  animation: none !important;
+  opacity: 1 !important;
+  filter: none !important;
+  transform: none !important;
+}
+
+/* Continuous decorative animations cost paint time on Android, especially during refresh. */
+.logo-image-wrap,
+.mode-switch button.active {
+  animation: none !important;
+}
+
+.hero-card,
+.calculator-card {
+  contain: layout paint;
+}
+
+.app-footer {
+  content-visibility: auto;
+  contain-intrinsic-size: 64px;
+}
+
+.logo-image {
+  content-visibility: auto;
+  transform: translateZ(0);
+}
+
 .settings-drawer {
   transform: translate3d(105%, 0, 0);
   will-change: transform;
@@ -6,16 +61,29 @@
   backface-visibility: hidden;
   -webkit-backface-visibility: hidden;
   overscroll-behavior: contain;
+  transition: transform 190ms cubic-bezier(.2, .85, .25, 1) !important;
 }
 
 .settings-drawer.open {
   transform: translate3d(0, 0, 0);
 }
 
+@starting-style {
+  .settings-drawer.open {
+    transform: translate3d(105%, 0, 0);
+  }
+
+  .drawer-backdrop {
+    opacity: 0;
+  }
+}
+
 .drawer-backdrop {
   contain: strict;
   will-change: opacity;
   transform: translateZ(0);
+  opacity: 1;
+  transition: opacity 140ms ease !important;
 }
 
 .theme-animating .hero-card,
@@ -29,6 +97,29 @@
 .tolerance-mini-card,
 .tolerance-middle-panel {
   contain: layout paint;
+}
+
+.tolerance-conversion-animating .tolerance-swap-button {
+  animation: tolerance-button-pulse 180ms cubic-bezier(.22, 1, .36, 1) both !important;
+}
+
+.tolerance-conversion-animating .tolerance-source,
+.tolerance-conversion-animating .tolerance-unit-left {
+  animation: tolerance-swap-left-to-center 720ms cubic-bezier(.22, 1, .36, 1) both !important;
+}
+
+.tolerance-conversion-animating .tolerance-target,
+.tolerance-conversion-animating .tolerance-unit-right {
+  animation: tolerance-swap-right-to-center 720ms cubic-bezier(.22, 1, .36, 1) both !important;
+}
+
+.calculator-mode-panel {
+  min-width: 0;
+  contain: layout paint;
+}
+
+.calculator-mode-panel.mode-panel-animated {
+  animation: mode-panel-soft-swap 145ms cubic-bezier(.2, .85, .25, 1) both;
 }
 
 .history-section.history-drawer,
@@ -54,23 +145,157 @@
   transform: translateZ(0);
 }
 
+.history-section.history-drawer.open .history-drawer-inner {
+  animation: history-soft-open 135ms cubic-bezier(.2, .85, .25, 1) both !important;
+}
+
+.result-arrive:not(.sticky-action-bar) {
+  animation: result-soft-arrive 140ms cubic-bezier(.2, .85, .25, 1) both !important;
+}
+
+.sticky-action-bar.result-arrive {
+  animation: none !important;
+}
+
 .history-list,
 .history-list button,
 .history-empty,
-.sticky-action-bar,
 .form-status,
 .validation-box {
   contain: layout paint;
 }
 
+.sticky-action-bar {
+  position: fixed !important;
+  contain: none !important;
+}
+
+.app-menu-button,
+.drawer-close,
+.drawer-icon-handle,
+.unit-switch button,
+.mode-switch button,
+.sticky-action-bar button,
+.history-list button {
+  touch-action: manipulation;
+}
+
+.app-menu-button:active,
+.drawer-close:active,
+.drawer-icon-handle:active,
+.unit-switch button:active,
+.mode-switch button:active,
+.sticky-action-bar button:active,
+.history-list button:active {
+  transform: translate3d(0, 1px, 0) scale(0.985) !important;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .app-menu-button:hover,
+  .drawer-close:hover,
+  .drawer-icon-handle:hover,
+  .unit-switch button:hover,
+  .mode-switch button:hover,
+  .sticky-action-bar button:hover,
+  .history-list button:hover {
+    transform: translate3d(0, -1px, 0);
+  }
+}
+
+@keyframes tolerance-button-pulse {
+  0% {
+    transform: translateZ(0) scale(1);
+  }
+  52% {
+    transform: translateZ(0) scale(1.07);
+  }
+  100% {
+    transform: translateZ(0) scale(1);
+  }
+}
+
+@keyframes tolerance-swap-left-to-center {
+  0% {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+  50% {
+    opacity: 0.68;
+    transform: translate3d(9px, 0, 0);
+  }
+  100% {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+@keyframes tolerance-swap-right-to-center {
+  0% {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+  50% {
+    opacity: 0.68;
+    transform: translate3d(-9px, 0, 0);
+  }
+  100% {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+@keyframes history-soft-open {
+  from {
+    opacity: 0.01;
+    transform: translate3d(0, -5px, 0);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+@keyframes result-soft-arrive {
+  from {
+    opacity: 0.01;
+    transform: translate3d(0, 5px, 0);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+@keyframes mode-panel-soft-swap {
+  from {
+    opacity: 0.01;
+    transform: translate3d(0, 5px, 0);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+
 @media (max-width: 640px) {
   .settings-drawer {
-    transition-duration: 180ms;
+    transition-duration: 170ms !important;
   }
 
   .history-section.history-drawer,
   .result-drawer {
     transition-duration: 95ms, 110ms, 95ms !important;
+  }
+
+  .history-section.history-drawer.open .history-drawer-inner,
+  .result-arrive:not(.sticky-action-bar),
+  .calculator-mode-panel.mode-panel-animated,
+  .tolerance-conversion-animating .tolerance-swap-button,
+  .tolerance-conversion-animating .tolerance-source,
+  .tolerance-conversion-animating .tolerance-target,
+  .tolerance-conversion-animating .tolerance-unit-left,
+  .tolerance-conversion-animating .tolerance-unit-right {
+    animation-duration: 720ms !important;
   }
 
   .drawer-section,
@@ -86,11 +311,11 @@
 
   .hero-card,
   .calculator-card {
-    box-shadow: 0 14px 34px rgba(0, 0, 0, 0.22) !important;
+    box-shadow: 0 10px 26px rgba(0, 0, 0, 0.18) !important;
   }
 
   body::before {
-    opacity: 0.42 !important;
+    opacity: 0.34 !important;
   }
 }
 
@@ -106,5 +331,16 @@
   .result-drawer,
   .drawer-icon-handle span {
     transition-duration: 1ms !important;
+  }
+
+  .history-section.history-drawer.open .history-drawer-inner,
+  .result-arrive:not(.sticky-action-bar),
+  .calculator-mode-panel.mode-panel-animated,
+  .tolerance-conversion-animating .tolerance-swap-button,
+  .tolerance-conversion-animating .tolerance-source,
+  .tolerance-conversion-animating .tolerance-target,
+  .tolerance-conversion-animating .tolerance-unit-left,
+  .tolerance-conversion-animating .tolerance-unit-right {
+    animation-duration: 1ms !important;
   }
 }
