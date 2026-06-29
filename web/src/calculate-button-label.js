@@ -30,12 +30,14 @@ function applySingleStickyCopyAction() {
   shortCopyButton.hidden = true;
   shortCopyButton.setAttribute('aria-hidden', 'true');
   shortCopyButton.tabIndex = -1;
+  shortCopyButton.classList.remove('sticky-copy-action');
 
   fullCopyButton.hidden = false;
   fullCopyButton.removeAttribute('aria-hidden');
   fullCopyButton.tabIndex = 0;
   fullCopyButton.textContent = copyLabel;
   fullCopyButton.setAttribute('aria-label', copyLabel);
+  fullCopyButton.classList.add('sticky-copy-action');
 }
 
 function applyUiLabels() {
