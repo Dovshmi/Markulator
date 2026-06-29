@@ -12,6 +12,20 @@
     <title>Markulator | מחשבון סבולות</title>
   </head>
   <body dir="rtl">
+    <script>
+      (function () {
+        try {
+          var savedTheme = localStorage.getItem('markulator-theme-v1') || 'auto';
+          var prefersLight = window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches;
+          var resolvedTheme = savedTheme === 'light' || savedTheme === 'dark' ? savedTheme : prefersLight ? 'light' : 'dark';
+          document.documentElement.style.colorScheme = resolvedTheme;
+          document.body.classList.add('theme-' + resolvedTheme);
+        } catch (error) {
+          document.documentElement.style.colorScheme = 'dark';
+          document.body.classList.add('theme-dark');
+        }
+      })();
+    </script>
     <div id="root"></div>
     <script type="module" src="/src/main.jsx"></script>
   </body>
