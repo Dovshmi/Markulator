@@ -342,7 +342,6 @@ export default function EnhancedApp() {
 
   return (
     <main className={`app-shell lang-${language} theme-${resolvedTheme} theme-mode-${themeMode} ${themeAnimating ? 'theme-animating' : ''}`} dir={dir} lang={language}>
-      <button className="app-menu-button" type="button" aria-label={text.openSettings} onClick={() => setDrawerOpen(true)}><span></span><span></span><span></span></button>
       {drawerOpen && <button className="drawer-backdrop" type="button" aria-label={text.closeMenu} onClick={() => setDrawerOpen(false)} />}
 
       <aside className={`settings-drawer ${drawerOpen ? 'open' : ''}`} aria-hidden={!drawerOpen}>
@@ -389,6 +388,7 @@ export default function EnhancedApp() {
         <div className="mode-switch"><button className={mode === 'plus-minus' ? 'active' : ''} aria-pressed={mode === 'plus-minus'} onClick={() => switchMode('plus-minus')} type="button"><strong>{text.plusMinus}</strong><span>{text.plusMinusHint}</span></button><button className={mode === 'max-min' ? 'active' : ''} aria-pressed={mode === 'max-min'} onClick={() => switchMode('max-min')} type="button"><strong>{text.maxMin}</strong><span>{text.maxMinHint}</span></button></div>
 
         <section className="form-section" ref={inputSectionRef}>
+          <button className="app-menu-button form-settings-button" type="button" aria-label={text.openSettings} onClick={() => setDrawerOpen(true)}><span></span><span></span><span></span></button>
           <div className="section-title-row"><div><p className="section-label">{text.step2}</p><h2>{text.enterValues}{units.input}</h2></div></div>
           {mode === 'plus-minus' ? (
             <ToleranceBridge unitMode={unitMode} tol={tol} setTol={setTol} result={result} digits={digits} text={text} placeholders={tolerancePlaceholders} />
