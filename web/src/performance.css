@@ -104,6 +104,15 @@ html.app-booting .logo-image-wrap {
   contain: layout paint;
 }
 
+.calculator-mode-panel {
+  min-width: 0;
+  contain: layout paint;
+}
+
+.calculator-mode-panel.mode-panel-animated {
+  animation: mode-panel-soft-swap 145ms cubic-bezier(.2, .85, .25, 1) both;
+}
+
 .history-section.history-drawer,
 .result-drawer {
   contain: layout paint;
@@ -125,6 +134,14 @@ html.app-booting .logo-image-wrap {
 .result-drawer-inner {
   animation: none !important;
   transform: translateZ(0);
+}
+
+.history-section.history-drawer.open .history-drawer-inner {
+  animation: history-soft-open 135ms cubic-bezier(.2, .85, .25, 1) both !important;
+}
+
+.result-arrive {
+  animation: result-soft-arrive 140ms cubic-bezier(.2, .85, .25, 1) both !important;
 }
 
 .history-list,
@@ -168,6 +185,39 @@ html.app-booting .logo-image-wrap {
   }
 }
 
+@keyframes history-soft-open {
+  from {
+    opacity: 0.01;
+    transform: translate3d(0, -5px, 0);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+@keyframes result-soft-arrive {
+  from {
+    opacity: 0.01;
+    transform: translate3d(0, 5px, 0);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+@keyframes mode-panel-soft-swap {
+  from {
+    opacity: 0.01;
+    transform: translate3d(0, 5px, 0);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+
 @media (max-width: 640px) {
   .app-shell {
     contain-intrinsic-size: 760px;
@@ -180,6 +230,12 @@ html.app-booting .logo-image-wrap {
   .history-section.history-drawer,
   .result-drawer {
     transition-duration: 95ms, 110ms, 95ms !important;
+  }
+
+  .history-section.history-drawer.open .history-drawer-inner,
+  .result-arrive,
+  .calculator-mode-panel.mode-panel-animated {
+    animation-duration: 105ms !important;
   }
 
   .drawer-section,
@@ -215,5 +271,11 @@ html.app-booting .logo-image-wrap {
   .result-drawer,
   .drawer-icon-handle span {
     transition-duration: 1ms !important;
+  }
+
+  .history-section.history-drawer.open .history-drawer-inner,
+  .result-arrive,
+  .calculator-mode-panel.mode-panel-animated {
+    animation-duration: 1ms !important;
   }
 }
