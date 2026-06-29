@@ -39,11 +39,6 @@ html.app-booting .logo-image-wrap {
   animation: none !important;
 }
 
-.app-shell {
-  content-visibility: auto;
-  contain-intrinsic-size: 820px;
-}
-
 .hero-card,
 .calculator-card {
   contain: layout paint;
@@ -161,10 +156,14 @@ html.app-booting .logo-image-wrap {
 .history-list,
 .history-list button,
 .history-empty,
-.sticky-action-bar,
 .form-status,
 .validation-box {
   contain: layout paint;
+}
+
+.sticky-action-bar {
+  position: fixed !important;
+  contain: none !important;
 }
 
 .app-menu-button,
@@ -269,10 +268,6 @@ html.app-booting .logo-image-wrap {
 }
 
 @media (max-width: 640px) {
-  .app-shell {
-    contain-intrinsic-size: 760px;
-  }
-
   .settings-drawer {
     transition-duration: 170ms !important;
   }
