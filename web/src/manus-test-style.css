@@ -98,52 +98,6 @@ body::before {
     inset 0 1px 0 rgba(255, 255, 255, 0.20);
 }
 
-.tolerance-bridge {
-  --tolerance-shape: #132236;
-  --tolerance-shape-soft: #111d30;
-  --tolerance-line: #67e8f9;
-  --tolerance-muted: #9eb0c5;
-  --tolerance-accent: #8cf7ff;
-  --tolerance-field: rgba(13, 23, 40, 0.92);
-  --tolerance-field-border: rgba(103, 232, 249, 0.18);
-}
-
-.tolerance-mini-card {
-  border-color: rgba(103, 232, 249, 0.66);
-  background:
-    linear-gradient(145deg, rgba(17, 29, 48, 0.98), rgba(11, 22, 38, 0.96));
-  box-shadow:
-    0 14px 34px rgba(2, 6, 23, 0.24),
-    inset 0 1px 0 rgba(255, 255, 255, 0.05);
-}
-
-.tolerance-value-frame {
-  border-color: var(--tolerance-field-border);
-  background: var(--tolerance-field);
-}
-
-.tolerance-value-frame:focus-within {
-  border-color: rgba(103, 232, 249, 0.86);
-  box-shadow: 0 0 0 3px rgba(103, 232, 249, 0.10);
-}
-
-.tolerance-value-frame input::placeholder {
-  color: rgba(148, 163, 184, 0.64);
-}
-
-.tolerance-swap-button {
-  border-color: rgba(103, 232, 249, 0.52);
-  color: #67e8f9;
-  background: rgba(11, 22, 38, 0.96);
-  box-shadow:
-    0 8px 20px rgba(2, 6, 23, 0.28),
-    inset 0 1px 0 rgba(255, 255, 255, 0.08);
-}
-
-.tolerance-swap-button:hover {
-  border-color: rgba(103, 232, 249, 0.72);
-}
-
 .settings-drawer {
   border-left-color: rgba(103, 232, 249, 0.20);
   background:
@@ -189,29 +143,4 @@ body::before {
   box-shadow:
     0 22px 58px rgba(15, 23, 42, 0.10),
     inset 0 1px 0 rgba(255, 255, 255, 0.78);
-}
-
-.theme-light .tolerance-bridge {
-  --tolerance-shape: #dbeafe;
-  --tolerance-shape-soft: #e2e8f0;
-  --tolerance-line: #0891b2;
-  --tolerance-muted: #475569;
-  --tolerance-accent: #0369a1;
-  --tolerance-field: rgba(241, 245, 249, 0.88);
-  --tolerance-field-border: rgba(15, 23, 42, 0.14);
-}
-
-.theme-light .tolerance-mini-card {
-  border-color: rgba(8, 145, 178, 0.62);
-  background: linear-gradient(145deg, rgba(226, 232, 240, 0.96), rgba(241, 245, 249, 0.90));
-}
-
-.theme-light .tolerance-value-frame {
-  background: rgba(241, 245, 249, 0.88);
-}
-
-.theme-light .tolerance-swap-button {
-  color: #0369a1;
-  border-color: rgba(14, 116, 144, 0.30);
-  background: rgba(241, 245, 249, 0.96);
 }
