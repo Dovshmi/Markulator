@@ -1,12 +1,18 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="Markulator icon">
   <defs>
     <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0" stop-color="#0ea5e9" />
-      <stop offset="0.52" stop-color="#14b8a6" />
-      <stop offset="1" stop-color="#7c3aed" />
+      <stop offset="0" stop-color="#0d6f87" />
+      <stop offset="1" stop-color="#075b78" />
     </linearGradient>
   </defs>
-  <rect width="512" height="512" rx="112" fill="#07111f" />
-  <rect x="48" y="48" width="416" height="416" rx="92" fill="url(#bg)" />
-  <path d="M112 354V150h54l90 112 90-112h54v204h-62V246l-82 101-82-101v108h-62Z" fill="#ffffff" opacity="0.96" />
+  <rect width="512" height="512" rx="96" fill="url(#bg)" />
+  <g fill="#ffffff">
+    <path d="M82 354V158h48v196H82Z" />
+    <path d="M382 354V158h48v196h-48Z" />
+    <path d="M236 356c-48 0-86-22-105-58l39-27c13 24 36 37 66 37 31 0 51-13 51-34 0-18-13-29-49-46l-28-13c-46-21-68-49-68-85 0-50 42-83 101-83 42 0 74 18 94 51l-38 29c-14-21-32-31-56-31-27 0-45 12-45 31 0 17 12 28 45 43l28 13c49 22 73 49 73 88 0 52-43 85-108 85Z" />
+    <path d="M157 104 206 50v66l-49 48v-60Z" />
+    <path d="M306 116V50l49 54v60l-49-48Z" />
+    <path d="M132 150 83 104v60l49 48v-62Z" opacity="0.98" />
+    <path d="M380 150 429 104v60l-49 48v-62Z" opacity="0.98" />
+  </g>
 </svg>
