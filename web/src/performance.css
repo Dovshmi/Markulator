@@ -66,16 +66,29 @@ html.app-booting .logo-image-wrap {
   backface-visibility: hidden;
   -webkit-backface-visibility: hidden;
   overscroll-behavior: contain;
+  transition: transform 190ms cubic-bezier(.2, .85, .25, 1) !important;
 }
 
 .settings-drawer.open {
   transform: translate3d(0, 0, 0);
 }
 
+@starting-style {
+  .settings-drawer.open {
+    transform: translate3d(105%, 0, 0);
+  }
+
+  .drawer-backdrop {
+    opacity: 0;
+  }
+}
+
 .drawer-backdrop {
   contain: strict;
   will-change: opacity;
   transform: translateZ(0);
+  opacity: 1;
+  transition: opacity 140ms ease !important;
 }
 
 .theme-animating .hero-card,
@@ -123,13 +136,45 @@ html.app-booting .logo-image-wrap {
   contain: layout paint;
 }
 
+.app-menu-button,
+.drawer-close,
+.drawer-icon-handle,
+.unit-switch button,
+.mode-switch button,
+.sticky-action-bar button,
+.history-list button {
+  touch-action: manipulation;
+}
+
+.app-menu-button:active,
+.drawer-close:active,
+.drawer-icon-handle:active,
+.unit-switch button:active,
+.mode-switch button:active,
+.sticky-action-bar button:active,
+.history-list button:active {
+  transform: translate3d(0, 1px, 0) scale(0.985) !important;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .app-menu-button:hover,
+  .drawer-close:hover,
+  .drawer-icon-handle:hover,
+  .unit-switch button:hover,
+  .mode-switch button:hover,
+  .sticky-action-bar button:hover,
+  .history-list button:hover {
+    transform: translate3d(0, -1px, 0);
+  }
+}
+
 @media (max-width: 640px) {
   .app-shell {
     contain-intrinsic-size: 760px;
   }
 
   .settings-drawer {
-    transition-duration: 180ms;
+    transition-duration: 170ms !important;
   }
 
   .history-section.history-drawer,
