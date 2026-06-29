@@ -71,10 +71,25 @@ function getTabIndex(activeSide, side, field) {
   return FIELD_ORDER.indexOf(field) + 1;
 }
 
-function moveToNextField(event, side, field) {
+function moveToNextField(event, side, field, phase = 'down') {
   if (event.key !== 'Enter') return;
 
+  const bridge = event.currentTarget.closest('.tolerance-bridge');
+
+  if (phase === 'up') {
+    const lastKeyboardNavigation = Number(bridge?.dataset.toleranceLastKeyboardNavigation || 0);
+    if (lastKeyboardNavigation && Date.now() - lastKeyboardNavigation < 450) {
+      event.preventDefault();
+      return;
+    }
+  }
+
   event.preventDefault();
+
+  if (phase === 'down' && bridge) {
+    bridge.dataset.toleranceLastKeyboardNavigation = String(Date.now());
+  }
+
   const nextField = FIELD_ORDER[FIELD_ORDER.indexOf(field) + 1];
 
   if (!nextField) {
@@ -82,7 +97,6 @@ function moveToNextField(event, side, field) {
     return;
   }
 
-  const bridge = event.currentTarget.closest('.tolerance-bridge');
   const nextInput = bridge?.querySelector(`input[data-tolerance-side="${side}"][data-tolerance-field="${nextField}"]`);
 
   if (nextInput) {
@@ -113,8 +127,8 @@ function ValueInput({ side, activeSide, onFocusSide, field, unit, value, onChang
         name={`tolerance-${side}-${field}`}
         onFocus={() => onFocusSide(side)}
         onPointerDown={() => onFocusSide(side)}
-        onKeyDown={(event) => moveToNextField(event, side, field)}
-        onKeyUp={(event) => moveToNextField(event, side, field)}
+        onKeyDown={(event) => moveToNextField(event, side, field, 'down')}
+        onKeyUp={(event) => moveToNextField(event, side, field, 'up')}
         onChange={(event) => onChange(field, event.currentTarget.value)}
       />
       <em>{getInputSuffix(field, unit)}</em>
