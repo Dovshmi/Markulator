@@ -1,4 +1,43 @@
 /* Lightweight performance layer for smoother mobile interactions. */
+html.app-booting *,
+html.app-booting *::before,
+html.app-booting *::after {
+  animation: none !important;
+  transition: none !important;
+  scroll-behavior: auto !important;
+}
+
+html.app-booting body::before {
+  opacity: 0.24 !important;
+}
+
+html.app-booting .hero-card,
+html.app-booting .calculator-card,
+html.app-booting .app-menu-button,
+html.app-booting .logo-image-wrap {
+  box-shadow: none !important;
+}
+
+.app-shell {
+  content-visibility: auto;
+  contain-intrinsic-size: 820px;
+}
+
+.hero-card,
+.calculator-card {
+  contain: layout paint;
+}
+
+.app-footer {
+  content-visibility: auto;
+  contain-intrinsic-size: 64px;
+}
+
+.logo-image {
+  content-visibility: auto;
+  transform: translateZ(0);
+}
+
 .settings-drawer {
   transform: translate3d(105%, 0, 0);
   will-change: transform;
@@ -64,6 +103,10 @@
 }
 
 @media (max-width: 640px) {
+  .app-shell {
+    contain-intrinsic-size: 760px;
+  }
+
   .settings-drawer {
     transition-duration: 180ms;
   }
@@ -86,11 +129,11 @@
 
   .hero-card,
   .calculator-card {
-    box-shadow: 0 14px 34px rgba(0, 0, 0, 0.22) !important;
+    box-shadow: 0 10px 26px rgba(0, 0, 0, 0.18) !important;
   }
 
   body::before {
-    opacity: 0.42 !important;
+    opacity: 0.34 !important;
   }
 }
 
