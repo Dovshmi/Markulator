@@ -11,6 +11,7 @@ import './logo-mobile-fit.css';
 import './quick-settings-popover.css';
 import './quick-theme-pyramid-fix.css';
 import './light-mode-soft-polish.css';
+import './light-mode-limit-label-fix.css';
 import './quick-settings-behavior.js';
 import EnhancedApp from './components/EnhancedApp.jsx';
 
