@@ -145,12 +145,12 @@ html.app-booting .logo-image-wrap {
   transform: translateZ(0);
 }
 
-.history-section.history-drawer.open .history-drawer-inner {
-  animation: history-soft-open 135ms cubic-bezier(.2, .85, .25, 1) both !important;
+.result-arrive:not(.sticky-action-bar) {
+  animation: result-soft-arrive 140ms cubic-bezier(.2, .85, .25, 1) both !important;
 }
 
-.result-arrive {
-  animation: result-soft-arrive 140ms cubic-bezier(.2, .85, .25, 1) both !important;
+.sticky-action-bar.result-arrive {
+  animation: none !important;
 }
 
 .history-list,
@@ -278,7 +278,7 @@ html.app-booting .logo-image-wrap {
   }
 
   .history-section.history-drawer.open .history-drawer-inner,
-  .result-arrive,
+  .result-arrive:not(.sticky-action-bar),
   .calculator-mode-panel.mode-panel-animated,
   .tolerance-conversion-animating .tolerance-swap-button,
   .tolerance-conversion-animating .tolerance-source,
@@ -324,7 +324,7 @@ html.app-booting .logo-image-wrap {
   }
 
   .history-section.history-drawer.open .history-drawer-inner,
-  .result-arrive,
+  .result-arrive:not(.sticky-action-bar),
   .calculator-mode-panel.mode-panel-animated,
   .tolerance-conversion-animating .tolerance-swap-button,
   .tolerance-conversion-animating .tolerance-source,
