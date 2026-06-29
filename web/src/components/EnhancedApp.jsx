@@ -530,7 +530,7 @@ export default function EnhancedApp() {
         <section id="history-drawer" className={`history-section history-drawer ${resultOpen ? 'open' : ''}`} aria-hidden={!resultOpen}>
           {resultOpen && (
             <div className="history-drawer-inner">
-              <div className="section-title-row history-title"><div><p className="section-label">v0.9.7</p><h2>{text.historyTitle}</h2></div>{filteredHistory.length > 0 && <button className="clear-button" type="button" onClick={clearHistory}>{text.clearHistory}</button>}</div>{filteredHistory.length === 0 ? <p className="history-empty">{text.emptyHistory}</p> : <div className="history-list">{filteredHistory.map((item) => <button key={item.id} type="button" onClick={() => restoreHistoryItem(item)}><span>{item.unitMode === UNIT_MODES.IN_TO_MM ? 'inch → mm' : 'mm → inch'}</span><small className="history-item-date">{getHistoryDateText(item)}</small><strong>{getHistoryShortText(item)}</strong></button>)}</div>}
+              <div className="section-title-row history-title"><div><h2>{text.historyTitle}</h2></div>{filteredHistory.length > 0 && <button className="clear-button" type="button" onClick={clearHistory}>{text.clearHistory}</button>}</div>{filteredHistory.length === 0 ? <p className="history-empty">{text.emptyHistory}</p> : <div className="history-list">{filteredHistory.map((item) => <button key={item.id} type="button" onClick={() => restoreHistoryItem(item)}><span>{item.unitMode === UNIT_MODES.IN_TO_MM ? 'inch → mm' : 'mm → inch'}</span><small className="history-item-date">{getHistoryDateText(item)}</small><strong>{getHistoryShortText(item)}</strong></button>)}</div>}
             </div>
           )}
         </section>
