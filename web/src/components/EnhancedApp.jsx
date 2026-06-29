@@ -8,6 +8,7 @@ import {
   buildCopyText,
   buildShortCopyText,
   convertValue,
+  formatNumber,
   getUnits,
   toNumber,
   validateInputs,
@@ -76,6 +77,7 @@ const TEXT = {
     autoCopyUnavailable: 'העתקה אוטומטית לא זמינה בדפדפן הזה',
     saved: 'התוצאה נשמרה בהיסטוריה',
     historyCopied: 'חישוב מההיסטוריה הועתק',
+    historyRestored: 'החישוב נטען מההיסטוריה',
     explanationPlus: 'הגבול העליון מחושב לפי מידה נומינלית + סבולת חיובית. הגבול התחתון מחושב לפי מידה נומינלית - סבולת שלילית.',
     explanationLimits: 'הטווח הכולל מחושב לפי הערך המקסימלי פחות הערך המינימלי.',
     historyTitle: 'היסטוריית חישובים',
@@ -83,6 +85,8 @@ const TEXT = {
     emptyHistory: 'עדיין אין חישובים שמורים. אחרי חישוב, לחצו על שמירה.',
     editValues: 'ערוך ערכים',
     copy: 'העתק',
+    inputLabel: 'קלט',
+    outputLabel: 'תוצאה',
     mobileNominal: 'נומינלי',
     mobileUpper: 'עליון',
     mobileLower: 'תחתון',
@@ -154,6 +158,7 @@ const TEXT = {
     autoCopyUnavailable: 'Automatic copy is unavailable in this browser',
     saved: 'Result saved to history',
     historyCopied: 'History calculation copied',
+    historyRestored: 'Calculation restored from history',
     explanationPlus: 'The upper limit is calculated as nominal value + positive tolerance. The lower limit is calculated as nominal value - negative tolerance.',
     explanationLimits: 'The total range is calculated as the maximum value minus the minimum value.',
     historyTitle: 'Calculation history',
@@ -161,6 +166,8 @@ const TEXT = {
     emptyHistory: 'No saved calculations yet. After calculating, tap Save.',
     editValues: 'Edit values',
     copy: 'Copy',
+    inputLabel: 'Input',
+    outputLabel: 'Output',
     mobileNominal: 'Nominal',
     mobileUpper: 'Upper',
     mobileLower: 'Lower',
@@ -222,6 +229,38 @@ function buildConvertedResult(mode, tol, limits, unitMode) {
   return { maxMm, minMm, rangeMm: maxMm - minMm };
 }
 
+function formatHistoryDate(value, language) {
+  const timestamp = Number(value);
+  if (!Number.isFinite(timestamp)) return '';
+  try {
+    return new Intl.DateTimeFormat(language === 'he' ? 'he-IL' : 'en-US', {
+      dateStyle: 'short',
+      timeStyle: 'short',
+    }).format(new Date(timestamp));
+  } catch {
+    return new Date(timestamp).toLocaleString();
+  }
+}
+
+function buildHistoryDisplayTexts(mode, result, tol, limits, unitMode, digits) {
+  const inputUnit = unitMode === UNIT_MODES.IN_TO_MM ? 'in' : 'mm';
+  const outputUnit = unitMode === UNIT_MODES.IN_TO_MM ? 'mm' : 'in';
+
+  if (mode === 'plus-minus') {
+    const inputHe = `קלט: סבולת + ${tol.positive || '—'} ${inputUnit} | נומינלי ${tol.nominal || '—'} ${inputUnit} | סבולת - ${tol.negative || '—'} ${inputUnit}`;
+    const inputEn = `Input: Tol+ ${tol.positive || '—'} ${inputUnit} | Nominal ${tol.nominal || '—'} ${inputUnit} | Tol- ${tol.negative || '—'} ${inputUnit}`;
+    const outputHe = `תוצאה: נומינלי ${formatNumber(result.nominalMm, digits)} ${outputUnit} | גבול עליון ${formatNumber(result.maxLimitMm, digits)} ${outputUnit} | גבול תחתון ${formatNumber(result.minLimitMm, digits)} ${outputUnit}`;
+    const outputEn = `Output: Nominal ${formatNumber(result.nominalMm, digits)} ${outputUnit} | Upper limit ${formatNumber(result.maxLimitMm, digits)} ${outputUnit} | Lower limit ${formatNumber(result.minLimitMm, digits)} ${outputUnit}`;
+    return { he: `${inputHe}\n${outputHe}`, en: `${inputEn}\n${outputEn}` };
+  }
+
+  const inputHe = `קלט: מקסימום ${limits.max || '—'} ${inputUnit} | מינימום ${limits.min || '—'} ${inputUnit}`;
+  const inputEn = `Input: Max ${limits.max || '—'} ${inputUnit} | Min ${limits.min || '—'} ${inputUnit}`;
+  const outputHe = `תוצאה: מקסימום ${formatNumber(result.maxMm, digits)} ${outputUnit} | מינימום ${formatNumber(result.minMm, digits)} ${outputUnit} | טווח ${formatNumber(result.rangeMm, digits)} ${outputUnit}`;
+  const outputEn = `Output: Max ${formatNumber(result.maxMm, digits)} ${outputUnit} | Min ${formatNumber(result.minMm, digits)} ${outputUnit} | Range ${formatNumber(result.rangeMm, digits)} ${outputUnit}`;
+  return { he: `${inputHe}\n${outputHe}`, en: `${inputEn}\n${outputEn}` };
+}
+
 export default function EnhancedApp() {
   const [mode, setMode] = useState('plus-minus');
   const [modeHasSwitched, setModeHasSwitched] = useState(false);
@@ -259,8 +298,9 @@ export default function EnhancedApp() {
   const shortText = useMemo(() => buildShortCopyText(mode, result, digits, units.outputLabel, language), [mode, result, digits, units.outputLabel, language]);
   const filteredHistory = useMemo(() => history.filter((item) => item.mode === mode).slice(0, MAX_HISTORY_PER_MODE), [history, mode]);
 
-  const getHistoryShortText = (item) => item?.texts?.[language] || item?.text || '';
+  const getHistoryShortText = (item) => item?.displayTexts?.[language] || item?.texts?.[language] || item?.text || '';
   const getHistoryFullText = (item) => item?.fullTexts?.[language] || item?.fullText || getHistoryShortText(item);
+  const getHistoryDateText = (item) => formatHistoryDate(item?.createdAt || item?.id, language);
 
   useEffect(() => {
     document.documentElement.lang = language === 'he' ? 'he' : 'en';
@@ -369,14 +409,37 @@ export default function EnhancedApp() {
       he: buildCopyText(mode, result, digits, units.outputLabel, 'he'),
       en: buildCopyText(mode, result, digits, units.outputLabel, 'en'),
     };
-    const item = { id: Date.now(), mode, unitMode, unitLabel: units.outputLabel, text: texts[language], fullText: fullTexts[language], texts, fullTexts };
+    const displayTexts = buildHistoryDisplayTexts(mode, result, tol, limits, unitMode, digits);
+    const values = mode === 'plus-minus' ? { tol: { ...tol } } : { limits: { ...limits } };
+    const createdAt = Date.now();
+    const item = { id: createdAt, createdAt, mode, unitMode, unitLabel: units.outputLabel, text: displayTexts[language], fullText: fullTexts[language], texts, fullTexts, displayTexts, values };
     setHistory((items) => {
-      const withoutDuplicate = items.filter((x) => !(x.mode === mode && (x.text === item.text || x.text === texts.he || x.text === texts.en || x.texts?.he === texts.he || x.texts?.en === texts.en)));
+      const withoutDuplicate = items.filter((x) => !(x.mode === mode && (x.text === item.text || x.text === texts.he || x.text === texts.en || x.texts?.he === texts.he || x.texts?.en === texts.en || x.displayTexts?.he === displayTexts.he || x.displayTexts?.en === displayTexts.en)));
       const currentModeItems = withoutDuplicate.filter((x) => x.mode === mode);
       const otherModeItems = withoutDuplicate.filter((x) => x.mode !== mode);
       return [item, ...currentModeItems].slice(0, MAX_HISTORY_PER_MODE).concat(otherModeItems).slice(0, MAX_STORED_HISTORY);
     });
     setCopyStatus(text.saved);
+  };
+
+  const restoreHistoryItem = (item) => {
+    if (!item?.values) {
+      copyText(getHistoryFullText(item), text.historyCopied);
+      return;
+    }
+
+    const restoredMode = item.mode === 'max-min' ? 'max-min' : 'plus-minus';
+    setModeHasSwitched(true);
+    setMode(restoredMode);
+    setUnitMode(item.unitMode === UNIT_MODES.MM_TO_IN ? UNIT_MODES.MM_TO_IN : UNIT_MODES.IN_TO_MM);
+
+    if (restoredMode === 'plus-minus') {
+      setTol({ ...emptyTol, ...(item.values.tol || {}) });
+    } else {
+      setLimits({ ...emptyLimits, ...(item.values.limits || {}) });
+    }
+
+    setCopyStatus(text.historyRestored);
   };
 
   const clearHistory = () => {
@@ -467,7 +530,7 @@ export default function EnhancedApp() {
         <section id="history-drawer" className={`history-section history-drawer ${resultOpen ? 'open' : ''}`} aria-hidden={!resultOpen}>
           {resultOpen && (
             <div className="history-drawer-inner">
-              <div className="section-title-row history-title"><div><p className="section-label">v0.9.7</p><h2>{text.historyTitle}</h2></div>{filteredHistory.length > 0 && <button className="clear-button" type="button" onClick={clearHistory}>{text.clearHistory}</button>}</div>{filteredHistory.length === 0 ? <p className="history-empty">{text.emptyHistory}</p> : <div className="history-list">{filteredHistory.map((item) => <button key={item.id} type="button" onClick={() => copyText(getHistoryFullText(item), text.historyCopied)}><span>{item.unitMode === UNIT_MODES.IN_TO_MM ? 'inch → mm' : 'mm → inch'}</span><strong>{getHistoryShortText(item)}</strong></button>)}</div>}
+              <div className="section-title-row history-title"><div><p className="section-label">v0.9.7</p><h2>{text.historyTitle}</h2></div>{filteredHistory.length > 0 && <button className="clear-button" type="button" onClick={clearHistory}>{text.clearHistory}</button>}</div>{filteredHistory.length === 0 ? <p className="history-empty">{text.emptyHistory}</p> : <div className="history-list">{filteredHistory.map((item) => <button key={item.id} type="button" onClick={() => restoreHistoryItem(item)}><span>{item.unitMode === UNIT_MODES.IN_TO_MM ? 'inch → mm' : 'mm → inch'}</span><small className="history-item-date">{getHistoryDateText(item)}</small><strong>{getHistoryShortText(item)}</strong></button>)}</div>}
             </div>
           )}
         </section>
