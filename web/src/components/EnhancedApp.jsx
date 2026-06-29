@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { calculateMaxMinTolerance, calculatePlusMinusTolerance } from '../markulator.js';
-import InputField from './InputField.jsx';
+import LimitBridge from './LimitBridge.jsx';
 import ToleranceBridge from './ToleranceBridge.jsx';
 import {
   UNIT_MODES,
@@ -365,9 +365,12 @@ export default function EnhancedApp() {
     setHistory([]);
   };
 
-  const inputSuffix = units.input;
   const maxPlaceholder = unitMode === UNIT_MODES.IN_TO_MM ? text.maxPlaceholderIn : text.maxPlaceholderMm;
   const minPlaceholder = unitMode === UNIT_MODES.IN_TO_MM ? text.minPlaceholderIn : text.minPlaceholderMm;
+  const limitPlaceholders = useMemo(() => ({
+    max: unitMode === UNIT_MODES.IN_TO_MM ? text.maxPlaceholderIn : text.maxPlaceholderMm,
+    min: unitMode === UNIT_MODES.IN_TO_MM ? text.minPlaceholderIn : text.minPlaceholderMm,
+  }), [unitMode, text]);
   const tolerancePlaceholders = useMemo(() => ({
     positive: unitMode === UNIT_MODES.IN_TO_MM ? text.positivePlaceholderIn : text.positivePlaceholderMm,
     nominal: unitMode === UNIT_MODES.IN_TO_MM ? text.nominalPlaceholderIn : text.nominalPlaceholderMm,
@@ -430,7 +433,7 @@ export default function EnhancedApp() {
             {mode === 'plus-minus' ? (
               <ToleranceBridge unitMode={unitMode} tol={tol} setTol={setTol} result={result} digits={digits} text={text} placeholders={tolerancePlaceholders} onSwitchUnitMode={switchUnitMode} />
             ) : (
-              <div key={`max-min-form-${unitMode}`} className="input-grid two mode-content"><InputField label={text.maxValue} helper={text.maxHelper} suffix={inputSuffix} value={limits.max} placeholder={maxPlaceholder} onChange={(max) => setLimits((x) => ({ ...x, max }))} /><InputField label={text.minValue} helper={text.minHelper} suffix={inputSuffix} value={limits.min} placeholder={minPlaceholder} onChange={(min) => setLimits((x) => ({ ...x, min }))} /></div>
+              <LimitBridge key={`max-min-bridge-${unitMode}`} unitMode={unitMode} limits={limits} setLimits={setLimits} result={result} digits={digits} text={text} placeholders={limitPlaceholders} onSwitchUnitMode={switchUnitMode} />
             )}
           </div>
           {copyStatus && <div className="form-status">{copyStatus}</div>}
