@@ -66,9 +66,9 @@ function buildRightValuesFromResult(result, fallbackValues, digits) {
   };
 }
 
-function getTabIndex(side, field) {
-  const sideOffset = side === 'left' ? 0 : FIELD_ORDER.length;
-  return sideOffset + FIELD_ORDER.indexOf(field) + 1;
+function getTabIndex(activeSide, side, field) {
+  if (activeSide !== side) return -1;
+  return FIELD_ORDER.indexOf(field) + 1;
 }
 
 function moveToNextField(event, side, field) {
@@ -94,7 +94,7 @@ function moveToNextField(event, side, field) {
   event.currentTarget.blur();
 }
 
-function ValueInput({ side, field, unit, value, onChange, placeholderLabel, isMiddle = false }) {
+function ValueInput({ side, activeSide, onFocusSide, field, unit, value, onChange, placeholderLabel, isMiddle = false }) {
   const isLastField = field === FIELD_ORDER[FIELD_ORDER.length - 1];
 
   return (
@@ -103,7 +103,7 @@ function ValueInput({ side, field, unit, value, onChange, placeholderLabel, isMi
         type="number"
         inputMode="decimal"
         enterKeyHint={isLastField ? 'done' : 'next'}
-        tabIndex={getTabIndex(side, field)}
+        tabIndex={getTabIndex(activeSide, side, field)}
         step="0.0001"
         value={value}
         placeholder={placeholderLabel}
@@ -111,6 +111,8 @@ function ValueInput({ side, field, unit, value, onChange, placeholderLabel, isMi
         data-tolerance-side={side}
         data-tolerance-field={field}
         name={`tolerance-${side}-${field}`}
+        onFocus={() => onFocusSide(side)}
+        onPointerDown={() => onFocusSide(side)}
         onKeyDown={(event) => moveToNextField(event, side, field)}
         onKeyUp={(event) => moveToNextField(event, side, field)}
         onChange={(event) => onChange(field, event.currentTarget.value)}
@@ -122,6 +124,7 @@ function ValueInput({ side, field, unit, value, onChange, placeholderLabel, isMi
 
 export default function ToleranceBridge({ unitMode, tol, setTol, result, digits, text }) {
   const [editingSide, setEditingSide] = useState('left');
+  const [navigationSide, setNavigationSide] = useState('left');
   const [rightDraft, setRightDraft] = useState(EMPTY_VALUES);
   const previousUnitModeRef = useRef(unitMode);
   const swapValuesRef = useRef(EMPTY_VALUES);
@@ -136,6 +139,7 @@ export default function ToleranceBridge({ unitMode, tol, setTol, result, digits,
     if (previousUnitModeRef.current !== unitMode) {
       setTol(swapValuesRef.current);
       setEditingSide('left');
+      setNavigationSide('left');
       setRightDraft(EMPTY_VALUES);
       previousUnitModeRef.current = unitMode;
       return;
@@ -146,12 +150,14 @@ export default function ToleranceBridge({ unitMode, tol, setTol, result, digits,
 
   const updateSource = (field, value) => {
     setEditingSide('left');
+    setNavigationSide('left');
     setTol((current) => ({ ...current, [field]: value }));
   };
 
   const updateTarget = (field, value) => {
     const nextRightValues = { ...(editingSide === 'right' ? rightDraft : calculatedRightValues), [field]: value };
     setEditingSide('right');
+    setNavigationSide('right');
     setRightDraft(nextRightValues);
     setTol((current) => ({ ...current, [field]: convertToLeftUnit(value, unitMode) }));
   };
@@ -168,7 +174,7 @@ export default function ToleranceBridge({ unitMode, tol, setTol, result, digits,
     return (
       <label className={`tolerance-mini-card tolerance-${position} tolerance-${side}`} aria-label={`${fullLabel} ${unit}`}>
         <span className="tolerance-box-content">
-          <ValueInput side={navSide} field={field} unit={unit} value={value || ''} onChange={onChange} placeholderLabel={label} />
+          <ValueInput side={navSide} activeSide={navigationSide} onFocusSide={setNavigationSide} field={field} unit={unit} value={value || ''} onChange={onChange} placeholderLabel={label} />
         </span>
       </label>
     );
@@ -196,10 +202,10 @@ export default function ToleranceBridge({ unitMode, tol, setTol, result, digits,
 
         <div className="tolerance-middle-content">
           <label className="tolerance-middle-panel tolerance-source" aria-label={`${text.nominal} ${sourceUnit}`}>
-            <ValueInput side="left" field="nominal" unit={sourceUnit} value={tol.nominal || ''} onChange={updateSource} placeholderLabel={nominalLabel} isMiddle />
+            <ValueInput side="left" activeSide={navigationSide} onFocusSide={setNavigationSide} field="nominal" unit={sourceUnit} value={tol.nominal || ''} onChange={updateSource} placeholderLabel={nominalLabel} isMiddle />
           </label>
           <label className="tolerance-middle-panel tolerance-target" aria-label={`${text.nominal} ${targetUnit}`}>
-            <ValueInput side="right" field="nominal" unit={targetUnit} value={rightValues.nominal || ''} onChange={updateTarget} placeholderLabel={nominalLabel} isMiddle />
+            <ValueInput side="right" activeSide={navigationSide} onFocusSide={setNavigationSide} field="nominal" unit={targetUnit} value={rightValues.nominal || ''} onChange={updateTarget} placeholderLabel={nominalLabel} isMiddle />
           </label>
         </div>
       </section>
