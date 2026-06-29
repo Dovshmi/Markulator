@@ -322,6 +322,10 @@ export default function EnhancedApp() {
     setDrawerOpen(true);
   };
 
+  const switchUnitMode = () => {
+    setUnitMode((current) => (current === UNIT_MODES.IN_TO_MM ? UNIT_MODES.MM_TO_IN : UNIT_MODES.IN_TO_MM));
+  };
+
   const clear = () => {
     if (mode === 'plus-minus') setTol(emptyTol);
     else setLimits(emptyLimits);
@@ -424,7 +428,7 @@ export default function EnhancedApp() {
           <div className="section-title-row"><div><p className="section-label">{text.step2}</p><h2>{text.enterValues}{units.input}</h2></div></div>
           <div key={mode} className={`calculator-mode-panel ${modeHasSwitched ? 'mode-panel-animated' : ''}`}>
             {mode === 'plus-minus' ? (
-              <ToleranceBridge unitMode={unitMode} tol={tol} setTol={setTol} result={result} digits={digits} text={text} placeholders={tolerancePlaceholders} />
+              <ToleranceBridge unitMode={unitMode} tol={tol} setTol={setTol} result={result} digits={digits} text={text} placeholders={tolerancePlaceholders} onSwitchUnitMode={switchUnitMode} />
             ) : (
               <div key={`max-min-form-${unitMode}`} className="input-grid two mode-content"><InputField label={text.maxValue} helper={text.maxHelper} suffix={inputSuffix} value={limits.max} placeholder={maxPlaceholder} onChange={(max) => setLimits((x) => ({ ...x, max }))} /><InputField label={text.minValue} helper={text.minHelper} suffix={inputSuffix} value={limits.min} placeholder={minPlaceholder} onChange={(min) => setLimits((x) => ({ ...x, min }))} /></div>
             )}
