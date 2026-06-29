@@ -1,0 +1,11 @@
+/* Improve MAX / MIN readability in the light-mode limit bridge. */
+.theme-light .limit-center-divider {
+  color: #075f8c !important;
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.68);
+}
+
+.theme-light .limit-center-divider span {
+  color: #075f8c !important;
+  border-color: rgba(7, 95, 140, 0.18) !important;
+  background: rgba(219, 234, 243, 0.56) !important;
+}

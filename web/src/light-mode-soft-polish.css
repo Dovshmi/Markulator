@@ -1,0 +1,220 @@
+/* Softer, less glaring light mode polish for Manus Test. */
+body.theme-light {
+  color: #172033;
+  background:
+    radial-gradient(circle at 14% 8%, rgba(14, 116, 144, 0.10), transparent 24rem),
+    radial-gradient(circle at 86% 10%, rgba(20, 184, 166, 0.08), transparent 26rem),
+    radial-gradient(circle at 50% 100%, rgba(100, 116, 139, 0.12), transparent 34rem),
+    linear-gradient(135deg, #d9e7ef 0%, #edf4f7 48%, #d5e2eb 100%) !important;
+}
+
+body.theme-light::before {
+  background-image:
+    linear-gradient(rgba(15, 23, 42, 0.030) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(15, 23, 42, 0.030) 1px, transparent 1px) !important;
+  opacity: 0.58 !important;
+}
+
+.theme-light .hero-card,
+.theme-light .calculator-card {
+  border-color: rgba(31, 78, 94, 0.12) !important;
+  background:
+    linear-gradient(145deg, rgba(247, 250, 252, 0.92), rgba(239, 246, 250, 0.86)),
+    #f2f7fa !important;
+  box-shadow:
+    0 24px 62px rgba(30, 64, 82, 0.13),
+    inset 0 1px 0 rgba(255, 255, 255, 0.68) !important;
+}
+
+.theme-light .hero-card::after {
+  background: rgba(14, 116, 144, 0.07) !important;
+}
+
+.theme-light h1,
+.theme-light h2,
+.theme-light .drawer-header h2,
+.theme-light .drawer-section strong,
+.theme-light .history-list strong,
+.theme-light .result-box strong,
+.theme-light .input-label {
+  color: #111827 !important;
+}
+
+.theme-light .hero-copy,
+.theme-light .quick-guide p,
+.theme-light .drawer-section small,
+.theme-light .input-field small,
+.theme-light .result-box p,
+.theme-light .result-box span,
+.theme-light .history-empty,
+.theme-light .empty-result,
+.theme-light .history-item-date {
+  color: #596879 !important;
+}
+
+.theme-light .eyebrow,
+.theme-light .section-label,
+.theme-light .input-frame em,
+.theme-light .result-box em,
+.theme-light .history-list span,
+.theme-light .tolerance-value-frame em,
+.theme-light .tolerance-unit-title b {
+  color: #08738a !important;
+}
+
+.theme-light .mode-switch {
+  border-color: rgba(31, 78, 94, 0.16) !important;
+  background: rgba(217, 226, 232, 0.58) !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.48),
+    0 16px 34px rgba(30, 64, 82, 0.10) !important;
+}
+
+.theme-light .mode-switch button {
+  border-color: rgba(31, 78, 94, 0.12) !important;
+  color: #4b5563 !important;
+  background: rgba(224, 232, 238, 0.70) !important;
+  box-shadow: none !important;
+}
+
+.theme-light .mode-switch button.active,
+.theme-light .unit-switch button.active,
+.theme-light .mobile-input-actions button:first-child {
+  color: #ffffff !important;
+  border-color: rgba(8, 115, 138, 0.38) !important;
+  background: linear-gradient(135deg, #168fb1, #209f94) !important;
+  box-shadow: 0 14px 30px rgba(8, 115, 138, 0.18) !important;
+}
+
+.theme-light .form-section {
+  border-top-color: rgba(31, 78, 94, 0.09) !important;
+}
+
+.theme-light .app-menu-button,
+.theme-light .form-section > .form-settings-button,
+.theme-light .settings-drawer > .drawer-section {
+  border-color: rgba(8, 115, 138, 0.28) !important;
+  background:
+    radial-gradient(circle at 30% 20%, rgba(125, 211, 252, 0.24), transparent 52%),
+    linear-gradient(135deg, #2bbbd2, #3ab8ac) !important;
+  box-shadow:
+    0 14px 30px rgba(8, 115, 138, 0.18),
+    inset 0 1px 0 rgba(255, 255, 255, 0.34) !important;
+}
+
+.theme-light .tolerance-bridge {
+  --tolerance-shape: #dbe9f3;
+  --tolerance-shape-soft: #edf3f7;
+  --tolerance-line: #0b8ea2;
+  --tolerance-text: #111827;
+  --tolerance-muted: #5d6b7c;
+  --tolerance-accent: #08738a;
+  --tolerance-field: #edf3f7;
+  --tolerance-field-border: rgba(31, 78, 94, 0.14);
+}
+
+.theme-light .tolerance-mini-card,
+.theme-light .tolerance-value-frame {
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.55),
+    0 8px 18px rgba(30, 64, 82, 0.05) !important;
+}
+
+.theme-light .tolerance-value-frame,
+.theme-light .input-frame,
+.theme-light .result-box,
+.theme-light .empty-result,
+.theme-light .history-empty,
+.theme-light .history-list button,
+.theme-light .clear-button {
+  border-color: rgba(31, 78, 94, 0.13) !important;
+  background: rgba(237, 243, 247, 0.84) !important;
+}
+
+.theme-light .tolerance-value-frame input,
+.theme-light .tolerance-output-frame strong,
+.theme-light .input-frame input,
+.theme-light .result-box strong {
+  color: #111827 !important;
+}
+
+.theme-light .tolerance-value-frame input::placeholder,
+.theme-light .input-frame input::placeholder {
+  color: #8fa0ae !important;
+}
+
+.theme-light .tolerance-value-frame:focus-within,
+.theme-light .input-frame:focus-within {
+  border-color: rgba(8, 115, 138, 0.62) !important;
+  background: #f4f8fb !important;
+  box-shadow: 0 0 0 4px rgba(8, 115, 138, 0.10) !important;
+}
+
+.theme-light .tolerance-soft-line {
+  stroke: rgba(30, 64, 82, 0.055) !important;
+}
+
+.theme-light .result-box.main {
+  border-color: rgba(8, 115, 138, 0.22) !important;
+  background:
+    radial-gradient(circle at top left, rgba(8, 115, 138, 0.06), transparent 12rem),
+    linear-gradient(145deg, rgba(244, 248, 251, 0.92), rgba(229, 238, 245, 0.82)) !important;
+}
+
+.theme-light .drawer-icon-handle {
+  color: #08738a !important;
+}
+
+.theme-light .history-list button {
+  color: #182235 !important;
+  box-shadow: 0 8px 18px rgba(30, 64, 82, 0.06) !important;
+}
+
+.theme-light .history-list button::before {
+  background: #6bbbc5 !important;
+}
+
+.theme-light .history-list button span,
+.theme-light .history-list button strong {
+  color: #182235 !important;
+}
+
+.theme-light .history-item-date {
+  color: #7b8795 !important;
+}
+
+.theme-light .sticky-action-bar {
+  border-color: rgba(8, 115, 138, 0.18) !important;
+  background:
+    radial-gradient(circle at 5% 0%, rgba(8, 115, 138, 0.08), transparent 14rem),
+    linear-gradient(145deg, rgba(232, 241, 246, 0.94), rgba(216, 229, 238, 0.92)) !important;
+  box-shadow:
+    0 16px 36px rgba(30, 64, 82, 0.16),
+    inset 0 1px 0 rgba(255, 255, 255, 0.62) !important;
+}
+
+.theme-light .sticky-action-bar button {
+  color: #344152 !important;
+  border-color: rgba(31, 78, 94, 0.13) !important;
+  background: rgba(228, 237, 244, 0.82) !important;
+}
+
+.theme-light .sticky-action-bar button.sticky-copy-action,
+.theme-light .sticky-action-bar button:nth-child(3) {
+  color: #ffffff !important;
+  background: linear-gradient(135deg, #168fb1, #209f94) !important;
+  box-shadow: 0 10px 22px rgba(8, 115, 138, 0.16) !important;
+}
+
+.theme-light footer,
+.theme-light .app-footer {
+  color: #667586 !important;
+}
+
+.theme-light .logo-image-wrap {
+  background: rgba(238, 246, 250, 0.84) !important;
+  border-color: rgba(8, 115, 138, 0.16) !important;
+  box-shadow:
+    0 14px 32px rgba(30, 64, 82, 0.11),
+    inset 0 1px 0 rgba(255, 255, 255, 0.62) !important;
+}

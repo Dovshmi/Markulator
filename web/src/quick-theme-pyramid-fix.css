@@ -1,0 +1,111 @@
+/* Clean single-button pyramid display for the theme picker. */
+.settings-drawer > .drawer-section:nth-of-type(3) {
+  overflow: hidden !important;
+}
+
+.settings-drawer > .drawer-section:nth-of-type(3) .theme-switch button {
+  display: none !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+
+.settings-drawer > .drawer-section:nth-of-type(3)::before,
+.settings-drawer > .drawer-section:nth-of-type(3)::after,
+.settings-drawer > .drawer-section:nth-of-type(3) .theme-switch::before {
+  position: absolute;
+  z-index: 2;
+  display: grid !important;
+  place-items: center;
+  width: 24px;
+  height: 24px;
+  border: 0;
+  border-radius: 0;
+  color: rgba(255, 255, 255, 0.56);
+  background: transparent;
+  box-shadow: none !important;
+  font-size: 1.04rem;
+  font-weight: 950;
+  line-height: 1;
+  text-align: center;
+  text-shadow: 0 2px 8px rgba(2, 6, 23, 0.28);
+  opacity: 0.62;
+  pointer-events: none;
+}
+
+.settings-drawer > .drawer-section:nth-of-type(3)::before {
+  content: '◎' !important;
+  top: 3px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.settings-drawer > .drawer-section:nth-of-type(3)::after {
+  content: '☀' !important;
+  bottom: 4px;
+  left: 5px;
+}
+
+.settings-drawer > .drawer-section:nth-of-type(3) .theme-switch::before {
+  content: '☾';
+  right: 5px;
+  bottom: 4px;
+}
+
+.settings-drawer > .drawer-section:nth-of-type(3)[data-theme-mode='auto']::before,
+.settings-drawer > .drawer-section:nth-of-type(3)[data-theme-mode='light']::after,
+.settings-drawer > .drawer-section:nth-of-type(3)[data-theme-mode='dark'] .theme-switch::before {
+  z-index: 3;
+  width: 26px;
+  height: 26px;
+  color: #ffffff;
+  background: transparent;
+  box-shadow: none !important;
+  font-size: 1.22rem;
+  opacity: 1;
+  text-shadow:
+    0 0 7px rgba(255, 255, 255, 0.54),
+    0 0 12px rgba(103, 232, 249, 0.42),
+    0 2px 8px rgba(2, 6, 23, 0.32);
+  filter: none;
+}
+
+.settings-drawer > .drawer-section:nth-of-type(3)[data-theme-mode='auto']::before {
+  transform: translateX(-50%) scale(1.12);
+}
+
+.settings-drawer > .drawer-section:nth-of-type(3)[data-theme-mode='light']::after,
+.settings-drawer > .drawer-section:nth-of-type(3)[data-theme-mode='dark'] .theme-switch::before {
+  transform: scale(1.12);
+}
+
+@media (max-width: 420px) {
+  .settings-drawer > .drawer-section:nth-of-type(3)::before,
+  .settings-drawer > .drawer-section:nth-of-type(3)::after,
+  .settings-drawer > .drawer-section:nth-of-type(3) .theme-switch::before {
+    width: 22px;
+    height: 22px;
+    font-size: 0.96rem;
+  }
+
+  .settings-drawer > .drawer-section:nth-of-type(3)::before {
+    top: 3px;
+  }
+
+  .settings-drawer > .drawer-section:nth-of-type(3)::after {
+    bottom: 4px;
+    left: 4px;
+  }
+
+  .settings-drawer > .drawer-section:nth-of-type(3) .theme-switch::before {
+    right: 4px;
+    bottom: 4px;
+  }
+
+  .settings-drawer > .drawer-section:nth-of-type(3)[data-theme-mode='auto']::before,
+  .settings-drawer > .drawer-section:nth-of-type(3)[data-theme-mode='light']::after,
+  .settings-drawer > .drawer-section:nth-of-type(3)[data-theme-mode='dark'] .theme-switch::before {
+    width: 24px;
+    height: 24px;
+    font-size: 1.10rem;
+  }
+}
