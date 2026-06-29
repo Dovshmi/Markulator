@@ -7,13 +7,13 @@
   --limit-field: #0d1728;
   --limit-field-border: rgba(148, 163, 184, 0.14);
 
-  width: min(1040px, 100%);
+  width: min(1080px, 100%);
   margin: 0 auto;
   direction: ltr;
   display: grid;
-  grid-template-columns: minmax(138px, 1fr) minmax(54px, 92px) minmax(138px, 1fr);
+  grid-template-columns: minmax(148px, 1fr) minmax(58px, 98px) minmax(148px, 1fr);
   grid-template-rows: auto auto;
-  row-gap: clamp(13px, 2.6vw, 21px);
+  row-gap: clamp(14px, 2.8vw, 22px);
   align-items: center;
 }
 
@@ -22,9 +22,9 @@
   align-items: center;
   justify-content: center;
   gap: 8px;
-  min-height: 36px;
+  min-height: 37px;
   color: var(--limit-muted);
-  font-size: clamp(0.86rem, 1.38vw, 1.04rem);
+  font-size: clamp(0.88rem, 1.4vw, 1.06rem);
   font-weight: 950;
   letter-spacing: 0.06em;
   text-transform: uppercase;
@@ -42,14 +42,14 @@
 
 .limit-unit-title b {
   display: inline-grid;
-  min-width: 44px;
-  height: 34px;
+  min-width: 46px;
+  height: 35px;
   place-items: center;
   border: 1px solid rgba(98, 199, 216, 0.36);
   border-radius: 999px;
   color: var(--limit-accent);
   background: rgba(14, 165, 233, 0.08);
-  font-size: 0.98em;
+  font-size: 1em;
 }
 
 .limit-swap-button {
@@ -63,7 +63,7 @@
   position: relative;
   grid-column: 1 / 4;
   grid-row: 2;
-  min-height: clamp(224px, 29vw, 276px);
+  min-height: clamp(248px, 32vw, 304px);
   overflow: visible;
 }
 
@@ -95,15 +95,15 @@
   position: absolute;
   inset: 0;
   display: grid;
-  grid-template-columns: minmax(0, 1fr) clamp(42px, 7vw, 76px) minmax(0, 1fr);
+  grid-template-columns: minmax(0, 1fr) clamp(46px, 7.4vw, 82px) minmax(0, 1fr);
   align-items: center;
-  gap: clamp(8px, 1.6vw, 18px);
-  padding: clamp(30px, 4.5vw, 44px) clamp(24px, 4.3vw, 52px);
+  gap: clamp(9px, 1.7vw, 20px);
+  padding: clamp(22px, 3.4vw, 34px) clamp(24px, 4.3vw, 54px);
 }
 
 .limit-side-panel {
   display: grid;
-  gap: clamp(16px, 2.6vw, 22px);
+  gap: clamp(18px, 3vw, 26px);
   min-width: 0;
 }
 
@@ -119,17 +119,17 @@
   grid-column: 2;
   display: grid;
   place-items: center;
-  gap: 10px;
-  color: rgba(103, 232, 249, 0.54);
-  font-size: clamp(0.62rem, 1.1vw, 0.76rem);
+  gap: 12px;
+  color: rgba(103, 232, 249, 0.58);
+  font-size: clamp(0.66rem, 1.14vw, 0.8rem);
   font-weight: 950;
   letter-spacing: 0.08em;
 }
 
 .limit-center-divider span {
   display: grid;
-  width: clamp(34px, 5.4vw, 48px);
-  height: clamp(34px, 5.4vw, 48px);
+  width: clamp(38px, 5.8vw, 54px);
+  height: clamp(38px, 5.8vw, 54px);
   place-items: center;
   border: 1px solid rgba(103, 232, 249, 0.18);
   border-radius: 999px;
@@ -148,15 +148,15 @@
 
 .limit-value-frame {
   width: 100%;
-  height: clamp(62px, 7.6vw, 74px);
+  height: clamp(70px, 8.7vw, 84px);
   min-width: 0;
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto;
   align-items: center;
-  gap: 10px;
-  padding: 0 16px;
+  gap: 11px;
+  padding: 0 18px;
   border: 1px solid var(--limit-field-border);
-  border-radius: 18px;
+  border-radius: 20px;
   background: var(--limit-field);
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.035);
   overflow: hidden;
@@ -176,7 +176,7 @@
   background: transparent;
   direction: ltr;
   text-align: left;
-  font-size: clamp(1.28rem, 2.65vw, 1.82rem);
+  font-size: clamp(1.44rem, 3vw, 2rem);
   font-weight: 950;
   line-height: 1;
   overflow: hidden;
@@ -190,7 +190,7 @@
 .limit-value-frame input::placeholder {
   color: rgba(148, 163, 184, 0.70);
   opacity: 1;
-  font-size: clamp(0.92rem, 1.8vw, 1.08rem);
+  font-size: clamp(0.96rem, 1.9vw, 1.14rem);
   font-weight: 900;
 }
 
@@ -203,7 +203,7 @@
 .limit-value-frame em {
   color: var(--limit-accent);
   font-style: normal;
-  font-size: clamp(1rem, 1.9vw, 1.34rem);
+  font-size: clamp(1.08rem, 2vw, 1.42rem);
   font-weight: 950;
   white-space: nowrap;
 }
@@ -263,7 +263,7 @@
 
 @media (max-width: 760px) {
   .limit-bridge {
-    grid-template-columns: minmax(118px, 1fr) minmax(36px, 48px) minmax(118px, 1fr);
+    grid-template-columns: minmax(124px, 1fr) minmax(40px, 54px) minmax(124px, 1fr);
     row-gap: 10px;
   }
 
@@ -272,94 +272,94 @@
   }
 
   .limit-unit-title b {
-    min-width: 35px;
-    height: 29px;
-    font-size: 0.78rem;
+    min-width: 37px;
+    height: 30px;
+    font-size: 0.8rem;
   }
 
   .limit-bridge-shell {
-    min-height: 214px;
+    min-height: 236px;
   }
 
   .limit-bridge-content {
-    grid-template-columns: minmax(0, 1fr) 34px minmax(0, 1fr);
+    grid-template-columns: minmax(0, 1fr) 40px minmax(0, 1fr);
     gap: 7px;
-    padding: 27px 9px;
+    padding: 20px 8px;
   }
 
   .limit-side-panel {
-    gap: 14px;
+    gap: 18px;
   }
 
   .limit-value-frame {
-    height: 58px;
-    padding: 0 11px;
-    gap: 6px;
-    border-radius: 16px;
+    height: 66px;
+    padding: 0 12px;
+    gap: 7px;
+    border-radius: 17px;
   }
 
   .limit-value-frame input {
-    font-size: 1.34rem;
+    font-size: 1.52rem;
   }
 
   .limit-value-frame input::placeholder {
-    font-size: 0.9rem;
+    font-size: 0.92rem;
   }
 
   .limit-value-frame em {
-    font-size: 1.05rem;
+    font-size: 1.14rem;
   }
 
   .limit-center-divider {
-    gap: 9px;
-    font-size: 0.58rem;
+    gap: 13px;
+    font-size: 0.62rem;
   }
 
   .limit-center-divider span {
-    width: 31px;
-    height: 31px;
+    width: 36px;
+    height: 36px;
   }
 }
 
 @media (max-width: 430px) {
   .limit-bridge {
-    grid-template-columns: minmax(110px, 1fr) minmax(32px, 38px) minmax(110px, 1fr);
+    grid-template-columns: minmax(114px, 1fr) minmax(36px, 42px) minmax(114px, 1fr);
   }
 
   .limit-bridge-shell {
-    min-height: 198px;
+    min-height: 224px;
   }
 
   .limit-bridge-content {
-    grid-template-columns: minmax(0, 1fr) 32px minmax(0, 1fr);
-    padding: 25px 5px;
+    grid-template-columns: minmax(0, 1fr) 36px minmax(0, 1fr);
+    padding: 18px 4px;
   }
 
   .limit-side-panel {
-    gap: 12px;
+    gap: 16px;
   }
 
   .limit-value-frame {
-    height: 56px;
+    height: 64px;
     padding: 0 10px;
     gap: 5px;
-    border-radius: 15px;
+    border-radius: 16px;
   }
 
   .limit-value-frame input {
-    font-size: 1.28rem;
+    font-size: 1.42rem;
   }
 
   .limit-value-frame input::placeholder {
-    font-size: 0.82rem;
+    font-size: 0.84rem;
   }
 
   .limit-value-frame em {
-    font-size: 0.98rem;
+    font-size: 1.04rem;
   }
 
   .limit-center-divider span {
-    width: 30px;
-    height: 30px;
+    width: 34px;
+    height: 34px;
   }
 }
