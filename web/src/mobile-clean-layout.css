@@ -1,3 +1,7 @@
+.form-section {
+  position: relative;
+}
+
 .form-section > .section-title-row h2 {
   display: none;
 }
@@ -6,24 +10,34 @@
   display: none !important;
 }
 
-.app-shell.lang-he > .app-menu-button {
-  right: auto;
-  left: max(14px, env(safe-area-inset-left));
+.form-section > .form-settings-button {
+  position: absolute;
+  top: 12px;
+  z-index: 12;
 }
 
-.app-shell.lang-en > .app-menu-button {
+.app-shell.lang-he .form-section > .form-settings-button {
+  right: auto;
+  left: 12px;
+}
+
+.app-shell.lang-en .form-section > .form-settings-button {
   left: auto;
-  right: max(14px, env(safe-area-inset-right));
+  right: 12px;
 }
 
 @media (max-width: 640px) {
-  .app-shell.lang-he > .app-menu-button {
-    right: auto;
-    left: max(10px, env(safe-area-inset-left));
+  .form-section > .form-settings-button {
+    top: 10px;
   }
 
-  .app-shell.lang-en > .app-menu-button {
+  .app-shell.lang-he .form-section > .form-settings-button {
+    right: auto;
+    left: 10px;
+  }
+
+  .app-shell.lang-en .form-section > .form-settings-button {
     left: auto;
-    right: max(10px, env(safe-area-inset-right));
+    right: 10px;
   }
 }
