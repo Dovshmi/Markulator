@@ -2,16 +2,54 @@ function getUiLanguage() {
   return document.documentElement.lang === 'en' ? 'en' : 'he';
 }
 
+function setText(button, label) {
+  if (button.textContent?.trim() !== label) {
+    button.textContent = label;
+  }
+}
+
+function setAttributeValue(element, name, value) {
+  if (element.getAttribute(name) !== value) {
+    element.setAttribute(name, value);
+  }
+}
+
+function removeAttributeValue(element, name) {
+  if (element.hasAttribute(name)) {
+    element.removeAttribute(name);
+  }
+}
+
+function setHidden(button, value) {
+  if (button.hidden !== value) {
+    button.hidden = value;
+  }
+}
+
+function setTabIndex(button, value) {
+  if (button.tabIndex !== value) {
+    button.tabIndex = value;
+  }
+}
+
+function setClass(button, className, enabled) {
+  if (enabled && !button.classList.contains(className)) {
+    button.classList.add(className);
+  }
+
+  if (!enabled && button.classList.contains(className)) {
+    button.classList.remove(className);
+  }
+}
+
 function applyCalculateButtonLabel() {
   const language = getUiLanguage();
   const label = language === 'en' ? 'Calculate' : 'חשב';
   const buttons = document.querySelectorAll('.form-save-button');
 
   buttons.forEach((button) => {
-    if (button.textContent?.trim() !== label) {
-      button.textContent = label;
-      button.setAttribute('aria-label', label);
-    }
+    setText(button, label);
+    setAttributeValue(button, 'aria-label', label);
   });
 }
 
@@ -27,17 +65,17 @@ function applySingleStickyCopyAction() {
   const shortCopyButton = buttons[0];
   const fullCopyButton = buttons[1];
 
-  shortCopyButton.hidden = true;
-  shortCopyButton.setAttribute('aria-hidden', 'true');
-  shortCopyButton.tabIndex = -1;
-  shortCopyButton.classList.remove('sticky-copy-action');
+  setHidden(shortCopyButton, true);
+  setAttributeValue(shortCopyButton, 'aria-hidden', 'true');
+  setTabIndex(shortCopyButton, -1);
+  setClass(shortCopyButton, 'sticky-copy-action', false);
 
-  fullCopyButton.hidden = false;
-  fullCopyButton.removeAttribute('aria-hidden');
-  fullCopyButton.tabIndex = 0;
-  fullCopyButton.textContent = copyLabel;
-  fullCopyButton.setAttribute('aria-label', copyLabel);
-  fullCopyButton.classList.add('sticky-copy-action');
+  setHidden(fullCopyButton, false);
+  removeAttributeValue(fullCopyButton, 'aria-hidden');
+  setTabIndex(fullCopyButton, 0);
+  setText(fullCopyButton, copyLabel);
+  setAttributeValue(fullCopyButton, 'aria-label', copyLabel);
+  setClass(fullCopyButton, 'sticky-copy-action', true);
 }
 
 function applyUiLabels() {
