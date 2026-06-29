@@ -5,6 +5,7 @@ import './measurement-bridge.css';
 import './mobile-clean-layout.css';
 import './tolerance-swap.css';
 import './performance.css';
+import './manus-test-style.css';
 import EnhancedApp from './components/EnhancedApp.jsx';
 
 export default function App() {
