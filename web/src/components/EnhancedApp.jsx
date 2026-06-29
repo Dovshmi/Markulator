@@ -259,6 +259,9 @@ export default function EnhancedApp() {
   const shortText = useMemo(() => buildShortCopyText(mode, result, digits, units.outputLabel, language), [mode, result, digits, units.outputLabel, language]);
   const filteredHistory = useMemo(() => history.filter((item) => item.mode === mode).slice(0, MAX_HISTORY_PER_MODE), [history, mode]);
 
+  const getHistoryShortText = (item) => item?.texts?.[language] || item?.text || '';
+  const getHistoryFullText = (item) => item?.fullTexts?.[language] || item?.fullText || getHistoryShortText(item);
+
   useEffect(() => {
     document.documentElement.lang = language === 'he' ? 'he' : 'en';
     document.documentElement.dir = dir;
@@ -358,9 +361,17 @@ export default function EnhancedApp() {
   const saveHistory = () => {
     if (!result) return;
     historyReadyRef.current = true;
-    const item = { id: Date.now(), mode, unitMode, unitLabel: units.outputLabel, text: shortText, fullText: currentText };
+    const texts = {
+      he: buildShortCopyText(mode, result, digits, units.outputLabel, 'he'),
+      en: buildShortCopyText(mode, result, digits, units.outputLabel, 'en'),
+    };
+    const fullTexts = {
+      he: buildCopyText(mode, result, digits, units.outputLabel, 'he'),
+      en: buildCopyText(mode, result, digits, units.outputLabel, 'en'),
+    };
+    const item = { id: Date.now(), mode, unitMode, unitLabel: units.outputLabel, text: texts[language], fullText: fullTexts[language], texts, fullTexts };
     setHistory((items) => {
-      const withoutDuplicate = items.filter((x) => !(x.mode === mode && x.text === item.text));
+      const withoutDuplicate = items.filter((x) => !(x.mode === mode && (x.text === item.text || x.text === texts.he || x.text === texts.en || x.texts?.he === texts.he || x.texts?.en === texts.en)));
       const currentModeItems = withoutDuplicate.filter((x) => x.mode === mode);
       const otherModeItems = withoutDuplicate.filter((x) => x.mode !== mode);
       return [item, ...currentModeItems].slice(0, MAX_HISTORY_PER_MODE).concat(otherModeItems).slice(0, MAX_STORED_HISTORY);
@@ -456,7 +467,7 @@ export default function EnhancedApp() {
         <section id="history-drawer" className={`history-section history-drawer ${resultOpen ? 'open' : ''}`} aria-hidden={!resultOpen}>
           {resultOpen && (
             <div className="history-drawer-inner">
-              <div className="section-title-row history-title"><div><p className="section-label">v0.9.7</p><h2>{text.historyTitle}</h2></div>{filteredHistory.length > 0 && <button className="clear-button" type="button" onClick={clearHistory}>{text.clearHistory}</button>}</div>{filteredHistory.length === 0 ? <p className="history-empty">{text.emptyHistory}</p> : <div className="history-list">{filteredHistory.map((item) => <button key={item.id} type="button" onClick={() => copyText(item.fullText, text.historyCopied)}><span>{item.unitMode === UNIT_MODES.IN_TO_MM ? 'inch → mm' : 'mm → inch'}</span><strong>{item.text}</strong></button>)}</div>}
+              <div className="section-title-row history-title"><div><p className="section-label">v0.9.7</p><h2>{text.historyTitle}</h2></div>{filteredHistory.length > 0 && <button className="clear-button" type="button" onClick={clearHistory}>{text.clearHistory}</button>}</div>{filteredHistory.length === 0 ? <p className="history-empty">{text.emptyHistory}</p> : <div className="history-list">{filteredHistory.map((item) => <button key={item.id} type="button" onClick={() => copyText(getHistoryFullText(item), text.historyCopied)}><span>{item.unitMode === UNIT_MODES.IN_TO_MM ? 'inch → mm' : 'mm → inch'}</span><strong>{getHistoryShortText(item)}</strong></button>)}</div>}
             </div>
           )}
         </section>
