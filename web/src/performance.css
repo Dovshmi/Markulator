@@ -18,6 +18,27 @@ html.app-booting .logo-image-wrap {
   box-shadow: none !important;
 }
 
+/* Disable the first-load pop-in effects that feel like a refresh freeze on mobile. */
+.hero-card,
+.calculator-card,
+.mode-content,
+.mode-content .input-field,
+.result-layout,
+.result-transition,
+.validation-box,
+.result-actions span {
+  animation: none !important;
+  opacity: 1 !important;
+  filter: none !important;
+  transform: none !important;
+}
+
+/* Continuous decorative animations cost paint time on Android, especially during refresh. */
+.logo-image-wrap,
+.mode-switch button.active {
+  animation: none !important;
+}
+
 .app-shell {
   content-visibility: auto;
   contain-intrinsic-size: 820px;
