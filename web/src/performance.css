@@ -100,17 +100,17 @@ html.app-booting .logo-image-wrap {
 }
 
 .tolerance-conversion-animating .tolerance-swap-button {
-  animation: tolerance-button-pulse 150ms cubic-bezier(.2, .85, .25, 1) both !important;
+  animation: tolerance-button-pulse 180ms cubic-bezier(.22, 1, .36, 1) both !important;
 }
 
 .tolerance-conversion-animating .tolerance-source,
 .tolerance-conversion-animating .tolerance-unit-left {
-  animation: tolerance-swap-left-to-center 280ms cubic-bezier(.2, .85, .25, 1) both !important;
+  animation: tolerance-swap-left-to-center 720ms cubic-bezier(.22, 1, .36, 1) both !important;
 }
 
 .tolerance-conversion-animating .tolerance-target,
 .tolerance-conversion-animating .tolerance-unit-right {
-  animation: tolerance-swap-right-to-center 280ms cubic-bezier(.2, .85, .25, 1) both !important;
+  animation: tolerance-swap-right-to-center 720ms cubic-bezier(.22, 1, .36, 1) both !important;
 }
 
 .calculator-mode-panel {
@@ -219,8 +219,8 @@ html.app-booting .logo-image-wrap {
     opacity: 1;
     transform: translate3d(0, 0, 0);
   }
-  46% {
-    opacity: 0.55;
+  50% {
+    opacity: 0.6;
     transform: translate3d(9px, 0, 0);
   }
   100% {
@@ -234,8 +234,8 @@ html.app-booting .logo-image-wrap {
     opacity: 1;
     transform: translate3d(0, 0, 0);
   }
-  46% {
-    opacity: 0.55;
+  50% {
+    opacity: 0.6;
     transform: translate3d(-9px, 0, 0);
   }
   100% {
@@ -295,7 +295,7 @@ html.app-booting .logo-image-wrap {
   .tolerance-conversion-animating .tolerance-target,
   .tolerance-conversion-animating .tolerance-unit-left,
   .tolerance-conversion-animating .tolerance-unit-right {
-    animation-duration: 220ms !important;
+    animation-duration: 720ms !important;
   }
 
   .drawer-section,
