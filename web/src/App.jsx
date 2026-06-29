@@ -9,6 +9,7 @@ import './performance.css';
 import './manus-test-style.css';
 import EnhancedApp from './components/EnhancedApp.jsx';
 
+// Production redeploy trigger. No runtime behavior change.
 export default function App() {
   return <EnhancedApp />;
 }
