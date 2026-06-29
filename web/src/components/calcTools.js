@@ -18,112 +18,96 @@ const MESSAGES = {
     negativeValues: 'Values cannot be negative.',
     missingNominal: 'Enter a nominal value.',
     missingLimits: 'Enter both maximum and minimum values.',
-    maxLowerThanMin: 'Maximum must be greater than or equal to minimum.',
+    maxLowerThanMin: 'Maximum value must be greater than or equal to minimum value.',
   },
 };
 
-const roundToDigits = (value, digits) => Number(value.toFixed(digits));
+const COPY_LABELS = {
+  he: { tolPlus: 'Tol+', nominal: 'Nominal', tolMinus: 'Tol-', upper: 'Upper limit', lower: 'Lower limit', max: 'Max', min: 'Min', range: 'Range' },
+  en: { tolPlus: 'Tol+', nominal: 'Nominal', tolMinus: 'Tol-', upper: 'Upper limit', lower: 'Lower limit', max: 'Max', min: 'Min', range: 'Range' },
+};
+
+function getLanguage(language) {
+  return language === 'en' ? 'en' : 'he';
+}
 
 export function getUnits(unitMode) {
-  return unitMode === UNIT_MODES.IN_TO_MM
-    ? { input: 'inch', output: 'mm', inputLabel: 'Inch', outputLabel: 'mm' }
-    : { input: 'mm', output: 'inch', inputLabel: 'mm', outputLabel: 'Inch' };
+  if (unitMode === UNIT_MODES.MM_TO_IN) {
+    return { input: 'mm', output: 'in', outputLabel: 'in', inputLabel: 'mm' };
+  }
+  return { input: 'in', output: 'mm', outputLabel: 'mm', inputLabel: 'in' };
 }
 
 export function convertValue(value, unitMode) {
-  return unitMode === UNIT_MODES.IN_TO_MM ? value * 25.4 : value / 25.4;
-}
-
-export function convertResult(result, mode, unitMode, digits) {
-  if (!result) return null;
-
-  if (mode === 'plus-minus') {
-    const nominal = unitMode === UNIT_MODES.IN_TO_MM ? result.nominalMm : result.nominalMm / 25.4;
-    const positiveTolerance = unitMode === UNIT_MODES.IN_TO_MM ? result.posTolMm : result.posTolMm / 25.4;
-    const negativeTolerance = unitMode === UNIT_MODES.IN_TO_MM ? result.negTolMm : result.negTolMm / 25.4;
-    const upperLimit = unitMode === UNIT_MODES.IN_TO_MM ? result.maxLimitMm : result.maxLimitMm / 25.4;
-    const lowerLimit = unitMode === UNIT_MODES.IN_TO_MM ? result.minLimitMm : result.minLimitMm / 25.4;
-
-    return {
-      nominal: roundToDigits(nominal, digits),
-      positiveTolerance: roundToDigits(positiveTolerance, digits),
-      negativeTolerance: roundToDigits(negativeTolerance, digits),
-      upperLimit: roundToDigits(upperLimit, digits),
-      lowerLimit: roundToDigits(lowerLimit, digits),
-    };
-  }
-
-  const max = unitMode === UNIT_MODES.IN_TO_MM ? result.maxMm : result.maxMm / 25.4;
-  const min = unitMode === UNIT_MODES.IN_TO_MM ? result.minMm : result.minMm / 25.4;
-  const range = unitMode === UNIT_MODES.IN_TO_MM ? result.rangeMm : result.rangeMm / 25.4;
-
-  return {
-    max: roundToDigits(max, digits),
-    min: roundToDigits(min, digits),
-    range: roundToDigits(range, digits),
-  };
+  return unitMode === UNIT_MODES.MM_TO_IN ? value / 25.4 : value * 25.4;
 }
 
 export function toNumber(value) {
-  if (value === '' || value === null || value === undefined) return null;
-  const number = Number(value);
-  return Number.isFinite(number) ? number : NaN;
+  if (value === '' || value == null) return null;
+  const parsed = Number(value);
+  return Number.isFinite(parsed) ? parsed : NaN;
 }
 
-function hasInvalidNumbers(values) {
-  return values.some((value) => Number.isNaN(value));
+export function formatNumber(value, digits) {
+  if (value == null || Number.isNaN(value)) return '—';
+  return value.toFixed(digits);
 }
 
-function hasNegativeNumbers(values) {
-  return values.some((value) => typeof value === 'number' && value < 0);
-}
-
-export function validateInputs(mode, tol, limits, language) {
-  const messages = MESSAGES[language] || MESSAGES.en;
+export function validateInputs(mode, tol, limits, language = 'he') {
+  const errors = [];
+  const msg = MESSAGES[getLanguage(language)];
 
   if (mode === 'plus-minus') {
-    const values = [toNumber(tol.positive), toNumber(tol.nominal), toNumber(tol.negative)];
-    if (hasInvalidNumbers(values)) return messages.invalidNumbers;
-    if (hasNegativeNumbers(values)) return messages.negativeValues;
-    if (values[1] === null) return messages.missingNominal;
-    return '';
+    const values = [tol.positive, tol.nominal, tol.negative];
+    const ready = values.some(Boolean);
+    if (!ready) return { ready: false, errors };
+
+    const parsed = values.map(toNumber);
+    if (parsed.some((value) => Number.isNaN(value))) errors.push(msg.invalidNumbers);
+    if (parsed.some((value) => value != null && value < 0)) errors.push(msg.negativeValues);
+    if (!tol.nominal) errors.push(msg.missingNominal);
+    return { ready, errors };
   }
 
   const max = toNumber(limits.max);
   const min = toNumber(limits.min);
-  if (hasInvalidNumbers([max, min])) return messages.invalidNumbers;
-  if (hasNegativeNumbers([max, min])) return messages.negativeValues;
-  if (max === null || min === null) return messages.missingLimits;
-  if (max < min) return messages.maxLowerThanMin;
-  return '';
+  const ready = Boolean(limits.max || limits.min);
+  if (!ready) return { ready: false, errors };
+
+  if (Number.isNaN(max) || Number.isNaN(min)) errors.push(msg.invalidNumbers);
+  if (!limits.max || !limits.min) errors.push(msg.missingLimits);
+  if (max != null && min != null && !Number.isNaN(max) && !Number.isNaN(min) && max < min) errors.push(msg.maxLowerThanMin);
+  return { ready, errors };
 }
 
-export function buildCopyText(mode, result, units, digits, language = 'he') {
-  const converted = convertResult(result, mode, units.mode, digits);
-  if (!converted) return '';
+export function buildCopyText(mode, result, digits, unitLabel = 'mm', language = 'he') {
+  if (!result) return '';
+  const labels = COPY_LABELS[getLanguage(language)];
 
   if (mode === 'plus-minus') {
-    if (language === 'he') {
-      return `Markulator\nמידה נומינלית: ${converted.nominal} ${units.output}\nסבולת חיובית: ${converted.positiveTolerance} ${units.output}\nסבולת שלילית: ${converted.negativeTolerance} ${units.output}\nגבול עליון: ${converted.upperLimit} ${units.output}\nגבול תחתון: ${converted.lowerLimit} ${units.output}`;
-    }
-    return `Markulator\nNominal: ${converted.nominal} ${units.output}\nPositive tolerance: ${converted.positiveTolerance} ${units.output}\nNegative tolerance: ${converted.negativeTolerance} ${units.output}\nUpper limit: ${converted.upperLimit} ${units.output}\nLower limit: ${converted.lowerLimit} ${units.output}`;
+    return [
+      labels.tolPlus + ' ' + formatNumber(result.posTolMm, digits) + ' ' + unitLabel,
+      labels.nominal + ' ' + formatNumber(result.nominalMm, digits) + ' ' + unitLabel,
+      labels.tolMinus + ' ' + formatNumber(result.negTolMm, digits) + ' ' + unitLabel,
+      labels.upper + ' ' + formatNumber(result.maxLimitMm, digits) + ' ' + unitLabel,
+      labels.lower + ' ' + formatNumber(result.minLimitMm, digits) + ' ' + unitLabel,
+    ].join('\n');
   }
 
-  if (language === 'he') {
-    return `Markulator\nמקסימום: ${converted.max} ${units.output}\nמינימום: ${converted.min} ${units.output}\nטווח: ${converted.range} ${units.output}`;
-  }
-  return `Markulator\nMaximum: ${converted.max} ${units.output}\nMinimum: ${converted.min} ${units.output}\nRange: ${converted.range} ${units.output}`;
+  return [
+    labels.max + ' ' + formatNumber(result.maxMm, digits) + ' ' + unitLabel,
+    labels.min + ' ' + formatNumber(result.minMm, digits) + ' ' + unitLabel,
+    labels.range + ' ' + formatNumber(result.rangeMm, digits) + ' ' + unitLabel,
+  ].join('\n');
 }
 
-export function buildShortCopyText(mode, result, units, digits, language = 'he') {
-  const converted = convertResult(result, mode, units.mode, digits);
-  if (!converted) return '';
+export function buildShortCopyText(mode, result, digits, unitLabel = 'mm', language = 'he') {
+  if (!result) return '';
+  const labels = COPY_LABELS[getLanguage(language)];
 
   if (mode === 'plus-minus') {
-    if (language === 'he') return `עליון ${converted.upperLimit} ${units.output} | תחתון ${converted.lowerLimit} ${units.output}`;
-    return `Upper ${converted.upperLimit} ${units.output} | Lower ${converted.lowerLimit} ${units.output}`;
+    return labels.nominal + ' ' + formatNumber(result.nominalMm, digits) + ' ' + unitLabel + ' | ' + labels.upper + ' ' + formatNumber(result.maxLimitMm, digits) + ' ' + unitLabel + ' | ' + labels.lower + ' ' + formatNumber(result.minLimitMm, digits) + ' ' + unitLabel;
   }
 
-  if (language === 'he') return `טווח ${converted.range} ${units.output}`;
-  return `Range ${converted.range} ${units.output}`;
+  return labels.max + ' ' + formatNumber(result.maxMm, digits) + ' ' + unitLabel + ' | ' + labels.min + ' ' + formatNumber(result.minMm, digits) + ' ' + unitLabel + ' | ' + labels.range + ' ' + formatNumber(result.rangeMm, digits) + ' ' + unitLabel;
 }
