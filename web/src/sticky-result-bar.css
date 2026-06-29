@@ -136,3 +136,11 @@
     font-size: 0.66rem;
   }
 }
+
+/* Keep the sticky result bar visually stable when result text changes during unit swap. */
+.sticky-action-bar,
+.sticky-action-bar.visible,
+.sticky-action-bar.result-arrive {
+  animation: none !important;
+  transition: none !important;
+}
