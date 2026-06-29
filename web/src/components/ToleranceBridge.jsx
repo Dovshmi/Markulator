@@ -66,6 +66,11 @@ function buildRightValuesFromResult(result, fallbackValues, digits) {
   };
 }
 
+function getTabIndex(side, field) {
+  const sideOffset = side === 'left' ? 0 : FIELD_ORDER.length;
+  return sideOffset + FIELD_ORDER.indexOf(field) + 1;
+}
+
 function moveToNextField(event, side, field) {
   if (event.key !== 'Enter') return;
 
@@ -98,13 +103,16 @@ function ValueInput({ side, field, unit, value, onChange, placeholderLabel, isMi
         type="number"
         inputMode="decimal"
         enterKeyHint={isLastField ? 'done' : 'next'}
+        tabIndex={getTabIndex(side, field)}
         step="0.0001"
         value={value}
         placeholder={placeholderLabel}
         style={getIdleInputStyle(value, isMiddle)}
         data-tolerance-side={side}
         data-tolerance-field={field}
+        name={`tolerance-${side}-${field}`}
         onKeyDown={(event) => moveToNextField(event, side, field)}
+        onKeyUp={(event) => moveToNextField(event, side, field)}
         onChange={(event) => onChange(field, event.currentTarget.value)}
       />
       <em>{getInputSuffix(field, unit)}</em>
