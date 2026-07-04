@@ -4,7 +4,7 @@
 
 .tolerance-value-frame,
 .limit-value-frame {
-  --field-side-slot: clamp(1.62rem, 6.4vw, 2.7rem);
+  --field-side-slot: clamp(1.82rem, 6.8vw, 2.9rem);
   direction: ltr;
 }
 
@@ -32,14 +32,14 @@
   width: var(--field-side-slot);
   min-width: var(--field-side-slot);
   max-width: var(--field-side-slot);
-  overflow: hidden;
+  overflow: visible;
   text-overflow: clip;
 }
 
 .tolerance-sign-mark {
   grid-column: 1;
-  justify-self: start;
-  text-align: left;
+  justify-self: center;
+  text-align: center;
 }
 
 .tolerance-sign-spacer {
@@ -48,8 +48,8 @@
 
 .tolerance-unit-mark {
   grid-column: 3;
-  justify-self: end;
-  text-align: right;
+  justify-self: center;
+  text-align: center;
 }
 
 .limit-value-frame {
@@ -65,20 +65,24 @@
 
 .limit-value-frame em {
   grid-column: 3;
-  justify-self: end;
-  text-align: right;
+  justify-self: center;
+  text-align: center;
 }
 
 @media (max-width: 760px) {
   .tolerance-value-frame,
   .limit-value-frame {
-    --field-side-slot: clamp(1.42rem, 6.2vw, 2.2rem);
+    --field-side-slot: clamp(1.72rem, 6.8vw, 2.45rem);
   }
 }
 
 @media (max-width: 430px) {
   .tolerance-value-frame,
   .limit-value-frame {
-    --field-side-slot: clamp(1.28rem, 6vw, 1.85rem);
+    --field-side-slot: clamp(1.66rem, 6.6vw, 2.18rem);
+  }
+
+  .tolerance-value-frame {
+    padding-inline: 9px;
   }
 }
