@@ -18,6 +18,7 @@ import './precision-field-fit-v10.css';
 import './brand-credit-v10.css';
 import './quick-settings-behavior.js';
 import './precision-field-fit-v10.js';
+import './footer-github-v10.js';
 import EnhancedApp from './components/EnhancedApp.jsx';
 
 export default function App() {
