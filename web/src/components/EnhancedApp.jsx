@@ -19,6 +19,8 @@ const emptyLimits = { max: '', min: '' };
 const HISTORY_KEY = 'markulator-history-v1';
 const LANGUAGE_KEY = 'markulator-language-v1';
 const THEME_KEY = 'markulator-theme-v1';
+const UNIT_MODE_KEY = 'markulator-unit-mode-v1';
+const DIGITS_KEY = 'markulator-digits-v1';
 const MAX_HISTORY_PER_MODE = 6;
 const MAX_STORED_HISTORY = 12;
 
@@ -41,6 +43,7 @@ const TEXT = {
     conversionDirection: 'כיוון המרה',
     conversionHelp: 'בחרו באילו יחידות להזין ובאילו יחידות לקבל תוצאה.',
     resultPrecision: 'דיוק תוצאה',
+    digits1: 'ספרה אחת',
     digits2: '2 ספרות',
     digits3: '3 ספרות',
     digits4: '4 ספרות',
@@ -122,6 +125,7 @@ const TEXT = {
     conversionDirection: 'Conversion direction',
     conversionHelp: 'Choose the input unit and the output unit.',
     resultPrecision: 'Result precision',
+    digits1: '1 decimal',
     digits2: '2 decimals',
     digits3: '3 decimals',
     digits4: '4 decimals',
@@ -192,12 +196,38 @@ function getSystemTheme() {
   return window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
 }
 
+function getSavedLanguage() {
+  try {
+    return localStorage.getItem(LANGUAGE_KEY) === 'en' ? 'en' : 'he';
+  } catch {
+    return 'he';
+  }
+}
+
 function getSavedThemeMode() {
   try {
     const saved = localStorage.getItem(THEME_KEY);
     return ['auto', 'light', 'dark'].includes(saved) ? saved : 'auto';
   } catch {
     return 'auto';
+  }
+}
+
+function getSavedUnitMode() {
+  try {
+    const saved = localStorage.getItem(UNIT_MODE_KEY);
+    return saved === UNIT_MODES.MM_TO_IN ? UNIT_MODES.MM_TO_IN : UNIT_MODES.IN_TO_MM;
+  } catch {
+    return UNIT_MODES.IN_TO_MM;
+  }
+}
+
+function getSavedDigits() {
+  try {
+    const saved = Number(localStorage.getItem(DIGITS_KEY));
+    return [1, 2, 3, 4].includes(saved) ? saved : 2;
+  } catch {
+    return 2;
   }
 }
 
@@ -264,10 +294,10 @@ function buildHistoryDisplayTexts(mode, result, tol, limits, unitMode, digits) {
 export default function EnhancedApp() {
   const [mode, setMode] = useState('plus-minus');
   const [modeHasSwitched, setModeHasSwitched] = useState(false);
-  const [unitMode, setUnitMode] = useState(UNIT_MODES.IN_TO_MM);
+  const [unitMode, setUnitMode] = useState(getSavedUnitMode);
   const [tol, setTol] = useState(emptyTol);
   const [limits, setLimits] = useState(emptyLimits);
-  const [digits, setDigits] = useState(2);
+  const [digits, setDigits] = useState(getSavedDigits);
   const [copyStatus, setCopyStatus] = useState('');
   const [history, setHistory] = useState([]);
   const [drawerOpen, setDrawerOpen] = useState(false);
@@ -276,9 +306,7 @@ export default function EnhancedApp() {
   const [themeMode, setThemeMode] = useState(getSavedThemeMode);
   const [systemTheme, setSystemTheme] = useState(getSystemTheme);
   const [themeAnimating, setThemeAnimating] = useState(false);
-  const [language, setLanguage] = useState(() => {
-    try { return localStorage.getItem(LANGUAGE_KEY) === 'en' ? 'en' : 'he'; } catch { return 'he'; }
-  });
+  const [language, setLanguage] = useState(getSavedLanguage);
   const inputSectionRef = useRef(null);
   const themeTimerRef = useRef(null);
   const initialThemeAppliedRef = useRef(false);
@@ -332,6 +360,14 @@ export default function EnhancedApp() {
     themeTimerRef.current = window.setTimeout(() => setThemeAnimating(false), 300);
     return () => window.clearTimeout(themeTimerRef.current);
   }, [themeMode, resolvedTheme]);
+
+  useEffect(() => {
+    try { localStorage.setItem(UNIT_MODE_KEY, unitMode); } catch { return; }
+  }, [unitMode]);
+
+  useEffect(() => {
+    try { localStorage.setItem(DIGITS_KEY, String(digits)); } catch { return; }
+  }, [digits]);
 
   useEffect(() => scheduleIdleTask(() => {
     try {
@@ -487,7 +523,7 @@ export default function EnhancedApp() {
           </div>
 
           <div className="drawer-section">
-            <label className="select-field settings-select">{text.resultPrecision}<select value={digits} onChange={(e) => setDigits(Number(e.target.value))}><option value="2">{text.digits2}</option><option value="3">{text.digits3}</option><option value="4">{text.digits4}</option></select></label>
+            <label className="select-field settings-select">{text.resultPrecision}<select value={digits} onChange={(e) => setDigits(Number(e.target.value))}><option value="1">{text.digits1}</option><option value="2">{text.digits2}</option><option value="3">{text.digits3}</option><option value="4">{text.digits4}</option></select></label>
           </div>
 
           <div className="drawer-section drawer-status"><span>{WEB_VERSION}</span><span>{themeMode === 'auto' ? `${text.autoTheme} · ${resolvedTheme}` : themeMode}</span></div>
