@@ -1,15 +1,31 @@
+@import url('https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@800;900&display=swap');
+
 .hero-card .brand-title-block h1 {
-  font-family: inherit;
+  font-family: 'Nunito Sans', ui-rounded, 'SF Pro Rounded', 'Segoe UI', system-ui, sans-serif;
   font-weight: 900;
-  letter-spacing: -0.045em;
-  line-height: 0.96;
+  letter-spacing: -0.06em;
+  line-height: 0.94;
   text-transform: none;
-  font-size: clamp(2.4rem, 6vw, 4.6rem);
-  text-shadow: none;
+  font-size: clamp(2.55rem, 6vw, 4.6rem);
+  color: #eef6ff;
+  text-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.08),
+    0 10px 30px rgba(103, 232, 249, 0.08);
+  font-feature-settings: 'kern' 1;
+}
+
+@supports ((-webkit-background-clip: text) or (background-clip: text)) {
+  .hero-card .brand-title-block h1 {
+    background: linear-gradient(92deg, #f8fbff 0%, #eaf2ff 46%, #bdf6ff 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
 }
 
 @media (max-width: 430px) {
   .hero-card .brand-title-block h1 {
-    font-size: clamp(2.4rem, 11vw, 3.6rem);
+    font-size: clamp(2.42rem, 11vw, 3.55rem);
+    letter-spacing: -0.065em;
   }
 }
