@@ -1,4 +1,4 @@
-const CACHE_NAME = 'markulator-v095-result-drawer-cache';
+const CACHE_NAME = 'markulator-v100-field-alignment-cache';
 const APP_SHELL = ['/', '/manifest.webmanifest', '/markulator-icon.svg'];
 
 self.addEventListener('install', (event) => {
