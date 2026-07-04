@@ -13,12 +13,57 @@
 }
 
 .app-footer {
-  font-size: 0 !important;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+  padding-inline: 12px;
+  color: rgba(203, 213, 225, 0.68);
+  font-size: clamp(0.78rem, 3.15vw, 0.92rem) !important;
+  font-weight: 800;
   line-height: 1.35;
+  letter-spacing: 0.01em;
+  text-align: center;
 }
 
 .app-footer::before {
-  content: 'Rony & Mark Shmidov';
-  display: inline-block;
-  font-size: clamp(0.82rem, 3.5vw, 0.95rem);
+  content: none !important;
+}
+
+.footer-credit-text,
+.footer-divider,
+.footer-github-link {
+  display: inline-flex;
+  align-items: center;
+  white-space: nowrap;
+}
+
+.footer-divider {
+  color: rgba(103, 232, 249, 0.48);
+}
+
+.footer-github-link {
+  padding: 0.28rem 0.62rem;
+  border: 1px solid rgba(103, 232, 249, 0.24);
+  border-radius: 999px;
+  color: #67e8f9;
+  background: rgba(15, 23, 42, 0.28);
+  text-decoration: none;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08);
+}
+
+.footer-github-link:active {
+  transform: scale(0.97);
+}
+
+@media (max-width: 430px) {
+  .app-footer {
+    gap: 0.36rem;
+    font-size: 0.78rem !important;
+  }
+
+  .footer-github-link {
+    padding: 0.24rem 0.54rem;
+  }
 }
