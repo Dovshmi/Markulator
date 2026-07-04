@@ -1,0 +1,22 @@
+.brand-title-block .eyebrow {
+  text-transform: none;
+  letter-spacing: 0.05em;
+}
+
+.brand-title-block .eyebrow {
+  font-size: 0;
+}
+
+.brand-title-block .eyebrow::before {
+  content: 'Version 1.0';
+  font-size: 0.78rem;
+}
+
+.app-footer {
+  font-size: 0;
+}
+
+.app-footer::before {
+  content: 'Markulator · Web v1.0 · PWA-ready · Rony&Mark Shmidov';
+  font-size: clamp(0.82rem, 3.5vw, 0.95rem);
+}
