@@ -19,7 +19,7 @@ function buildFooterContent(footer) {
 
   const credit = document.createElement('span');
   credit.className = 'footer-credit-text';
-  credit.textContent = 'Made by Rony & Mark Shmidov';
+  credit.textContent = 'Made by Mark & Rony Shmidov';
 
   footer.append(link, divider, credit);
 }
