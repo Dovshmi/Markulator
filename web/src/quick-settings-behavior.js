@@ -1,5 +1,11 @@
 const LONG_PRESS_MS = 520;
-const PRECISION_VALUES = ['2', '3', '4'];
+const PRECISION_VALUES = ['1', '2', '3', '4'];
+const PRECISION_LABELS = {
+  1: '0.0',
+  2: '0.00',
+  3: '0.000',
+  4: '0.0000',
+};
 
 function getAppShell() {
   return document.querySelector('.app-shell');
@@ -13,8 +19,22 @@ function getDrawer() {
   return document.querySelector('.settings-drawer');
 }
 
+function ensurePrecisionOptions(select) {
+  if (!select) return;
+
+  PRECISION_VALUES.slice().reverse().forEach((value) => {
+    if (select.querySelector(`option[value="${value}"]`)) return;
+    const option = document.createElement('option');
+    option.value = value;
+    option.textContent = `${PRECISION_LABELS[value]} precision`;
+    select.insertBefore(option, select.firstChild);
+  });
+}
+
 function getPrecisionSelect() {
-  return document.querySelector('.settings-drawer .settings-select select');
+  const select = document.querySelector('.settings-drawer .settings-select select');
+  ensurePrecisionOptions(select);
+  return select;
 }
 
 function getPrecisionSection() {
@@ -43,7 +63,8 @@ function syncPrecisionDigits() {
   const section = getPrecisionSection();
   const select = getPrecisionSelect();
   if (!section || !select) return;
-  section.dataset.digits = select.value || '2';
+  ensurePrecisionOptions(select);
+  section.dataset.digits = select.value || section.dataset.digits || '2';
 }
 
 function syncThemeMode() {
@@ -59,6 +80,7 @@ function syncThemeMode() {
 }
 
 function dispatchSelectValue(select, value) {
+  ensurePrecisionOptions(select);
   select.value = value;
   select.dispatchEvent(new Event('change', { bubbles: true }));
   syncPrecisionDigits();
@@ -67,8 +89,10 @@ function dispatchSelectValue(select, value) {
 function cyclePrecision() {
   const select = getPrecisionSelect();
   if (!select) return;
+  ensurePrecisionOptions(select);
   const currentIndex = PRECISION_VALUES.indexOf(select.value || '2');
-  const nextValue = PRECISION_VALUES[(currentIndex + 1) % PRECISION_VALUES.length];
+  const safeIndex = currentIndex >= 0 ? currentIndex : 1;
+  const nextValue = PRECISION_VALUES[(safeIndex + 1) % PRECISION_VALUES.length];
   dispatchSelectValue(select, nextValue);
 }
 
@@ -81,6 +105,7 @@ function openMiniPicker() {
   const select = getPrecisionSelect();
   if (!section || !select) return;
 
+  ensurePrecisionOptions(select);
   closeMiniPicker();
   const picker = document.createElement('div');
   picker.className = 'precision-mini-picker';
@@ -90,7 +115,7 @@ function openMiniPicker() {
   PRECISION_VALUES.forEach((value) => {
     const button = document.createElement('button');
     button.type = 'button';
-    button.textContent = value;
+    button.textContent = PRECISION_LABELS[value];
     button.className = select.value === value ? 'active' : '';
     button.addEventListener('click', (event) => {
       event.preventDefault();
