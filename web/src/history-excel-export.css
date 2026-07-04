@@ -1,0 +1,57 @@
+.history-title {
+  gap: 12px;
+}
+
+.history-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.history-excel-export-button {
+  border-color: rgba(45, 212, 191, 0.38) !important;
+  color: #dffcff !important;
+  background:
+    linear-gradient(135deg, rgba(20, 184, 166, 0.34), rgba(14, 165, 233, 0.24)),
+    rgba(15, 23, 42, 0.58) !important;
+  box-shadow:
+    0 10px 24px rgba(14, 165, 233, 0.13),
+    inset 0 1px 0 rgba(255, 255, 255, 0.08);
+}
+
+.history-excel-export-button:hover:not(:disabled) {
+  border-color: rgba(103, 232, 249, 0.58) !important;
+  transform: translateY(-1px);
+}
+
+.history-excel-export-button:disabled {
+  cursor: wait;
+  opacity: 0.72;
+  transform: none;
+}
+
+.theme-light .history-excel-export-button {
+  color: #0f766e !important;
+  border-color: rgba(13, 148, 136, 0.22) !important;
+  background:
+    linear-gradient(135deg, rgba(204, 251, 241, 0.92), rgba(224, 242, 254, 0.82)),
+    rgba(255, 255, 255, 0.86) !important;
+  box-shadow: 0 10px 24px rgba(15, 23, 42, 0.08);
+}
+
+@media (max-width: 620px) {
+  .history-title {
+    align-items: stretch;
+  }
+
+  .history-actions {
+    width: 100%;
+    justify-content: flex-start;
+  }
+
+  .app-shell.lang-he .history-actions {
+    justify-content: flex-end;
+  }
+}
