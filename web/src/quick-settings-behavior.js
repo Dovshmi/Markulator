@@ -100,6 +100,30 @@ function closeMiniPicker() {
   document.querySelector('.precision-mini-picker')?.remove();
 }
 
+function placeMiniPicker(picker, section) {
+  const rect = section.getBoundingClientRect();
+  const padding = 8;
+  const gap = 10;
+
+  picker.style.position = 'fixed';
+  picker.style.visibility = 'hidden';
+  picker.style.left = '0px';
+  picker.style.top = '0px';
+  document.body.appendChild(picker);
+
+  const pickerRect = picker.getBoundingClientRect();
+  const centeredLeft = rect.left + rect.width / 2 - pickerRect.width / 2;
+  const left = Math.max(padding, Math.min(centeredLeft, window.innerWidth - pickerRect.width - padding));
+  const topAbove = rect.top - pickerRect.height - gap;
+  const topBelow = rect.bottom + gap;
+  const top = topAbove >= padding ? topAbove : Math.min(topBelow, window.innerHeight - pickerRect.height - padding);
+
+  picker.style.left = `${left}px`;
+  picker.style.top = `${Math.max(padding, top)}px`;
+  picker.style.transform = 'none';
+  picker.style.visibility = 'visible';
+}
+
 function openMiniPicker() {
   const section = getPrecisionSection();
   const select = getPrecisionSelect();
@@ -111,6 +135,10 @@ function openMiniPicker() {
   picker.className = 'precision-mini-picker';
   picker.setAttribute('role', 'menu');
   picker.setAttribute('aria-label', 'Result precision');
+
+  picker.addEventListener('pointerdown', (event) => {
+    event.stopPropagation();
+  });
 
   PRECISION_VALUES.forEach((value) => {
     const button = document.createElement('button');
@@ -126,7 +154,7 @@ function openMiniPicker() {
     picker.appendChild(button);
   });
 
-  section.appendChild(picker);
+  placeMiniPicker(picker, section);
 }
 
 function bindPrecisionSection() {
@@ -135,6 +163,7 @@ function bindPrecisionSection() {
   if (!section || !select || section.dataset.quickPrecisionBound === 'true') return;
 
   section.dataset.quickPrecisionBound = 'true';
+  section.style.touchAction = 'none';
   syncPrecisionDigits();
 
   let longPressTimer = null;
@@ -161,6 +190,11 @@ function bindPrecisionSection() {
     event.stopPropagation();
     clearLongPress();
     if (!longPressUsed) cyclePrecision();
+    longPressUsed = false;
+  });
+
+  section.addEventListener('pointercancel', () => {
+    clearLongPress();
     longPressUsed = false;
   });
 
@@ -227,6 +261,7 @@ function bindOutsideClose() {
   document.addEventListener('pointerdown', (event) => {
     const drawer = getDrawer();
     const button = getSettingsButton();
+    if (event.target?.closest?.('.precision-mini-picker')) return;
     if (!drawer?.classList.contains('open')) return;
     if (drawer.contains(event.target) || button?.contains(event.target)) return;
     closeMiniPicker();
@@ -254,8 +289,14 @@ function observeApp() {
     attributeFilter: ['class', 'dir', 'lang'],
   });
 
-  window.addEventListener('resize', positionQuickSettings);
-  window.addEventListener('orientationchange', () => window.setTimeout(positionQuickSettings, 150));
+  window.addEventListener('resize', () => {
+    positionQuickSettings();
+    closeMiniPicker();
+  });
+  window.addEventListener('orientationchange', () => window.setTimeout(() => {
+    positionQuickSettings();
+    closeMiniPicker();
+  }, 150));
   enhanceQuickSettings();
 }
 
