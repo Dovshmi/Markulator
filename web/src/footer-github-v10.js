@@ -4,15 +4,6 @@ function buildFooterContent(footer) {
   footer.dataset.githubFooterReady = 'true';
   footer.textContent = '';
 
-  const credit = document.createElement('span');
-  credit.className = 'footer-credit-text';
-  credit.textContent = 'Rony & Mark Shmidov';
-
-  const divider = document.createElement('span');
-  divider.className = 'footer-divider';
-  divider.setAttribute('aria-hidden', 'true');
-  divider.textContent = '•';
-
   const link = document.createElement('a');
   link.className = 'footer-github-link';
   link.href = REPO_URL;
@@ -21,7 +12,16 @@ function buildFooterContent(footer) {
   link.setAttribute('aria-label', 'Open Markulator GitHub repository');
   link.textContent = 'GitHub';
 
-  footer.append(credit, divider, link);
+  const divider = document.createElement('span');
+  divider.className = 'footer-divider';
+  divider.setAttribute('aria-hidden', 'true');
+  divider.textContent = '•';
+
+  const credit = document.createElement('span');
+  credit.className = 'footer-credit-text';
+  credit.textContent = 'Made by Rony & Mark Shmidov';
+
+  footer.append(link, divider, credit);
 }
 
 function enhanceFooter() {
@@ -29,7 +29,8 @@ function enhanceFooter() {
   if (!footer) return false;
 
   const hasGithubLink = footer.querySelector('.footer-github-link');
-  if (footer.dataset.githubFooterReady === 'true' && hasGithubLink) return true;
+  const hasMadeBy = footer.textContent.includes('Made by');
+  if (footer.dataset.githubFooterReady === 'true' && hasGithubLink && hasMadeBy) return true;
 
   buildFooterContent(footer);
   return true;
