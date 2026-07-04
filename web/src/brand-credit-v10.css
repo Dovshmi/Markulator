@@ -14,6 +14,7 @@
 
 .app-footer {
   display: flex;
+  direction: rtl;
   align-items: center;
   justify-content: center;
   flex-wrap: wrap;
@@ -37,6 +38,12 @@
   display: inline-flex;
   align-items: center;
   white-space: nowrap;
+}
+
+.footer-credit-text,
+.footer-github-link {
+  direction: ltr;
+  unicode-bidi: isolate;
 }
 
 .footer-divider {
