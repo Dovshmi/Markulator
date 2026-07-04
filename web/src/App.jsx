@@ -16,6 +16,7 @@ import './field-alignment-v10.css';
 import './field-symbol-size-v10.css';
 import './precision-field-fit-v10.css';
 import './brand-credit-v10.css';
+import './gothic-title-v10.css';
 import './quick-settings-behavior.js';
 import './precision-field-fit-v10.js';
 import './footer-github-v10.js';
