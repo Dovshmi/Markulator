@@ -4,12 +4,12 @@
 }
 
 .limit-value-frame input::placeholder {
-  font-size: clamp(0.72rem, 3.25vw, 0.9rem);
-  letter-spacing: -0.035em;
+  font-size: clamp(0.78rem, 3.45vw, 0.95rem);
+  letter-spacing: -0.04em;
 }
 
 @media (max-width: 430px) {
   .limit-value-frame input::placeholder {
-    font-size: 0.72rem;
+    font-size: 0.78rem;
   }
 }
