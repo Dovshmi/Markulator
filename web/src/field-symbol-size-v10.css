@@ -12,8 +12,48 @@
   transform: translateY(-0.08rem);
 }
 
+.settings-drawer > .drawer-section:nth-of-type(5)[data-digits='1']::before {
+  content: '0.0';
+  direction: ltr;
+  unicode-bidi: isolate;
+  font-size: 1rem;
+}
+
+.precision-mini-picker {
+  gap: 6px;
+  padding: 7px;
+}
+
+.precision-mini-picker button {
+  width: 48px;
+  font-size: 0.78rem;
+}
+
+.precision-mini-picker button:first-child {
+  font-size: 0.9rem;
+}
+
 @media (max-width: 430px) {
   .limit-value-frame input::placeholder {
     font-size: 0.82rem;
+  }
+
+  .settings-drawer > .drawer-section:nth-of-type(5)[data-digits='1']::before {
+    font-size: 0.9rem;
+  }
+
+  .precision-mini-picker {
+    gap: 5px;
+    padding: 6px;
+  }
+
+  .precision-mini-picker button {
+    width: 43px;
+    height: 34px;
+    font-size: 0.72rem;
+  }
+
+  .precision-mini-picker button:first-child {
+    font-size: 0.84rem;
   }
 }
