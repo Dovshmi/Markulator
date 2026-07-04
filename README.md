@@ -3,14 +3,14 @@
 <div align="center">
   <img src="https://img.shields.io/badge/React-Web_App-61DAFB?style=for-the-badge&logo=react&logoColor=black" alt="React" />
   <img src="https://img.shields.io/badge/Vite-Build_Tool-646CFF?style=for-the-badge&logo=vite&logoColor=white" alt="Vite" />
-  <img src="https://img.shields.io/badge/Web-v0.9.8-14B8A6?style=for-the-badge" alt="Web v0.9.8" />
+  <img src="https://img.shields.io/badge/Web-v1.0-14B8A6?style=for-the-badge" alt="Web v1.0" />
   <img src="https://img.shields.io/badge/Hebrew_%2F_English-UI-0F172A?style=for-the-badge" alt="Hebrew and English UI" />
   <img src="https://img.shields.io/badge/PWA-ready-0EA5E9?style=for-the-badge" alt="PWA ready" />
   <img src="https://img.shields.io/badge/License-GPL--3.0-4B5563?style=for-the-badge" alt="GPL-3.0 License" />
 </div>
 
 <div align="center">
-  <p><strong>A clean web tolerance calculator for converting measurements between inches and millimeters.</strong></p>
+  <p><strong>A clean, bilingual tolerance calculator for converting measurements between inches and millimeters.</strong></p>
   <p>
     <a href="https://markulator-zeta.vercel.app/"><strong>Live Web App</strong></a>
     ·
@@ -22,33 +22,32 @@
 
 ## Overview
 
-**Markulator** is a practical tolerance calculator for machining, inspection, workshop, and engineering workflows. It converts tolerance values between **inch** and **millimeter** units and presents the result in a clear visual interface.
+**Markulator** is a practical tolerance calculator for machining, inspection, workshop, and engineering workflows. It converts values between **inch** and **millimeter** units and presents the result in a clear visual interface.
 
-The current web app is built with **React + Vite** and includes a responsive mobile-first interface, bilingual Hebrew/English support, local calculation history, a PWA-ready setup, and dedicated visual calculators for both tolerance workflows.
+**Web v1.0** is the current stable web release. It includes two visual calculator workflows, bidirectional unit conversion, bilingual Hebrew/English UI, local calculation history, theme support, copy/share actions, and PWA install support.
 
-The repository also keeps the original **Python CustomTkinter desktop app**.
+The repository also keeps the original **Python CustomTkinter desktop app** for the earlier desktop version.
 
 ---
 
 ## Current Web Features
 
-- **Two calculation modes:** `Tolerance ±` and `Maximum / Minimum`.
+- **Two calculator modes:** `Tolerance ±` and `Maximum / Minimum`.
 - **Two unit directions:** `inch → mm` and `mm → inch`.
-- **Tolerance bridge calculator:** visual layout for positive tolerance, nominal value, and negative tolerance.
-- **Maximum / minimum bridge calculator:** dedicated visual layout for max/min input and output values.
-- **Animated unit conversion:** unit switching includes smooth bridge animations while keeping the center content stable.
-- **Centered swap control:** compact swap button between unit labels for direct conversion-direction switching.
-- **Localized history:** calculation history follows the active language: Hebrew history in Hebrew, English history in English.
-- **History separated by calculator mode:** each calculator shows only its own saved calculations.
-- **Restore from history:** clicking a saved history item restores the original input values and conversion direction back into the calculator.
-- **History timestamps:** each saved calculation displays the date and time it was created.
-- **Input and output in history:** saved items show both the original input and the calculated output.
-- **Hebrew and English UI:** Hebrew uses RTL layout, English uses LTR layout.
+- **Interactive tolerance bridge:** side-by-side source and target fields for positive tolerance, nominal value, and negative tolerance.
+- **Interactive maximum/minimum bridge:** dedicated source and target layout for upper and lower limits.
+- **Centered unit swap control:** switches the active conversion direction while preserving the current workflow.
+- **Animated unit conversion:** smooth bridge animation when switching direction.
+- **Bilingual interface:** Hebrew RTL and English LTR layouts.
+- **Local calculation history:** history is stored in the browser and separated by calculator mode.
+- **Restore from history:** saved calculations can restore their original inputs and conversion direction.
+- **Localized history output:** history text follows the active interface language.
+- **Timestamps:** each saved calculation shows when it was created.
 - **Theme support:** automatic, light, and dark modes.
-- **Persistent preferences:** language, theme, and history are stored locally in the browser.
-- **Copy/share actions:** localized short copy, full copy, save, clear, and native share where supported.
-- **PWA-ready service worker:** suitable for installing the web app on mobile devices.
-- **Responsive mobile-first design** with a dark professional UI and light-mode support.
+- **Persistent preferences:** language, theme, unit direction, precision, and history are saved locally.
+- **Copy/share actions:** short copy, full copy, save, clear, and native share where supported.
+- **Mobile-first responsive layout:** optimized for phone use, with a sticky action bar after calculation.
+- **PWA-ready setup:** manifest and service worker are included for app-like installation.
 
 ---
 
@@ -60,6 +59,7 @@ The repository also keeps the original **Python CustomTkinter desktop app**.
 | Web Build Tool | Vite |
 | Web Styling | CSS |
 | Web Deploy | Vercel |
+| PWA | Web Manifest + Service Worker |
 | Desktop App | Python + CustomTkinter |
 | License | GPL-3.0 |
 
@@ -71,34 +71,33 @@ The repository also keeps the original **Python CustomTkinter desktop app**.
 Markulator/
 ├── web/
 │   ├── src/
-│   │   ├── assets/                    # Logo and web assets
-│   │   ├── components/                # React UI components
-│   │   │   ├── EnhancedApp.jsx        # Main web app shell, state, history, and UI logic
-│   │   │   ├── InputField.jsx         # Generic input field component
-│   │   │   ├── LimitBridge.jsx        # Maximum/minimum bridge calculator UI
-│   │   │   ├── ToleranceBridge.jsx    # Tolerance ± bridge calculator UI
-│   │   │   └── calcTools.js           # Formatting, validation, unit helpers, copy text
-│   │   ├── App.jsx                    # Web app wrapper and CSS imports
-│   │   ├── markulator.js              # Core calculation logic
-│   │   ├── main.jsx                   # React entry point
-│   │   ├── limit-bridge.css           # Maximum/minimum bridge styling
-│   │   ├── measurement-bridge.css     # Tolerance bridge layout and mobile styling
-│   │   ├── tolerance-swap.css         # Center swap button styling
-│   │   ├── mobile-clean-layout.css    # Mobile/settings layout overrides
-│   │   ├── performance.css            # Animation and performance-oriented CSS
-│   │   ├── manus-test-style.css       # Current polished visual style layer
-│   │   ├── styles.css                 # Base styling
-│   │   ├── v09.css                    # Modern web UI styling
-│   │   ├── theme.css                  # Light/dark theme styling
-│   │   └── language-layout.css        # Hebrew/English layout fixes
-│   ├── public/                        # Manifest, icons, service worker files
+│   │   ├── assets/                         # Logo and web assets
+│   │   ├── components/                     # React UI components
+│   │   │   ├── EnhancedApp.jsx             # Main web app shell, state, history, settings, and UI logic
+│   │   │   ├── LimitBridge.jsx             # Maximum/minimum visual calculator
+│   │   │   ├── ToleranceBridge.jsx         # Tolerance ± visual calculator
+│   │   │   └── calcTools.js                # Version, validation, unit helpers, and copy formatting
+│   │   ├── App.jsx                         # Web app wrapper and CSS behavior imports
+│   │   ├── main.jsx                        # React entry point and service-worker registration
+│   │   ├── markulator.js                   # Core tolerance calculation logic
+│   │   ├── styles.css                      # Base styling
+│   │   ├── v09.css                         # Main modern app styling
+│   │   ├── theme.css                       # Light/dark theme styling
+│   │   ├── measurement-bridge.css          # Tolerance bridge layout
+│   │   ├── limit-bridge.css                # Maximum/minimum bridge layout
+│   │   ├── manus-test-style.css            # Polished visual style layer
+│   │   └── *.css / *.js                    # Mobile, precision, settings, footer, and behavior overrides
+│   ├── public/
+│   │   ├── manifest.webmanifest            # PWA manifest
+│   │   ├── sw.js                           # Service worker
+│   │   └── markulator-icon.svg             # App icon
 │   ├── package.json
 │   └── vite.config.js
-├── Screenshots/                       # Desktop screenshots/examples
-├── pictures/                          # Desktop icon/image assets
-├── Markulator.py                      # Console/prototype calculator
-├── Marlulator_app.py                  # Python desktop app
-├── vercel.json                        # Vercel branch deployment configuration
+├── Screenshots/                            # Desktop screenshots/examples
+├── pictures/                               # Desktop icon/image assets
+├── Markulator.py                           # Console/prototype calculator
+├── Marlulator_app.py                       # Python desktop app
+├── vercel.json                             # Vercel branch deployment configuration
 ├── LICENSE
 └── README.md
 ```
@@ -160,11 +159,12 @@ pyinstaller --onefile --noconsole --icon=pictures/calc.ico .\Marlulator_app.py
 
 | Branch | Purpose | Vercel behavior |
 | :--- | :--- | :--- |
-| `main` | Production branch | Auto-deploys to production: https://markulator-zeta.vercel.app/ |
+| `main` | Production branch for the live web app | Auto-deploys to production: https://markulator-zeta.vercel.app/ |
+| `Alpha` | Version 1.0 alpha/release mirror branch | Available as a separate branch for v1.0 work and review |
 | `manus-test` | Working branch for UI/code changes before syncing to main | Automatic Vercel deployments are disabled |
 | `test` | Legacy/test branch | Automatic Vercel deployments are disabled |
 
-Production deployment should happen only from `main`. Work should be done on `manus-test`, reviewed there in code, and then merged into `main` when ready.
+Production deployment should happen from `main`. Experimental or review work should happen on a non-production branch first, then be merged or synced when ready.
 
 The Vercel branch deployment rule is stored in [`vercel.json`](vercel.json).
 
@@ -174,6 +174,8 @@ The Vercel branch deployment rule is stored in [`vercel.json`](vercel.json).
 
 | Version | Type | Main update |
 | :--- | :--- | :--- |
+| Web v1.0 | Web | Stable v1.0 release with polished visual bridge calculators, bilingual UI, bidirectional inch/mm conversion, mode-specific history, restore-from-history, timestamps, themes, copy/share actions, PWA support, and mobile-first layout refinements. |
+| Web v0.9.9 | Web | Pre-v1.0 polish branch with refined light-mode handling, quick settings behavior, logo fit, and visual cleanup. |
 | Web v0.9.8 | Web | Added maximum/minimum bridge calculator, mode-specific bilingual history, restore-from-history, timestamps, and main-only Vercel deployment workflow. |
 | Web v0.9.7 | Web | Compact app-style settings drawer, centered unit-swap button, cleaner mobile layout, and refined tolerance bridge controls. |
 | Web v0.9.6 | Web | Bidirectional tolerance bridge, mobile Enter/Next navigation, refined sticky action bar, and performance fix for label updates. |
