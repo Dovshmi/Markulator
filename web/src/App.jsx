@@ -14,7 +14,9 @@ import './light-mode-soft-polish.css';
 import './light-mode-limit-label-fix.css';
 import './field-alignment-v10.css';
 import './field-symbol-size-v10.css';
+import './precision-field-fit-v10.css';
 import './quick-settings-behavior.js';
+import './precision-field-fit-v10.js';
 import EnhancedApp from './components/EnhancedApp.jsx';
 
 export default function App() {
