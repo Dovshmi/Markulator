@@ -1,0 +1,64 @@
+/* Adaptive fit for high precision and long values on small screens. */
+@media (max-width: 760px) {
+  body.precision-4 .tolerance-value-frame,
+  body.precision-4 .limit-value-frame,
+  .tolerance-value-frame.value-fit-tight,
+  .limit-value-frame.value-fit-tight {
+    --field-side-slot: clamp(1.44rem, 5.6vw, 1.78rem);
+    gap: 2px;
+  }
+
+  body.precision-4 .tolerance-mini-card .tolerance-value-frame,
+  .tolerance-mini-card .tolerance-value-frame.value-fit-tight {
+    padding-inline: 7px;
+  }
+
+  body.precision-4 .tolerance-mini-card .tolerance-value-frame input,
+  .tolerance-mini-card .tolerance-value-frame.value-fit-tight input,
+  body.precision-4 .limit-value-frame input,
+  .limit-value-frame.value-fit-tight input {
+    font-size: clamp(0.98rem, 4.75vw, 1.08rem);
+    letter-spacing: -0.045em;
+  }
+
+  body.precision-4 .tolerance-middle-panel .tolerance-value-frame,
+  .tolerance-middle-panel .tolerance-value-frame.value-fit-tight {
+    --field-side-slot: clamp(1.5rem, 5.8vw, 1.9rem);
+    padding-inline: 7px;
+  }
+
+  body.precision-4 .tolerance-middle-panel .tolerance-value-frame input,
+  .tolerance-middle-panel .tolerance-value-frame.value-fit-tight input {
+    font-size: clamp(1.18rem, 6vw, 1.34rem);
+    letter-spacing: -0.05em;
+  }
+
+  body.precision-4 .tolerance-unit-mark,
+  body.precision-4 .limit-value-frame em,
+  .value-fit-tight .tolerance-unit-mark,
+  .limit-value-frame.value-fit-tight em {
+    font-size: 0.9em;
+    letter-spacing: -0.035em;
+  }
+
+  body.precision-4 .tolerance-sign-mark,
+  .value-fit-tight .tolerance-sign-mark {
+    font-size: 1em;
+  }
+
+  .tolerance-value-frame.value-fit-tighter,
+  .limit-value-frame.value-fit-tighter {
+    --field-side-slot: clamp(1.32rem, 5.1vw, 1.62rem);
+    padding-inline: 5px;
+  }
+
+  .tolerance-value-frame.value-fit-tighter input,
+  .limit-value-frame.value-fit-tighter input {
+    font-size: clamp(0.88rem, 4.25vw, 1rem) !important;
+    letter-spacing: -0.065em;
+  }
+
+  .tolerance-middle-panel .tolerance-value-frame.value-fit-tighter input {
+    font-size: clamp(1.04rem, 5.4vw, 1.22rem) !important;
+  }
+}
