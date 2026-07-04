@@ -15,9 +15,8 @@ function getUnitName(unit) {
   return unit === 'in' ? 'Inches' : 'Millimeters';
 }
 
-function getInputSuffix(field, unit) {
-  const sign = FIELDS[field].sign;
-  return sign ? `${sign} ${unit}` : unit;
+function getInputSign(field) {
+  return FIELDS[field].sign;
 }
 
 function getOutputValue(field, result, digits) {
@@ -174,8 +173,11 @@ function handleInputBlur(event, side, field) {
 }
 
 function ValueInput({ side, activeSide, onFocusSide, field, unit, value, onChange, placeholderLabel, hasNextEmptyField, isMiddle = false }) {
+  const sign = getInputSign(field);
+
   return (
-    <span className="tolerance-value-frame tolerance-input-frame">
+    <span className={`tolerance-value-frame tolerance-input-frame tolerance-field-${field}`}>
+      <em className={`tolerance-sign-mark ${sign ? '' : 'tolerance-sign-spacer'}`} aria-hidden="true">{sign || '0'}</em>
       <input
         type="number"
         inputMode="decimal"
@@ -195,7 +197,7 @@ function ValueInput({ side, activeSide, onFocusSide, field, unit, value, onChang
         onBlur={(event) => handleInputBlur(event, side, field)}
         onChange={(event) => onChange(field, event.currentTarget.value)}
       />
-      <em>{getInputSuffix(field, unit)}</em>
+      <em className="tolerance-unit-mark" aria-hidden="true">{unit}</em>
     </span>
   );
 }
