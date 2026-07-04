@@ -23,6 +23,24 @@
   }
 }
 
+.app-shell.theme-light .hero-card .brand-title-block h1,
+body.theme-light .hero-card .brand-title-block h1 {
+  color: #0f6f86;
+  text-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.78),
+    0 12px 28px rgba(15, 111, 134, 0.16);
+}
+
+@supports ((-webkit-background-clip: text) or (background-clip: text)) {
+  .app-shell.theme-light .hero-card .brand-title-block h1,
+  body.theme-light .hero-card .brand-title-block h1 {
+    background: linear-gradient(92deg, #075b73 0%, #0f8da1 48%, #22b8c7 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+}
+
 @media (max-width: 430px) {
   .hero-card .brand-title-block h1 {
     font-size: clamp(2.42rem, 11vw, 3.55rem);
