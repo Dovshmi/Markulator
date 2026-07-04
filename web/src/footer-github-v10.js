@@ -1,9 +1,6 @@
 const REPO_URL = 'https://github.com/Dovshmi/Markulator';
 
-function enhanceFooter() {
-  const footer = document.querySelector('.app-footer');
-  if (!footer || footer.dataset.githubFooterReady === 'true') return;
-
+function buildFooterContent(footer) {
   footer.dataset.githubFooterReady = 'true';
   footer.textContent = '';
 
@@ -27,8 +24,34 @@ function enhanceFooter() {
   footer.append(credit, divider, link);
 }
 
+function enhanceFooter() {
+  const footer = document.querySelector('.app-footer');
+  if (!footer) return false;
+
+  const hasGithubLink = footer.querySelector('.footer-github-link');
+  if (footer.dataset.githubFooterReady === 'true' && hasGithubLink) return true;
+
+  buildFooterContent(footer);
+  return true;
+}
+
+function startFooterEnhancer() {
+  if (enhanceFooter()) return;
+
+  const observer = new MutationObserver(() => {
+    if (enhanceFooter()) observer.disconnect();
+  });
+
+  observer.observe(document.body, { childList: true, subtree: true });
+
+  window.setTimeout(() => {
+    enhanceFooter();
+    observer.disconnect();
+  }, 3000);
+}
+
 if (document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', enhanceFooter, { once: true });
+  document.addEventListener('DOMContentLoaded', startFooterEnhancer, { once: true });
 } else {
-  enhanceFooter();
+  startFooterEnhancer();
 }
