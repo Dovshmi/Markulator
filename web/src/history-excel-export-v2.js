@@ -12,118 +12,127 @@ let observer = null;
 function lang() { return document.documentElement.lang === 'en' ? 'en' : 'he'; }
 function setText(el, value) { if (el.textContent !== value) el.textContent = value; }
 function readHistory() { try { const data = JSON.parse(localStorage.getItem(HISTORY_KEY) || '[]'); return Array.isArray(data) ? data : []; } catch { return []; } }
-function n(value) { const parsed = Number(value); return Number.isFinite(parsed) ? parsed : ''; }
-function dir(item) { return item?.unitMode === 'mm-to-in' ? 'mm → inch' : 'inch → mm'; }
-function date(item) { const ts = Number(item.createdAt || item.id); return Number.isFinite(ts) ? new Date(ts).toLocaleString('en-GB') : ''; }
+function asNumber(value) { const parsed = Number(value); return Number.isFinite(parsed) ? parsed : ''; }
+function direction(item) { return item?.unitMode === 'mm-to-in' ? 'mm → inch' : 'inch → mm'; }
+function savedAt(item) { const ts = Number(item.createdAt || item.id); return Number.isFinite(ts) ? new Date(ts).toLocaleString('en-GB') : ''; }
 function xml(value) { return String(value ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&apos;'); }
 
-function c(value, type = 'String', style = 'Cell', extra = '') {
+function cell(value, type = 'String', style = 'Cell', extra = '') {
   if (value === '' || value == null) return `<Cell ss:StyleID="${style}"${extra}/>`;
   return `<Cell ss:StyleID="${style}"${extra}><Data ss:Type="${type}">${xml(value)}</Data></Cell>`;
 }
-function f(formula, style = 'Formula') { return `<Cell ss:StyleID="${style}" ss:Formula="${xml(formula)}"><Data ss:Type="Number">0</Data></Cell>`; }
-function r(cells, attrs = '') { return `<Row${attrs ? ` ${attrs}` : ''}>${cells.join('')}</Row>`; }
-function title(text, span) { return r([`<Cell ss:StyleID="Title" ss:MergeAcross="${span - 1}"><Data ss:Type="String">${xml(text)}</Data></Cell>`], 'ss:Height="34"'); }
-function note(text, span) { return r([`<Cell ss:StyleID="Note" ss:MergeAcross="${span - 1}"><Data ss:Type="String">${xml(text)}</Data></Cell>`], 'ss:Height="36"'); }
-function header(values) { return r(values.map((v) => c(v, 'String', 'Header')), 'ss:Height="25"'); }
+function formula(formulaText, style = 'Formula') { return `<Cell ss:StyleID="${style}" ss:Formula="${xml(formulaText)}"><Data ss:Type="Number">0</Data></Cell>`; }
+function row(cells, attrs = '') { return `<Row${attrs ? ` ${attrs}` : ''}>${cells.join('')}</Row>`; }
+function titleRow(text, span) { return row([cell(text, 'String', 'Title', ` ss:MergeAcross="${span - 1}"`)], 'ss:Height="34"'); }
+function noteRow(text, span) { return row([cell(text, 'String', 'Note', ` ss:MergeAcross="${span - 1}"`)], 'ss:Height="36"'); }
+function headerRow(values) { return row(values.map((v) => cell(v, 'String', 'Header')), 'ss:Height="25"'); }
 function hidden() { return 'ss:Hidden="1" ss:OutlineLevel="1"'; }
+function blank(span, attrs = '') { return row([cell('', 'String', 'Spacer', ` ss:MergeAcross="${span - 1}"`)], attrs); }
 
-function tolPlus(row) {
-  const p = `R${row}C7`, nom = `R${row}C8`;
-  const pr = `ROUND(${p}*${MM_PER_INCH},2)`, nr = `ROUND(${nom}*${MM_PER_INCH},2)`;
-  const over = `ROUND(${nr}+${pr},2)>(${nom}*${MM_PER_INCH}+${p}*${MM_PER_INCH})`;
-  return `=IF(R${row}C4="inch → mm",IF(${over},IF(${pr}>0,${pr}-0.01,${pr}),${pr}),${p}/${MM_PER_INCH})`;
+function tolPlusFormula(r) {
+  const plus = `R${r}C7`, nominal = `R${r}C8`;
+  const plusRound = `ROUND(${plus}*${MM_PER_INCH},2)`;
+  const nominalRound = `ROUND(${nominal}*${MM_PER_INCH},2)`;
+  const overshoots = `ROUND(${nominalRound}+${plusRound},2)>(${nominal}*${MM_PER_INCH}+${plus}*${MM_PER_INCH})`;
+  return `=IF(R${r}C4="inch → mm",IF(${overshoots},IF(${plusRound}>0,${plusRound}-0.01,${plusRound}),${plusRound}),${plus}/${MM_PER_INCH})`;
 }
-function tolNom(row) {
-  const p = `R${row}C7`, nom = `R${row}C8`, neg = `R${row}C9`;
-  const pr = `ROUND(${p}*${MM_PER_INCH},2)`, nr = `ROUND(${nom}*${MM_PER_INCH},2)`, mr = `ROUND(${neg}*${MM_PER_INCH},2)`;
-  const over = `ROUND(${nr}+${pr},2)>(${nom}*${MM_PER_INCH}+${p}*${MM_PER_INCH})`;
-  const under = `ROUND(${nr}-${mr},2)<(${nom}*${MM_PER_INCH}-${neg}*${MM_PER_INCH})`;
-  return `=IF(R${row}C4="inch → mm",${nr}+IF(${over},IF(${pr}>0,0,-0.01),0)+IF(${under},IF(${mr}>0,0,0.01),0),${nom}/${MM_PER_INCH})`;
+function tolNominalFormula(r) {
+  const plus = `R${r}C7`, nominal = `R${r}C8`, minus = `R${r}C9`;
+  const plusRound = `ROUND(${plus}*${MM_PER_INCH},2)`;
+  const nominalRound = `ROUND(${nominal}*${MM_PER_INCH},2)`;
+  const minusRound = `ROUND(${minus}*${MM_PER_INCH},2)`;
+  const overshoots = `ROUND(${nominalRound}+${plusRound},2)>(${nominal}*${MM_PER_INCH}+${plus}*${MM_PER_INCH})`;
+  const undershoots = `ROUND(${nominalRound}-${minusRound},2)<(${nominal}*${MM_PER_INCH}-${minus}*${MM_PER_INCH})`;
+  return `=IF(R${r}C4="inch → mm",${nominalRound}+IF(${overshoots},IF(${plusRound}>0,0,-0.01),0)+IF(${undershoots},IF(${minusRound}>0,0,0.01),0),${nominal}/${MM_PER_INCH})`;
 }
-function tolMinus(row) {
-  const nom = `R${row}C8`, neg = `R${row}C9`;
-  const nr = `ROUND(${nom}*${MM_PER_INCH},2)`, mr = `ROUND(${neg}*${MM_PER_INCH},2)`;
-  const under = `ROUND(${nr}-${mr},2)<(${nom}*${MM_PER_INCH}-${neg}*${MM_PER_INCH})`;
-  return `=IF(R${row}C4="inch → mm",IF(${under},IF(${mr}>0,${mr}-0.01,${mr}),${mr}),${neg}/${MM_PER_INCH})`;
+function tolMinusFormula(r) {
+  const nominal = `R${r}C8`, minus = `R${r}C9`;
+  const nominalRound = `ROUND(${nominal}*${MM_PER_INCH},2)`;
+  const minusRound = `ROUND(${minus}*${MM_PER_INCH},2)`;
+  const undershoots = `ROUND(${nominalRound}-${minusRound},2)<(${nominal}*${MM_PER_INCH}-${minus}*${MM_PER_INCH})`;
+  return `=IF(R${r}C4="inch → mm",IF(${undershoots},IF(${minusRound}>0,${minusRound}-0.01,${minusRound}),${minusRound}),${minus}/${MM_PER_INCH})`;
 }
-function maxFormula(row) {
-  const max = `R${row}C6`, rounded = `ROUND(${max}*${MM_PER_INCH},2)`;
-  return `=IF(R${row}C3="inch → mm",IF(${rounded}>${max}*${MM_PER_INCH},${rounded}-0.01,${rounded}),${max}/${MM_PER_INCH})`;
+function maxFormula(r) {
+  const max = `R${r}C6`, rounded = `ROUND(${max}*${MM_PER_INCH},2)`;
+  return `=IF(R${r}C3="inch → mm",IF(${rounded}>${max}*${MM_PER_INCH},${rounded}-0.01,${rounded}),${max}/${MM_PER_INCH})`;
 }
-function minFormula(row) {
-  const min = `R${row}C7`, rounded = `ROUND(${min}*${MM_PER_INCH},2)`;
-  return `=IF(R${row}C3="inch → mm",IF(${rounded}<${min}*${MM_PER_INCH},${rounded}+0.01,${rounded}),${min}/${MM_PER_INCH})`;
+function minFormula(r) {
+  const min = `R${r}C7`, rounded = `ROUND(${min}*${MM_PER_INCH},2)`;
+  return `=IF(R${r}C3="inch → mm",IF(${rounded}<${min}*${MM_PER_INCH},${rounded}+0.01,${rounded}),${min}/${MM_PER_INCH})`;
 }
 
-function toleranceRow(item, index, rowNumber) {
+function toleranceSummary(item, index, r) {
   const tol = item.values?.tol || {};
-  return r([
-    c(index + 1, 'Number', 'Index'), c(date(item)), c('Tolerance ±'), c(dir(item), 'String', 'InputText'),
-    f(`=IF(R${rowNumber}C4="inch → mm","in","mm")`, 'FormulaText'), f(`=IF(R${rowNumber}C4="inch → mm","mm","in")`, 'FormulaText'),
-    c(n(tol.positive), 'Number', 'Input'), c(n(tol.nominal), 'Number', 'Input'), c(n(tol.negative), 'Number', 'Input'),
-    f(tolPlus(rowNumber)), f(tolNom(rowNumber)), f(tolMinus(rowNumber)),
-    f(`=IF(R${rowNumber}C4="inch → mm",ROUND(R${rowNumber}C11+R${rowNumber}C10,2),R${rowNumber}C11+R${rowNumber}C10)`),
-    f(`=IF(R${rowNumber}C4="inch → mm",ROUND(R${rowNumber}C11-R${rowNumber}C12,2),R${rowNumber}C11-R${rowNumber}C12)`),
-    c('Open + on the left', 'String', 'ShowHint'),
-  ], 'ss:Collapsed="1"');
+  return row([
+    cell(index + 1, 'Number', 'Index'), cell(savedAt(item)), cell('Tolerance ±'), cell(direction(item), 'String', 'InputText'),
+    formula(`=IF(R${r}C4="inch → mm","in","mm")`, 'FormulaText'), formula(`=IF(R${r}C4="inch → mm","mm","in")`, 'FormulaText'),
+    cell(asNumber(tol.positive), 'Number', 'Input'), cell(asNumber(tol.nominal), 'Number', 'Input'), cell(asNumber(tol.negative), 'Number', 'Input'),
+    formula(tolPlusFormula(r)), formula(tolNominalFormula(r)), formula(tolMinusFormula(r)),
+    formula(`=IF(R${r}C4="inch → mm",ROUND(R${r}C11+R${r}C10,2),R${r}C11+R${r}C10)`, 'BigResult'),
+    formula(`=IF(R${r}C4="inch → mm",ROUND(R${r}C11-R${r}C12,2),R${r}C11-R${r}C12)`, 'BigResult'),
+    cell('Open +', 'String', 'ShowHint'),
+  ], 'ss:Collapsed="1" ss:Height="23"');
 }
-function toleranceDetails(index, rowNumber) {
+function toleranceCard(index, r) {
   return [
-    r([c(`Calculation ${index + 1} — Tolerance ±`, 'String', 'CardTitle', ' ss:MergeAcross="14"')], hidden()),
-    r([c('INPUT', 'String', 'SideHeader', ' ss:MergeAcross="6"'), c('OUTPUT', 'String', 'SideHeader', ' ss:MergeAcross="7"')], hidden()),
-    r([c('Tol+', 'String', 'CardLabel'), f(`=R${rowNumber}C7`, 'Input'), c('Nominal', 'String', 'CardLabel'), f(`=R${rowNumber}C8`, 'Input'), c('Tol-', 'String', 'CardLabel'), f(`=R${rowNumber}C9`, 'Input'), c('Unit', 'String', 'CardLabel'), f(`=R${rowNumber}C5`, 'FormulaText'), c('Tol+ result', 'String', 'CardLabel'), f(`=R${rowNumber}C10`), c('Nominal result', 'String', 'CardLabel'), f(`=R${rowNumber}C11`), c('Tol- result', 'String', 'CardLabel'), f(`=R${rowNumber}C12`), c('', 'String')], hidden()),
-    r([c('Exact nominal', 'String', 'CardLabel', ' ss:MergeAcross="2"'), f(`=IF(R${rowNumber}C4="inch → mm",R${rowNumber}C8*${MM_PER_INCH},R${rowNumber}C8/${MM_PER_INCH})`, 'CardFormula'), c('Exact Tol+', 'String', 'CardLabel', ' ss:MergeAcross="2"'), f(`=IF(R${rowNumber}C4="inch → mm",R${rowNumber}C7*${MM_PER_INCH},R${rowNumber}C7/${MM_PER_INCH})`, 'CardFormula'), c('Exact Tol-', 'String', 'CardLabel', ' ss:MergeAcross="2"'), f(`=IF(R${rowNumber}C4="inch → mm",R${rowNumber}C9*${MM_PER_INCH},R${rowNumber}C9/${MM_PER_INCH})`, 'CardFormula'), c('Safe rounding', 'String', 'Callout', ' ss:MergeAcross="1"')], hidden()),
-    r([c('Upper limit', 'String', 'CardLabel', ' ss:MergeAcross="5"'), f(`=R${rowNumber}C13`, 'BigResult'), c('Lower limit', 'String', 'CardLabel', ' ss:MergeAcross="5"'), f(`=R${rowNumber}C14`, 'BigResult'), c('Same logic as Markulator', 'String', 'Callout')], hidden()),
-    r([c('', 'String', 'Spacer', ' ss:MergeAcross="14"')], hidden()),
+    row([cell(`Calculation ${index + 1} — Tolerance ±`, 'String', 'CardTitle', ' ss:MergeAcross="14"')], `${hidden()} ss:Height="28"`),
+    row([cell('INCH SIDE', 'String', 'InchHeader', ' ss:MergeAcross="6"'), cell('', 'String', 'RedDivider'), cell('MM SIDE', 'String', 'MmHeader', ' ss:MergeAcross="6"')], `${hidden()} ss:Height="28"`),
+    row([cell('MAX', 'String', 'BigLabel', ' ss:MergeAcross="1"'), formula(`=R${r}C8+R${r}C7`, 'BigInput', ' ss:MergeAcross="3"'), formula(`=R${r}C5`, 'UnitPill', ' ss:MergeAcross="1"'), cell('', 'String', 'RedDivider'), cell('MAX', 'String', 'BigLabel', ' ss:MergeAcross="1"'), formula(`=R${r}C13`, 'BigResult', ' ss:MergeAcross="3"'), formula(`=R${r}C6`, 'UnitPill', ' ss:MergeAcross="1"')], `${hidden()} ss:Height="32"`),
+    row([cell('NOM', 'String', 'BigLabel', ' ss:MergeAcross="1"'), formula(`=R${r}C8`, 'BigInput', ' ss:MergeAcross="3"'), formula(`=R${r}C5`, 'UnitPill', ' ss:MergeAcross="1"'), cell('', 'String', 'RedDivider'), cell('NOM', 'String', 'BigLabel', ' ss:MergeAcross="1"'), formula(`=R${r}C11`, 'BigResult', ' ss:MergeAcross="3"'), formula(`=R${r}C6`, 'UnitPill', ' ss:MergeAcross="1"')], `${hidden()} ss:Height="32"`),
+    row([cell('MIN', 'String', 'BigLabel', ' ss:MergeAcross="1"'), formula(`=R${r}C8-R${r}C9`, 'BigInput', ' ss:MergeAcross="3"'), formula(`=R${r}C5`, 'UnitPill', ' ss:MergeAcross="1"'), cell('', 'String', 'RedDivider'), cell('MIN', 'String', 'BigLabel', ' ss:MergeAcross="1"'), formula(`=R${r}C14`, 'BigResult', ' ss:MergeAcross="3"'), formula(`=R${r}C6`, 'UnitPill', ' ss:MergeAcross="1"')], `${hidden()} ss:Height="32"`),
+    row([cell('Tolerance +', 'String', 'SmallLabel'), formula(`=R${r}C7`, 'Input'), cell('Tolerance -', 'String', 'SmallLabel'), formula(`=R${r}C9`, 'Input'), cell('Exact conversion uses 25.4', 'String', 'Callout', ' ss:MergeAcross="2"'), cell('', 'String', 'RedDivider'), cell('Tol+ result', 'String', 'SmallLabel'), formula(`=R${r}C10`, 'Formula'), cell('Tol- result', 'String', 'SmallLabel'), formula(`=R${r}C12`, 'Formula'), cell('Safe rounding', 'String', 'Callout', ' ss:MergeAcross="1"')], `${hidden()} ss:Height="28"`),
+    blank(15, hidden()),
   ];
 }
 
-function maxRow(item, index, rowNumber) {
+function maxSummary(item, index, r) {
   const limits = item.values?.limits || {};
-  return r([
-    c(index + 1, 'Number', 'Index'), c(date(item)), c(dir(item), 'String', 'InputText'),
-    f(`=IF(R${rowNumber}C3="inch → mm","in","mm")`, 'FormulaText'), f(`=IF(R${rowNumber}C3="inch → mm","mm","in")`, 'FormulaText'),
-    c(n(limits.max), 'Number', 'Input'), c(n(limits.min), 'Number', 'Input'),
-    f(maxFormula(rowNumber)), f(minFormula(rowNumber)), f(`=IF(R${rowNumber}C3="inch → mm",ROUND(R${rowNumber}C8-R${rowNumber}C9,2),R${rowNumber}C8-R${rowNumber}C9)`),
-    c('Open + on the left', 'String', 'ShowHint'),
-  ], 'ss:Collapsed="1"');
+  return row([
+    cell(index + 1, 'Number', 'Index'), cell(savedAt(item)), cell(direction(item), 'String', 'InputText'),
+    formula(`=IF(R${r}C3="inch → mm","in","mm")`, 'FormulaText'), formula(`=IF(R${r}C3="inch → mm","mm","in")`, 'FormulaText'),
+    cell(asNumber(limits.max), 'Number', 'Input'), cell(asNumber(limits.min), 'Number', 'Input'),
+    formula(maxFormula(r), 'BigResult'), formula(minFormula(r), 'BigResult'),
+    formula(`=IF(R${r}C3="inch → mm",ROUND(R${r}C8-R${r}C9,2),R${r}C8-R${r}C9)`, 'BigResult'),
+    cell('Open +', 'String', 'ShowHint'),
+  ], 'ss:Collapsed="1" ss:Height="23"');
 }
-function maxDetails(index, rowNumber) {
+function maxCard(index, r) {
   return [
-    r([c(`Calculation ${index + 1} — Maximum / Minimum`, 'String', 'CardTitle', ' ss:MergeAcross="10"')], hidden()),
-    r([c('INPUT', 'String', 'SideHeader', ' ss:MergeAcross="4"'), c('OUTPUT', 'String', 'SideHeader', ' ss:MergeAcross="5"')], hidden()),
-    r([c('Max input', 'String', 'CardLabel'), f(`=R${rowNumber}C6`, 'Input'), c('Min input', 'String', 'CardLabel'), f(`=R${rowNumber}C7`, 'Input'), c('Unit', 'String', 'CardLabel'), f(`=R${rowNumber}C4`, 'FormulaText'), c('Max result', 'String', 'CardLabel'), f(`=R${rowNumber}C8`), c('Min result', 'String', 'CardLabel'), f(`=R${rowNumber}C9`), c('Range', 'String', 'CardLabel'), f(`=R${rowNumber}C10`, 'BigResult')], hidden()),
-    r([c('Exact max', 'String', 'CardLabel', ' ss:MergeAcross="2"'), f(`=IF(R${rowNumber}C3="inch → mm",R${rowNumber}C6*${MM_PER_INCH},R${rowNumber}C6/${MM_PER_INCH})`, 'CardFormula'), c('Exact min', 'String', 'CardLabel', ' ss:MergeAcross="2"'), f(`=IF(R${rowNumber}C3="inch → mm",R${rowNumber}C7*${MM_PER_INCH},R${rowNumber}C7/${MM_PER_INCH})`, 'CardFormula'), c('Safe rounding follows Markulator', 'String', 'Callout', ' ss:MergeAcross="3"')], hidden()),
-    r([c('', 'String', 'Spacer', ' ss:MergeAcross="10"')], hidden()),
+    row([cell(`Calculation ${index + 1} — Maximum / Minimum`, 'String', 'CardTitle', ' ss:MergeAcross="10"')], `${hidden()} ss:Height="28"`),
+    row([cell('INCH SIDE', 'String', 'InchHeader', ' ss:MergeAcross="4"'), cell('', 'String', 'RedDivider'), cell('MM SIDE', 'String', 'MmHeader', ' ss:MergeAcross="4"')], `${hidden()} ss:Height="28"`),
+    row([cell('MAX', 'String', 'BigLabel', ' ss:MergeAcross="1"'), formula(`=R${r}C6`, 'BigInput', ' ss:MergeAcross="1"'), formula(`=R${r}C4`, 'UnitPill', ' ss:MergeAcross="1"'), cell('', 'String', 'RedDivider'), cell('MAX', 'String', 'BigLabel', ' ss:MergeAcross="1"'), formula(`=R${r}C8`, 'BigResult', ' ss:MergeAcross="1"'), formula(`=R${r}C5`, 'UnitPill', ' ss:MergeAcross="1"')], `${hidden()} ss:Height="32"`),
+    row([cell('MIN', 'String', 'BigLabel', ' ss:MergeAcross="1"'), formula(`=R${r}C7`, 'BigInput', ' ss:MergeAcross="1"'), formula(`=R${r}C4`, 'UnitPill', ' ss:MergeAcross="1"'), cell('', 'String', 'RedDivider'), cell('MIN', 'String', 'BigLabel', ' ss:MergeAcross="1"'), formula(`=R${r}C9`, 'BigResult', ' ss:MergeAcross="1"'), formula(`=R${r}C5`, 'UnitPill', ' ss:MergeAcross="1"')], `${hidden()} ss:Height="32"`),
+    row([cell('RANGE', 'String', 'BigLabel', ' ss:MergeAcross="1"'), formula(`=R${r}C6-R${r}C7`, 'BigInput', ' ss:MergeAcross="1"'), formula(`=R${r}C4`, 'UnitPill', ' ss:MergeAcross="1"'), cell('', 'String', 'RedDivider'), cell('RANGE', 'String', 'BigLabel', ' ss:MergeAcross="1"'), formula(`=R${r}C10`, 'BigResult', ' ss:MergeAcross="1"'), formula(`=R${r}C5`, 'UnitPill', ' ss:MergeAcross="1"')], `${hidden()} ss:Height="32"`),
+    row([cell('Exact max', 'String', 'SmallLabel'), formula(`=IF(R${r}C3="inch → mm",R${r}C6*${MM_PER_INCH},R${r}C6/${MM_PER_INCH})`, 'CardFormula'), cell('Exact min', 'String', 'SmallLabel'), formula(`=IF(R${r}C3="inch → mm",R${r}C7*${MM_PER_INCH},R${r}C7/${MM_PER_INCH})`, 'CardFormula'), cell('', 'String', 'RedDivider'), cell('Safe rounding follows Markulator', 'String', 'Callout', ' ss:MergeAcross="4"')], `${hidden()} ss:Height="28"`),
+    blank(11, hidden()),
   ];
 }
 
-function sheet(name, columns, rows) {
-  return `<Worksheet ss:Name="${xml(name)}"><Table>${columns.map((w) => `<Column ss:Width="${w}"/>`).join('')}${rows.join('')}</Table><WorksheetOptions xmlns="urn:schemas-microsoft-com:office:excel"><FreezePanes/><FrozenNoSplit/><SplitHorizontal>4</SplitHorizontal><TopRowBottomPane>4</TopRowBottomPane><DoNotDisplayGridlines/></WorksheetOptions></Worksheet>`;
+function sheet(name, columns, rows, split = 4) {
+  return `<Worksheet ss:Name="${xml(name)}"><Table>${columns.map((w) => `<Column ss:Width="${w}"/>`).join('')}${rows.join('')}</Table><WorksheetOptions xmlns="urn:schemas-microsoft-com:office:excel"><FreezePanes/><FrozenNoSplit/><SplitHorizontal>${split}</SplitHorizontal><TopRowBottomPane>${split}</TopRowBottomPane><DoNotDisplayGridlines/><OutlineSummaryBelow/></WorksheetOptions></Worksheet>`;
 }
 function buildTolerance(items) {
-  const rows = [title('Tolerance ±', 15), note('Open each calculation with the + outline on the left. The blue cells are editable and the green cells are formulas.', 15), '<Row/>', header(['#', 'Saved At', 'Mode', 'Direction', 'Input Unit', 'Output Unit', 'Tol+ In', 'Nominal In', 'Tol- In', 'Tol+ Out', 'Nominal Out', 'Tol- Out', 'Upper', 'Lower', 'Show'])];
-  let rowNumber = 5;
-  if (!items.length) rows.push(note('No saved Tolerance ± calculations were available.', 15));
-  items.forEach((item, i) => { rows.push(toleranceRow(item, i, rowNumber)); const details = toleranceDetails(i, rowNumber); rows.push(...details); rowNumber += 1 + details.length; });
-  return sheet('Tolerance', [36, 116, 92, 96, 72, 78, 82, 94, 82, 92, 102, 92, 92, 92, 145], rows);
+  const rows = [titleRow('Tolerance ± History', 15), noteRow('History list: click the + outline on the left of a row to open a calculator block. Blue cells are editable; green cells recalculate.', 15), '<Row/>', headerRow(['#', 'Saved At', 'Mode', 'Direction', 'In Unit', 'Out Unit', 'Tol+ In', 'Nom In', 'Tol- In', 'Tol+ Out', 'Nom Out', 'Tol- Out', 'MAX Out', 'MIN Out', 'Show'])];
+  let rNum = 5;
+  if (!items.length) rows.push(noteRow('No saved Tolerance ± calculations were available.', 15));
+  items.forEach((item, i) => { rows.push(toleranceSummary(item, i, rNum)); const details = toleranceCard(i, rNum); rows.push(...details); rNum += 1 + details.length; });
+  return sheet('Tolerance', [38, 118, 92, 96, 70, 76, 82, 92, 82, 90, 100, 90, 94, 94, 110], rows);
 }
-function buildMax(items) {
-  const rows = [title('Maximum / Minimum', 11), note('Open each calculation with the + outline on the left. The blue cells are editable and the green cells are formulas.', 11), '<Row/>', header(['#', 'Saved At', 'Direction', 'Input Unit', 'Output Unit', 'Max In', 'Min In', 'Max Out', 'Min Out', 'Range', 'Show'])];
-  let rowNumber = 5;
-  if (!items.length) rows.push(note('No saved Maximum / Minimum calculations were available.', 11));
-  items.forEach((item, i) => { rows.push(maxRow(item, i, rowNumber)); const details = maxDetails(i, rowNumber); rows.push(...details); rowNumber += 1 + details.length; });
-  return sheet('Max-Min', [36, 116, 96, 72, 78, 88, 88, 94, 94, 88, 145], rows);
+function buildMaxMin(items) {
+  const rows = [titleRow('Maximum / Minimum History', 11), noteRow('History list: click the + outline on the left of a row to open a calculator block. Blue cells are editable; green cells recalculate.', 11), '<Row/>', headerRow(['#', 'Saved At', 'Direction', 'In Unit', 'Out Unit', 'MAX In', 'MIN In', 'MAX Out', 'MIN Out', 'Range', 'Show'])];
+  let rNum = 5;
+  if (!items.length) rows.push(noteRow('No saved Maximum / Minimum calculations were available.', 11));
+  items.forEach((item, i) => { rows.push(maxSummary(item, i, rNum)); const details = maxCard(i, rNum); rows.push(...details); rNum += 1 + details.length; });
+  return sheet('Max-Min', [38, 118, 98, 70, 76, 92, 92, 98, 98, 90, 110], rows);
 }
 function buildMenu(toleranceCount, maxCount) {
-  return sheet('Menu', [190, 130, 330], [title('Markulator Calculator Export', 3), note('Two calculator options are included. Use the + outline in Excel to show the calculation block under each saved result.', 3), '<Row/>', header(['Calculator option', 'Saved rows', 'Where to go']), r([c('Tolerance ±', 'String', 'Option'), c(toleranceCount, 'Number', 'BigResult'), c('Sheet: Tolerance')]), r([c('Maximum / Minimum', 'String', 'Option'), c(maxCount, 'Number', 'BigResult'), c('Sheet: Max-Min')])]);
+  return sheet('Menu', [210, 130, 360], [titleRow('Markulator Excel Calculator Export', 3), noteRow('Two calculator sheets are included. Each sheet is a history list. Open each saved row with the + outline to show the full calculator layout.', 3), '<Row/>', headerRow(['Calculator sheet', 'Saved rows', 'Description']), row([cell('Tolerance ±', 'String', 'Option'), cell(toleranceCount, 'Number', 'BigResult'), cell('Nominal, positive tolerance, negative tolerance, MAX, NOM and MIN calculator block')]), row([cell('Maximum / Minimum', 'String', 'Option'), cell(maxCount, 'Number', 'BigResult'), cell('MAX, MIN and Range calculator block')])], 4);
 }
 function workbook(history) {
   const usable = history.filter((item) => item?.values && (item.values.tol || item.values.limits));
   const tolerance = usable.filter((item) => item.mode !== 'max-min');
-  const max = usable.filter((item) => item.mode === 'max-min');
-  return `<?xml version="1.0"?><?mso-application progid="Excel.Sheet"?><Workbook xmlns="urn:schemas-microsoft-com:office:spreadsheet" xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns:ss="urn:schemas-microsoft-com:office:spreadsheet"><DocumentProperties xmlns="urn:schemas-microsoft-com:office:office"><Title>Markulator Calculator Export</Title><Author>Markulator</Author><Created>${new Date().toISOString()}</Created></DocumentProperties><Styles><Style ss:ID="Default" ss:Name="Normal"><Font ss:FontName="Aptos" ss:Size="10" ss:Color="#172033"/><Alignment ss:Vertical="Center"/></Style><Style ss:ID="Title"><Font ss:Size="18" ss:Bold="1" ss:Color="#FFFFFF"/><Interior ss:Color="#0F172A" ss:Pattern="Solid"/></Style><Style ss:ID="Note"><Font ss:Color="#475569" ss:Italic="1"/><Interior ss:Color="#F8FAFC" ss:Pattern="Solid"/><Alignment ss:WrapText="1"/></Style><Style ss:ID="Header"><Font ss:Bold="1" ss:Color="#FFFFFF"/><Interior ss:Color="#1E293B" ss:Pattern="Solid"/><Alignment ss:Horizontal="Center" ss:WrapText="1"/></Style><Style ss:ID="Cell"><Interior ss:Color="#FFFFFF" ss:Pattern="Solid"/><Borders><Border ss:Position="Bottom" ss:LineStyle="Continuous" ss:Weight="1" ss:Color="#E2E8F0"/></Borders><Alignment ss:WrapText="1"/></Style><Style ss:ID="Index"><Font ss:Bold="1"/><Interior ss:Color="#F1F5F9" ss:Pattern="Solid"/><Alignment ss:Horizontal="Center"/></Style><Style ss:ID="Input"><NumberFormat ss:Format="0.0000"/><Interior ss:Color="#DBEAFE" ss:Pattern="Solid"/></Style><Style ss:ID="InputText"><Interior ss:Color="#DBEAFE" ss:Pattern="Solid"/></Style><Style ss:ID="Formula"><NumberFormat ss:Format="0.0000"/><Font ss:Bold="1" ss:Color="#0F766E"/><Interior ss:Color="#DCFCE7" ss:Pattern="Solid"/></Style><Style ss:ID="FormulaText"><Font ss:Bold="1" ss:Color="#0F766E"/><Interior ss:Color="#DCFCE7" ss:Pattern="Solid"/></Style><Style ss:ID="ShowHint"><Font ss:Bold="1" ss:Color="#0369A1"/><Interior ss:Color="#E0F2FE" ss:Pattern="Solid"/></Style><Style ss:ID="CardTitle"><Font ss:Size="13" ss:Bold="1" ss:Color="#FFFFFF"/><Interior ss:Color="#155E75" ss:Pattern="Solid"/></Style><Style ss:ID="SideHeader"><Font ss:Bold="1" ss:Color="#FFFFFF"/><Interior ss:Color="#0E7490" ss:Pattern="Solid"/><Alignment ss:Horizontal="Center"/></Style><Style ss:ID="CardLabel"><Font ss:Bold="1" ss:Color="#334155"/><Interior ss:Color="#F8FAFC" ss:Pattern="Solid"/></Style><Style ss:ID="CardFormula"><NumberFormat ss:Format="0.000000"/><Interior ss:Color="#F8FAFC" ss:Pattern="Solid"/></Style><Style ss:ID="BigResult"><NumberFormat ss:Format="0.0000"/><Font ss:Size="12" ss:Bold="1" ss:Color="#065F46"/><Interior ss:Color="#A7F3D0" ss:Pattern="Solid"/></Style><Style ss:ID="Callout"><Font ss:Bold="1" ss:Color="#92400E"/><Interior ss:Color="#FEF3C7" ss:Pattern="Solid"/><Alignment ss:WrapText="1"/></Style><Style ss:ID="Spacer"><Interior ss:Color="#F8FAFC" ss:Pattern="Solid"/></Style><Style ss:ID="Option"><Font ss:Size="12" ss:Bold="1"/><Interior ss:Color="#ECFEFF" ss:Pattern="Solid"/></Style></Styles>${buildMenu(tolerance.length, max.length)}${buildTolerance(tolerance)}${buildMax(max)}</Workbook>`;
+  const maxMin = usable.filter((item) => item.mode === 'max-min');
+  return `<?xml version="1.0"?><?mso-application progid="Excel.Sheet"?><Workbook xmlns="urn:schemas-microsoft-com:office:spreadsheet" xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns:ss="urn:schemas-microsoft-com:office:spreadsheet"><DocumentProperties xmlns="urn:schemas-microsoft-com:office:office"><Title>Markulator Calculator Export</Title><Author>Markulator</Author><Created>${new Date().toISOString()}</Created></DocumentProperties><Styles><Style ss:ID="Default" ss:Name="Normal"><Font ss:FontName="Aptos" ss:Size="10" ss:Color="#172033"/><Alignment ss:Vertical="Center"/></Style><Style ss:ID="Title"><Font ss:Size="18" ss:Bold="1" ss:Color="#FFFFFF"/><Interior ss:Color="#0F172A" ss:Pattern="Solid"/></Style><Style ss:ID="Note"><Font ss:Color="#475569" ss:Italic="1"/><Interior ss:Color="#F8FAFC" ss:Pattern="Solid"/><Alignment ss:WrapText="1"/></Style><Style ss:ID="Header"><Font ss:Bold="1" ss:Color="#FFFFFF"/><Interior ss:Color="#1E293B" ss:Pattern="Solid"/><Alignment ss:Horizontal="Center" ss:WrapText="1"/></Style><Style ss:ID="Cell"><Interior ss:Color="#FFFFFF" ss:Pattern="Solid"/><Borders><Border ss:Position="Bottom" ss:LineStyle="Continuous" ss:Weight="1" ss:Color="#E2E8F0"/></Borders><Alignment ss:WrapText="1"/></Style><Style ss:ID="Index"><Font ss:Bold="1"/><Interior ss:Color="#F1F5F9" ss:Pattern="Solid"/><Alignment ss:Horizontal="Center"/></Style><Style ss:ID="Input"><NumberFormat ss:Format="0.0000"/><Interior ss:Color="#DBEAFE" ss:Pattern="Solid"/><Borders><Border ss:Position="Bottom" ss:LineStyle="Continuous" ss:Weight="1" ss:Color="#93C5FD"/></Borders></Style><Style ss:ID="InputText"><Interior ss:Color="#DBEAFE" ss:Pattern="Solid"/></Style><Style ss:ID="Formula"><NumberFormat ss:Format="0.0000"/><Font ss:Bold="1" ss:Color="#0F766E"/><Interior ss:Color="#DCFCE7" ss:Pattern="Solid"/></Style><Style ss:ID="FormulaText"><Font ss:Bold="1" ss:Color="#0F766E"/><Interior ss:Color="#DCFCE7" ss:Pattern="Solid"/></Style><Style ss:ID="BigResult"><NumberFormat ss:Format="0.0000"/><Font ss:Size="15" ss:Bold="1" ss:Color="#065F46"/><Interior ss:Color="#A7F3D0" ss:Pattern="Solid"/><Alignment ss:Horizontal="Center"/></Style><Style ss:ID="BigInput"><NumberFormat ss:Format="0.0000"/><Font ss:Size="15" ss:Bold="1" ss:Color="#1E3A8A"/><Interior ss:Color="#DBEAFE" ss:Pattern="Solid"/><Alignment ss:Horizontal="Center"/></Style><Style ss:ID="ShowHint"><Font ss:Bold="1" ss:Color="#0369A1"/><Interior ss:Color="#E0F2FE" ss:Pattern="Solid"/><Alignment ss:Horizontal="Center"/></Style><Style ss:ID="CardTitle"><Font ss:Size="13" ss:Bold="1" ss:Color="#FFFFFF"/><Interior ss:Color="#111827" ss:Pattern="Solid"/></Style><Style ss:ID="InchHeader"><Font ss:Size="13" ss:Bold="1" ss:Color="#FFFFFF"/><Interior ss:Color="#334155" ss:Pattern="Solid"/><Alignment ss:Horizontal="Center"/></Style><Style ss:ID="MmHeader"><Font ss:Size="13" ss:Bold="1" ss:Color="#FFFFFF"/><Interior ss:Color="#0F766E" ss:Pattern="Solid"/><Alignment ss:Horizontal="Center"/></Style><Style ss:ID="RedDivider"><Interior ss:Color="#DC2626" ss:Pattern="Solid"/></Style><Style ss:ID="BigLabel"><Font ss:Size="16" ss:Bold="1" ss:Color="#111827"/><Interior ss:Color="#F8FAFC" ss:Pattern="Solid"/><Alignment ss:Horizontal="Center"/></Style><Style ss:ID="SmallLabel"><Font ss:Bold="1" ss:Color="#334155"/><Interior ss:Color="#F8FAFC" ss:Pattern="Solid"/></Style><Style ss:ID="UnitPill"><Font ss:Bold="1" ss:Color="#0F172A"/><Interior ss:Color="#E2E8F0" ss:Pattern="Solid"/><Alignment ss:Horizontal="Center"/></Style><Style ss:ID="CardFormula"><NumberFormat ss:Format="0.000000"/><Interior ss:Color="#F8FAFC" ss:Pattern="Solid"/></Style><Style ss:ID="Callout"><Font ss:Bold="1" ss:Color="#92400E"/><Interior ss:Color="#FEF3C7" ss:Pattern="Solid"/><Alignment ss:WrapText="1"/></Style><Style ss:ID="Spacer"><Interior ss:Color="#F8FAFC" ss:Pattern="Solid"/></Style><Style ss:ID="Option"><Font ss:Size="12" ss:Bold="1"/><Interior ss:Color="#ECFEFF" ss:Pattern="Solid"/></Style></Styles>${buildMenu(tolerance.length, maxMin.length)}${buildTolerance(tolerance)}${buildMaxMin(maxMin)}</Workbook>`;
 }
 function download(history) { const blob = new Blob([workbook(history)], { type: 'application/vnd.ms-excel;charset=utf-8' }); const url = URL.createObjectURL(blob); const link = document.createElement('a'); link.href = url; link.download = `Markulator-calculator-history-${new Date().toISOString().slice(0, 10)}.xls`; document.body.appendChild(link); link.click(); link.remove(); window.setTimeout(() => URL.revokeObjectURL(url), 1200); }
 function flash(button, label, delay = 1250) { const language = lang(); setText(button, label); window.setTimeout(() => { setText(button, LABELS[language].export); button.disabled = false; }, delay); }
