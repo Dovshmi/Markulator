@@ -6,8 +6,15 @@ const LABELS = {
   en: { export: 'Export Excel', working: 'Creating...', done: 'Excel ready', empty: 'No history', failed: 'Export failed' },
 };
 
+let ensureScheduled = false;
+let observer = null;
+
 function getLanguage() {
   return document.documentElement.lang === 'en' ? 'en' : 'he';
+}
+
+function setButtonText(button, value) {
+  if (button.textContent !== value) button.textContent = value;
 }
 
 function readHistory() {
@@ -74,10 +81,8 @@ function noteRow(text, span) {
 function toleranceOutputFormulas() {
   const p = 'RC[-3]';
   const n = 'RC[-2]';
-  const m = 'RC[-1]';
   const pr = `ROUND(${p}*${MM_PER_INCH},2)`;
   const nr = `ROUND(${n}*${MM_PER_INCH},2)`;
-  const mr = `ROUND(${m}*${MM_PER_INCH},2)`;
   const plusOver = `ROUND(${nr}+${pr},2)>(${n}*${MM_PER_INCH}+${p}*${MM_PER_INCH})`;
   return `=IF(RC[-6]="inch → mm",IF(${plusOver},IF(${pr}>0,${pr}-0.01,${pr}),${pr}),${p}/${MM_PER_INCH})`;
 }
@@ -218,9 +223,9 @@ function downloadExcel(history) {
 
 function flashButton(button, label, delay = 1250) {
   const language = getLanguage();
-  button.textContent = label;
+  setButtonText(button, label);
   window.setTimeout(() => {
-    button.textContent = LABELS[language].export;
+    setButtonText(button, LABELS[language].export);
     button.disabled = false;
   }, delay);
 }
@@ -241,7 +246,7 @@ function handleExportClick(event) {
 
   try {
     button.disabled = true;
-    button.textContent = labels.working;
+    setButtonText(button, labels.working);
     downloadExcel(history);
     flashButton(button, labels.done, 1400);
   } catch (error) {
@@ -265,6 +270,7 @@ function ensureActionsContainer(header) {
 }
 
 function ensureExportButton() {
+  ensureScheduled = false;
   const header = document.querySelector('.history-title');
   if (!header) return;
 
@@ -280,11 +286,13 @@ function ensureExportButton() {
     actions.prepend(button);
   }
 
-  if (!button.disabled) button.textContent = labels.export;
-  button.setAttribute('aria-label', labels.export);
+  if (!button.disabled) setButtonText(button, labels.export);
+  if (button.getAttribute('aria-label') !== labels.export) button.setAttribute('aria-label', labels.export);
 }
 
 function scheduleEnsureButton() {
+  if (ensureScheduled) return;
+  ensureScheduled = true;
   window.requestAnimationFrame(ensureExportButton);
 }
 
@@ -294,14 +302,12 @@ function bindHistoryExcelExport() {
   const root = document.getElementById('root');
   if (!root || !('MutationObserver' in window)) return;
 
-  const observer = new MutationObserver(scheduleEnsureButton);
-  observer.observe(root, {
-    childList: true,
-    subtree: true,
-    characterData: true,
-    attributes: true,
-    attributeFilter: ['class', 'lang', 'dir', 'aria-hidden'],
+  observer?.disconnect?.();
+  observer = new MutationObserver((mutations) => {
+    const shouldCheck = mutations.some((mutation) => Array.from(mutation.addedNodes || []).some((node) => node.nodeType === 1 && (node.matches?.('.history-title, .history-drawer-inner') || node.querySelector?.('.history-title, .history-drawer-inner'))));
+    if (shouldCheck) scheduleEnsureButton();
   });
+  observer.observe(root, { childList: true, subtree: true });
 }
 
 if (document.readyState === 'loading') {
