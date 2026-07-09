@@ -48,6 +48,31 @@ function getLabel(text, field) {
   return text[config.compactLabelKey] || text[config.labelKey];
 }
 
+function getFiniteNumber(value) {
+  const number = Number(value);
+  return Number.isFinite(number) ? number : null;
+}
+
+function buildDeltaValues(leftValues, result, sourceUnit, targetUnit, digits) {
+  if (!result) return null;
+
+  const max = getFiniteNumber(leftValues.max);
+  const min = getFiniteNumber(leftValues.min);
+  const targetDelta = getFiniteNumber(result.rangeMm);
+
+  if (max == null || min == null || targetDelta == null) return null;
+
+  const sourceDelta = max - min;
+  if (!Number.isFinite(sourceDelta)) return null;
+
+  return {
+    source: formatNumber(sourceDelta, digits),
+    sourceUnit,
+    target: formatNumber(targetDelta, digits),
+    targetUnit,
+  };
+}
+
 function getTabIndex(activeSide, side, field) {
   if (activeSide !== side) return -1;
   return FIELD_ORDER.indexOf(field) + 1;
@@ -133,6 +158,8 @@ export default function LimitBridge({ unitMode, limits, setLimits, result, digit
   const fallbackRightValues = useMemo(() => buildRightValuesFromLeft(limits, unitMode, digits), [limits, unitMode, digits]);
   const calculatedRightValues = useMemo(() => buildRightValuesFromResult(result, fallbackRightValues, digits), [result, fallbackRightValues, digits]);
   const rightValues = editingSide === 'right' ? rightDraft : calculatedRightValues;
+  const deltaValues = useMemo(() => buildDeltaValues(limits, result, sourceUnit, targetUnit, digits), [limits, result, sourceUnit, targetUnit, digits]);
+  const deltaLabel = text.delta || 'Delta';
 
   useEffect(() => () => {
     window.clearTimeout(conversionTimerRef.current);
@@ -195,7 +222,7 @@ export default function LimitBridge({ unitMode, limits, setLimits, result, digit
   };
 
   return (
-    <section className={`limit-bridge mode-content ${conversionAnimating ? 'limit-conversion-animating' : ''}`} dir="ltr" aria-label="Maximum minimum calculator">
+    <section className={`limit-bridge mode-content ${conversionAnimating ? 'limit-conversion-animating' : ''} ${deltaValues ? 'limit-bridge-has-delta' : ''}`} dir="ltr" aria-label="Maximum minimum calculator">
       <div className="limit-unit-title limit-unit-left"><span>{getUnitName(sourceUnit)}</span><b>{sourceUnit}</b></div>
       <button type="button" className="limit-swap-button tolerance-swap-button" aria-label={text.conversionDirection} onClick={handleSwitchDirection}>⇄</button>
       <div className="limit-unit-title limit-unit-right"><span>{getUnitName(targetUnit)}</span><b>{targetUnit}</b></div>
@@ -221,6 +248,18 @@ export default function LimitBridge({ unitMode, limits, setLimits, result, digit
           </div>
         </div>
       </section>
+
+      {deltaValues && (
+        <div className="limit-delta-panel" aria-live="polite" aria-label={`${deltaLabel} ${deltaValues.source} ${deltaValues.sourceUnit} equals ${deltaValues.target} ${deltaValues.targetUnit}`}>
+          <span className="limit-delta-symbol" aria-hidden="true">∆</span>
+          <span className="limit-delta-label">{deltaLabel}</span>
+          <strong>{deltaValues.source}</strong>
+          <em>{deltaValues.sourceUnit}</em>
+          <i aria-hidden="true">→</i>
+          <strong>{deltaValues.target}</strong>
+          <em>{deltaValues.targetUnit}</em>
+        </div>
+      )}
     </section>
   );
 }
