@@ -1,4 +1,4 @@
-export const WEB_VERSION = 'Web v1.0';
+export const WEB_VERSION = 'Web v1.1';
 
 export const UNIT_MODES = {
   IN_TO_MM: 'in-to-mm',
@@ -78,54 +78,86 @@ export function validateInputs(mode, tol, limits, language = 'he') {
   if (mode === 'plus-minus') {
     const values = [tol.positive, tol.nominal, tol.negative];
     const ready = values.some(Boolean);
-    if (!ready) return { ready: false, errors };
-
-    const parsed = values.map(toNumber);
-    if (parsed.some((value) => Number.isNaN(value))) errors.push(msg.invalidNumbers);
-    if (parsed.some((value) => value != null && value < 0)) errors.push(msg.negativeValues);
+    if (!ready) return { errors, ready: false };
+    const nums = values.map(toNumber);
+    if (nums.some((v) => Number.isNaN(v))) errors.push(msg.invalidNumbers);
+    if (nums.some((v) => v != null && v < 0)) errors.push(msg.negativeValues);
     if (!tol.nominal) errors.push(msg.missingNominal);
-    return { ready, errors };
+    return { errors, ready: errors.length === 0 && nums.every((v) => v != null) };
   }
 
-  const max = toNumber(limits.max);
-  const min = toNumber(limits.min);
-  const ready = Boolean(limits.max || limits.min);
-  if (!ready) return { ready: false, errors };
-
-  if (Number.isNaN(max) || Number.isNaN(min)) errors.push(msg.invalidNumbers);
+  const values = [limits.max, limits.min];
+  const ready = values.some(Boolean);
+  if (!ready) return { errors, ready: false };
+  const nums = values.map(toNumber);
+  if (nums.some((v) => Number.isNaN(v))) errors.push(msg.invalidNumbers);
+  if (nums.some((v) => v != null && v < 0)) errors.push(msg.negativeValues);
   if (!limits.max || !limits.min) errors.push(msg.missingLimits);
-  if (max != null && min != null && !Number.isNaN(max) && !Number.isNaN(min) && max < min) errors.push(msg.maxLowerThanMin);
-  return { ready, errors };
+  if (nums.every((v) => v != null && !Number.isNaN(v)) && nums[0] < nums[1]) errors.push(msg.maxLowerThanMin);
+  return { errors, ready: errors.length === 0 && nums.every((v) => v != null) };
 }
 
-export function buildCopyText(mode, result, digits, unitLabel = 'mm', language = 'he') {
+export function calculateTolerance(tol, unitMode, digits) {
+  const positive = toNumber(tol.positive);
+  const nominal = toNumber(tol.nominal);
+  const negative = toNumber(tol.negative);
+  const upper = nominal + positive;
+  const lower = nominal - negative;
+
+  return {
+    input: {
+      positive: formatNumber(positive, digits),
+      nominal: formatNumber(nominal, digits),
+      negative: formatNumber(negative, digits),
+      upper: formatNumber(upper, digits),
+      lower: formatNumber(lower, digits),
+    },
+    output: {
+      positive: formatNumber(convertValue(positive, unitMode), digits),
+      nominal: formatNumber(convertValue(nominal, unitMode), digits),
+      negative: formatNumber(convertValue(negative, unitMode), digits),
+      upper: formatNumber(convertValue(upper, unitMode), digits),
+      lower: formatNumber(convertValue(lower, unitMode), digits),
+    },
+  };
+}
+
+export function calculateLimits(limits, unitMode, digits) {
+  const max = toNumber(limits.max);
+  const min = toNumber(limits.min);
+  const range = max - min;
+
+  return {
+    input: {
+      max: formatNumber(max, digits),
+      min: formatNumber(min, digits),
+      range: formatNumber(range, digits),
+    },
+    output: {
+      max: formatNumber(convertValue(max, unitMode), digits),
+      min: formatNumber(convertValue(min, unitMode), digits),
+      range: formatNumber(convertValue(range, unitMode), digits),
+    },
+  };
+}
+
+export function buildCopyText({ mode, result, units, language = 'he' }) {
   if (!result) return '';
   const labels = COPY_LABELS[getLanguage(language)];
 
   if (mode === 'plus-minus') {
     return [
-      labels.tolPlus + ' ' + formatNumber(result.posTolMm, digits) + ' ' + unitLabel,
-      labels.nominal + ' ' + formatNumber(result.nominalMm, digits) + ' ' + unitLabel,
-      labels.tolMinus + ' ' + formatNumber(result.negTolMm, digits) + ' ' + unitLabel,
-      labels.upper + ' ' + formatNumber(result.maxLimitMm, digits) + ' ' + unitLabel,
-      labels.lower + ' ' + formatNumber(result.minLimitMm, digits) + ' ' + unitLabel,
+      `${labels.tolPlus}: ${result.input.positive} ${units.input} → ${result.output.positive} ${units.output}`,
+      `${labels.nominal}: ${result.input.nominal} ${units.input} → ${result.output.nominal} ${units.output}`,
+      `${labels.tolMinus}: ${result.input.negative} ${units.input} → ${result.output.negative} ${units.output}`,
+      `${labels.upper}: ${result.input.upper} ${units.input} → ${result.output.upper} ${units.output}`,
+      `${labels.lower}: ${result.input.lower} ${units.input} → ${result.output.lower} ${units.output}`,
     ].join('\n');
   }
 
   return [
-    labels.max + ' ' + formatNumber(result.maxMm, digits) + ' ' + unitLabel,
-    labels.min + ' ' + formatNumber(result.minMm, digits) + ' ' + unitLabel,
-    labels.range + ' ' + formatNumber(result.rangeMm, digits) + ' ' + unitLabel,
+    `${labels.max}: ${result.input.max} ${units.input} → ${result.output.max} ${units.output}`,
+    `${labels.min}: ${result.input.min} ${units.input} → ${result.output.min} ${units.output}`,
+    `${labels.range}: ${result.input.range} ${units.input} → ${result.output.range} ${units.output}`,
   ].join('\n');
-}
-
-export function buildShortCopyText(mode, result, digits, unitLabel = 'mm', language = 'he') {
-  if (!result) return '';
-  const labels = COPY_LABELS[getLanguage(language)];
-
-  if (mode === 'plus-minus') {
-    return labels.nominal + ' ' + formatNumber(result.nominalMm, digits) + ' ' + unitLabel + ' | ' + labels.upper + ' ' + formatNumber(result.maxLimitMm, digits) + ' ' + unitLabel + ' | ' + labels.lower + ' ' + formatNumber(result.minLimitMm, digits) + ' ' + unitLabel;
-  }
-
-  return labels.max + ' ' + formatNumber(result.maxMm, digits) + ' ' + unitLabel + ' | ' + labels.min + ' ' + formatNumber(result.minMm, digits) + ' ' + unitLabel + ' | ' + labels.range + ' ' + formatNumber(result.rangeMm, digits) + ' ' + unitLabel;
 }
