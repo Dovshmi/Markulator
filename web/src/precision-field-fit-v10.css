@@ -61,4 +61,82 @@
   .tolerance-middle-panel .tolerance-value-frame.value-fit-tighter input {
     font-size: clamp(1.04rem, 5.4vw, 1.22rem) !important;
   }
+
+  /* Max/min fields have no sign on the left, so long values should use that empty slot. */
+  body.precision-4 .limit-value-frame,
+  .limit-value-frame.value-fit-tight,
+  .limit-value-frame.value-fit-tighter {
+    grid-template-columns: minmax(0, 1fr) auto;
+    padding-inline: 6px;
+    gap: 4px;
+  }
+
+  body.precision-4 .limit-value-frame::before,
+  .limit-value-frame.value-fit-tight::before,
+  .limit-value-frame.value-fit-tighter::before {
+    display: none;
+    content: none;
+  }
+
+  body.precision-4 .limit-value-frame input,
+  .limit-value-frame.value-fit-tight input,
+  .limit-value-frame.value-fit-tighter input {
+    grid-column: 1;
+    justify-self: stretch;
+    min-width: 0;
+    text-align: center;
+    text-overflow: clip;
+  }
+
+  body.precision-4 .limit-value-frame em,
+  .limit-value-frame.value-fit-tight em,
+  .limit-value-frame.value-fit-tighter em {
+    grid-column: 2;
+    width: auto;
+    min-width: 0;
+    max-width: none;
+    padding-inline: 1px;
+    font-size: 0.82em;
+    letter-spacing: -0.055em;
+  }
+
+  .limit-value-frame.value-fit-tighter {
+    padding-inline: 4px;
+    gap: 3px;
+  }
+
+  .limit-value-frame.value-fit-tighter input {
+    font-size: clamp(0.78rem, 3.9vw, 0.94rem) !important;
+    letter-spacing: -0.075em;
+  }
+
+  .limit-value-frame.value-fit-tighter em {
+    font-size: 0.76em;
+  }
+}
+
+@media (max-width: 430px) {
+  body.precision-4 .limit-value-frame,
+  .limit-value-frame.value-fit-tight,
+  .limit-value-frame.value-fit-tighter {
+    padding-inline: 4px;
+    gap: 3px;
+  }
+
+  body.precision-4 .limit-value-frame input,
+  .limit-value-frame.value-fit-tight input {
+    font-size: clamp(0.82rem, 4vw, 0.96rem) !important;
+    letter-spacing: -0.075em;
+  }
+
+  .limit-value-frame.value-fit-tighter input {
+    font-size: clamp(0.72rem, 3.6vw, 0.86rem) !important;
+    letter-spacing: -0.085em;
+  }
+
+  body.precision-4 .limit-value-frame em,
+  .limit-value-frame.value-fit-tight em,
+  .limit-value-frame.value-fit-tighter em {
+    font-size: 0.72em;
+  }
 }
