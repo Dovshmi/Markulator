@@ -1,5 +1,50 @@
 /* Adaptive fit for high precision and long values on small screens. */
+
+/* The max/min bridge has no left-side sign, so the value should always use that space.
+   This prevents Chrome mobile from replacing valid values like 0.222 with 0.... */
+.limit-value-frame {
+  grid-template-columns: minmax(0, 1fr) auto !important;
+  padding-inline: 8px;
+  gap: 5px;
+}
+
+.limit-value-frame::before {
+  display: none !important;
+  content: none !important;
+}
+
+.limit-value-frame input {
+  grid-column: 1 !important;
+  justify-self: stretch !important;
+  width: 100%;
+  min-width: 0;
+  text-align: center;
+  text-overflow: clip !important;
+  overflow: visible;
+  letter-spacing: -0.04em;
+}
+
+.limit-value-frame em {
+  grid-column: 2 !important;
+  width: auto !important;
+  min-width: 0 !important;
+  max-width: none !important;
+  padding-inline: 1px;
+  font-size: 0.92em;
+  letter-spacing: -0.035em;
+}
+
 @media (max-width: 760px) {
+  .limit-value-frame input {
+    font-size: clamp(1.02rem, 4.8vw, 1.32rem) !important;
+    letter-spacing: -0.065em;
+  }
+
+  .limit-value-frame em {
+    font-size: 0.82em;
+    letter-spacing: -0.055em;
+  }
+
   body.precision-4 .tolerance-value-frame,
   body.precision-4 .limit-value-frame,
   .tolerance-value-frame.value-fit-tight,
@@ -60,5 +105,98 @@
 
   .tolerance-middle-panel .tolerance-value-frame.value-fit-tighter input {
     font-size: clamp(1.04rem, 5.4vw, 1.22rem) !important;
+  }
+
+  /* Max/min fields have no sign on the left, so long values should use that empty slot. */
+  body.precision-4 .limit-value-frame,
+  .limit-value-frame.value-fit-tight,
+  .limit-value-frame.value-fit-tighter {
+    grid-template-columns: minmax(0, 1fr) auto !important;
+    padding-inline: 6px;
+    gap: 4px;
+  }
+
+  body.precision-4 .limit-value-frame::before,
+  .limit-value-frame.value-fit-tight::before,
+  .limit-value-frame.value-fit-tighter::before {
+    display: none !important;
+    content: none !important;
+  }
+
+  body.precision-4 .limit-value-frame input,
+  .limit-value-frame.value-fit-tight input,
+  .limit-value-frame.value-fit-tighter input {
+    grid-column: 1 !important;
+    justify-self: stretch;
+    min-width: 0;
+    text-align: center;
+    text-overflow: clip !important;
+    overflow: visible;
+  }
+
+  body.precision-4 .limit-value-frame em,
+  .limit-value-frame.value-fit-tight em,
+  .limit-value-frame.value-fit-tighter em {
+    grid-column: 2 !important;
+    width: auto !important;
+    min-width: 0 !important;
+    max-width: none !important;
+    padding-inline: 1px;
+    font-size: 0.82em;
+    letter-spacing: -0.055em;
+  }
+
+  .limit-value-frame.value-fit-tighter {
+    padding-inline: 4px;
+    gap: 3px;
+  }
+
+  .limit-value-frame.value-fit-tighter input {
+    font-size: clamp(0.78rem, 3.9vw, 0.94rem) !important;
+    letter-spacing: -0.075em;
+  }
+
+  .limit-value-frame.value-fit-tighter em {
+    font-size: 0.76em;
+  }
+}
+
+@media (max-width: 430px) {
+  .limit-value-frame {
+    padding-inline: 5px;
+    gap: 3px;
+  }
+
+  .limit-value-frame input {
+    font-size: clamp(0.88rem, 4.25vw, 1.1rem) !important;
+    letter-spacing: -0.075em;
+  }
+
+  .limit-value-frame em {
+    font-size: 0.72em;
+  }
+
+  body.precision-4 .limit-value-frame,
+  .limit-value-frame.value-fit-tight,
+  .limit-value-frame.value-fit-tighter {
+    padding-inline: 4px;
+    gap: 3px;
+  }
+
+  body.precision-4 .limit-value-frame input,
+  .limit-value-frame.value-fit-tight input {
+    font-size: clamp(0.82rem, 4vw, 0.96rem) !important;
+    letter-spacing: -0.075em;
+  }
+
+  .limit-value-frame.value-fit-tighter input {
+    font-size: clamp(0.72rem, 3.6vw, 0.86rem) !important;
+    letter-spacing: -0.085em;
+  }
+
+  body.precision-4 .limit-value-frame em,
+  .limit-value-frame.value-fit-tight em,
+  .limit-value-frame.value-fit-tighter em {
+    font-size: 0.72em;
   }
 }
