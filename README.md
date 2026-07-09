@@ -3,7 +3,7 @@
 <div align="center">
   <img src="https://img.shields.io/badge/React-Web_App-61DAFB?style=for-the-badge&logo=react&logoColor=black" alt="React" />
   <img src="https://img.shields.io/badge/Vite-Build_Tool-646CFF?style=for-the-badge&logo=vite&logoColor=white" alt="Vite" />
-  <img src="https://img.shields.io/badge/Web-v1.0-14B8A6?style=for-the-badge" alt="Web v1.0" />
+  <img src="https://img.shields.io/badge/Web-v1.1-14B8A6?style=for-the-badge" alt="Web v1.1" />
   <img src="https://img.shields.io/badge/Hebrew_%2F_English-UI-0F172A?style=for-the-badge" alt="Hebrew and English UI" />
   <img src="https://img.shields.io/badge/PWA-ready-0EA5E9?style=for-the-badge" alt="PWA ready" />
   <img src="https://img.shields.io/badge/License-GPL--3.0-4B5563?style=for-the-badge" alt="GPL-3.0 License" />
@@ -24,7 +24,7 @@
 
 **Markulator** is a practical tolerance calculator for machining, inspection, workshop, and engineering workflows. It converts values between **inch** and **millimeter** units and presents the result in a clear visual interface.
 
-**Web v1.0** is the current stable web release. It includes two visual calculator workflows, bidirectional unit conversion, bilingual Hebrew/English UI, local calculation history, theme support, copy/share actions, and PWA install support.
+**Web v1.1** is the current BETA web release. It includes two visual calculator workflows, bidirectional unit conversion, bilingual Hebrew/English UI, local calculation history, theme support, copy/share actions, PWA install support, the max/min long-number display fix, and the new Delta ∆ calculation for the maximum/minimum calculator.
 
 The repository also keeps the original **Python CustomTkinter desktop app** for the earlier desktop version.
 
@@ -36,6 +36,7 @@ The repository also keeps the original **Python CustomTkinter desktop app** for 
 - **Two unit directions:** `inch → mm` and `mm → inch`.
 - **Interactive tolerance bridge:** side-by-side source and target fields for positive tolerance, nominal value, and negative tolerance.
 - **Interactive maximum/minimum bridge:** dedicated source and target layout for upper and lower limits.
+- **Delta ∆ display:** the maximum/minimum calculator shows `max − min` after both values are entered.
 - **Centered unit swap control:** switches the active conversion direction while preserving the current workflow.
 - **Animated unit conversion:** smooth bridge animation when switching direction.
 - **Bilingual interface:** Hebrew RTL and English LTR layouts.
@@ -160,6 +161,7 @@ pyinstaller --onefile --noconsole --icon=pictures/calc.ico .\Marlulator_app.py
 | Branch | Purpose | Vercel behavior |
 | :--- | :--- | :--- |
 | `main` | Production branch for the live web app | Auto-deploys to production: https://markulator-zeta.vercel.app/ |
+| `BETA` | Web v1.1 beta/review branch | Auto-deploys to the BETA preview: https://markulator-git-beta-sushiteimushi.vercel.app/ |
 | `Alpha` | Version 1.0 alpha/release mirror branch | Available as a separate branch for v1.0 work and review |
 | `manus-test` | Working branch for UI/code changes before syncing to main | Automatic Vercel deployments are disabled |
 | `test` | Legacy/test branch | Automatic Vercel deployments are disabled |
@@ -174,6 +176,7 @@ The Vercel branch deployment rule is stored in [`vercel.json`](vercel.json).
 
 | Version | Type | Main update |
 | :--- | :--- | :--- |
+| Web v1.1 | Web | BETA release with max/min long-number display fix and a centered Delta ∆ calculation showing maximum minus minimum. |
 | Web v1.0 | Web | Stable v1.0 release with polished visual bridge calculators, bilingual UI, bidirectional inch/mm conversion, mode-specific history, restore-from-history, timestamps, themes, copy/share actions, PWA support, and mobile-first layout refinements. |
 | Web v0.9.9 | Web | Pre-v1.0 polish branch with refined light-mode handling, quick settings behavior, logo fit, and visual cleanup. |
 | Web v0.9.8 | Web | Added maximum/minimum bridge calculator, mode-specific bilingual history, restore-from-history, timestamps, and main-only Vercel deployment workflow. |
@@ -188,27 +191,3 @@ The Vercel branch deployment rule is stored in [`vercel.json`](vercel.json).
 | Web v0.7.0 | Web | Responsive layout improvements and cleaner result presentation. |
 | Web v0.6.0 | Web | Deployment cleanup, asset organization, and visual polish after the first Vercel version. |
 | Web v0.5.0 | Web | Updated symbol/logo handling for the deployed web app. |
-| Web v0.4.0 | Web | Hebrew RTL React/Vite version with ordered `Tol+ → Nominal → Tol-` workflow. |
-| Web v0.3.0 | Web | Simplified layout, clearer input/result sections, and removed older experimental history UI. |
-| Web v0.2.0 | Web | Modern dark UI prototype with result cards. |
-| Web v0.1.0 | Web | First React/Vite web implementation. |
-| Desktop v1.2 | Desktop | Stable Python CustomTkinter desktop calculator with tolerance ± and max/min modes. |
-
----
-
-## Precision Notes
-
-Markulator is a convenience calculator. For production-critical engineering, machining, inspection, or safety-sensitive work, verify results against the approved drawing, measurement standard, or certified calculation process.
-
----
-
-## License
-
-This project is licensed under the **GNU General Public License v3.0**. See [`LICENSE`](LICENSE) for details.
-
----
-
-<div align="center">
-  Built by <strong>Rony Shmidov</strong><br />
-  Practical tolerance conversion for web and desktop.
-</div>
